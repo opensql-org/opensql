@@ -1,0 +1,48 @@
+const OR = 'OR',
+    AND = 'AND',
+    STAR = '*',
+    COMMA = ',',
+    ASC = 'ASC',
+    LIKE = 'LIKE',
+    IN = 'IN (?)',
+    DESC = 'DESC',
+    LIMIT = 'LIMIT',
+    OFFSET = 'OFFSET',
+    COUNT = 'COUNT(*)',
+    BETWEEN = 'BETWEEN',
+    CASCADE = 'CASCADE',
+    QUESTION_MARK = '?',
+    SET_NULL = 'SET NULL',
+    RESTRICT = 'RESTRICT',
+    ORDER_BY = 'ORDER BY',
+    NO_ACTION = 'NO ACTION',
+    DOUBLE_QUESTION_MARK = '??',
+    IF_NOT_EXISTS = 'IF NOT EXISTS',
+    AUTO_INCREMENT = 'AUTO_INCREMENT';
+
+
+module.exports = {
+
+    OR: OR,
+    IN: IN,
+    AND: AND,
+    ASC: ASC,
+    STAR: STAR,
+    DESC: DESC,
+    LIKE: LIKE,
+    COMMA: COMMA,
+    LIMIT: LIMIT,
+    COUNT: COUNT,
+    OFFSET: OFFSET,
+    BETWEEN: BETWEEN,
+    CASCADE: CASCADE,
+    SET_NULL: SET_NULL,
+    RESTRICT: RESTRICT,
+    ORDER_BY: ORDER_BY,
+    NO_ACTION: NO_ACTION,
+    IF_NOT_EXISTS: IF_NOT_EXISTS,
+    QUESTION_MARK: QUESTION_MARK,
+    AUTO_INCREMENT: AUTO_INCREMENT,
+    DOUBLE_QUESTION_MARK: DOUBLE_QUESTION_MARK
+
+}

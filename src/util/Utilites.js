@@ -1,36 +1,37 @@
 const {
-    IN,
-    OR,
-    AND,
-    ASC,
-    LIKE,
-    STAR,
-    DESC,
-    COMMA,
-    WHERE,
-    LIMIT,
-    COUNT,
-    OFFSET,
-    BETWEEN,
-    ORDER_BY,
-    EQUAL_TO,
-    NOT_NULL,
-    LESS_THAN,
-    IS_NOT_NULL,
-    GREATER_THAN,
-    NOT_EQUAL_TO,
-    QUESTION_MARK,
-    AUTO_INCREMENT,
-    DOUBLE_QUESTION_MARK,
-    LESS_THAN_OR_EQUAL_TO,
-    GREATER_THAN_OR_EQUAL_TO
-} = require('./SqlKeyword');
+        IN,
+        OR,
+        AND,
+        ASC,
+        STAR,
+        DESC,
+        LIKE,
+        COMMA,
+        LIMIT,
+        COUNT,
+        OFFSET,
+        BETWEEN,
+        ORDER_BY,
+        QUESTION_MARK,
+        AUTO_INCREMENT,
+        DOUBLE_QUESTION_MARK,
+    } = require('./KeywordHelper'),
+    {
+        WHERE,
+        EQUAL_TO,
+        NOT_NULL,
+        LESS_THAN,
+        IS_NOT_NULL,
+        GREATER_THAN,
+        NOT_EQUAL_TO,
+        LESS_THAN_OR_EQUAL_TO,
+        GREATER_THAN_OR_EQUAL_TO
+    } = require('./QueryHelper');
 
 
 let stringOfQuestionMarkAndEqual,
     arrayOfKeyAndValueDataForQuery = [],
     fieldData;
-const OPERATOR_IN = 'IN';
 
 
 let arrayOfOperator = [
@@ -77,8 +78,8 @@ function generateArrayOfKeyAndValueForEditField(jsonObject) {
     let arrayOfKeyAndValue = [],
         index = 0,
         size = 0;
-    for (let key in jsonObject.editField) {
-        let value = jsonObject.editField[key];
+    for (let key in jsonObject.edit) {
+        let value = jsonObject.edit[key];
         arrayOfKeyAndValueDataForQuery.push(key);
         arrayOfKeyAndValueDataForQuery.push(value.toString());
         arrayOfKeyAndValue.push(`${key}`);
@@ -91,175 +92,299 @@ function generateArrayOfKeyAndValueForEditField(jsonObject) {
 }
 
 
-function splitValueInString(str) {
-    return str.split(' ')[1];
+function isSpaceWordInString(str) {
+    return str.toString().search('SPACE') > -1;
+}
+
+
+function getValueInSpaceString(str) {
+    let value = splitValueOfSpaceWordInString(str);
+    if (isSpaceWordInString(str) && value !== undefined)
+        return value;
+}
+
+function getOperatorInSpaceString(str) {
+    let operator = splitOperatorInString(str);
+    if (isSpaceWordInString(str) && operator !== undefined)
+        return operator;
+
+    return EQUAL_TO;
+}
+
+
+function splitOperatorAndOrInSpaceWord(str) {
+    if (isSpaceWordInString(str) && (isOrOperator(str) || isAndOperator(str)))
+        return str.split(' ')[0];
+    return AND;
+}
+
+
+function splitValueOfSpaceWordInString(str) {
+    try {
+        let newStr = str.split(' ');
+        if (newStr[0] === ('and' || 'or'))
+            newStr.shift();
+        if (newStr[1] === 'SPACE')
+            newStr.splice(1, 1);
+        return newStr[1];
+    } catch (e) {
+    }
 }
 
 function splitOperatorInString(str) {
-    return str.split(' ')[0];
+    try {
+        let newStr = str.split(' ');
+        if (newStr[1] === 'SPACE')
+            newStr.splice(1, 1);
+        if (newStr[0] === ('and' || 'or'))
+            newStr.shift();
+        return newStr[0];
+    } catch (e) {
+    }
 }
 
-function splitDataFormOperatorInAndPutOnArray(str) {
-    let newArray;
-    newArray = str.split(' ');
-    newArray.splice(0, 1);
-    newArray.slice();
-    return newArray;
+function stringToArrayForInOperator(str) {
+    return str.replace('in ', '').split(',');
 }
 
-function removeUnderscoreInString(str) {
-    return str.replaceAll('_', ' ').toUpperCase();
+function removeAndOperatorInString(str) {
+    return str.replace('and ', '').trim();
 }
 
-function splitValueFromString(str) {
+function removeOrOperatorInString(str) {
+    return str.replace('or ', '').trim();
+}
+
+function isAndOperator(str) {
+    return str.search('and') === 0;
+}
+
+function isOrOperator(str) {
+    return str.search('or') === 0;
+}
+
+function getValidValue(str) {
+    if (isOrOperator(str))
+        return removeOrOperatorInString(str);
+    if (isAndOperator(str))
+        return removeAndOperatorInString(str);
+    return str;
+}
+
+function isInOperatorInString(str) {
+    if (typeof str === 'string')
+        return /in /.test(str);
+    return false;
+}
+
+function isBetweenOperatorInString(str) {
+    if (typeof str === 'string')
+        return /between /.test(str);
+    return false;
+}
+
+
+function isLikeOperatorInString(str) {
+    if (typeof str === 'string')
+        return /like /.test(str);
+    return false;
+}
+
+
+function getValueOfLikeOperator(str) {
     return str.split(' ')[1];
 }
 
-function splitColumnNameFromString(str) {
-    return str.split(' ')[0];
+function getOp(str) {
+    let operator;
+    if (isAndOperator(str) || isOrOperator(str)) {
+        operator = str.split(' ')[0];
+        str.replace(`${operator} `, '').trim();
+        return operator.toUpperCase();
+    }
+    return AND;
 }
 
-function removeSpaceWordInString(str) {
-    return str.replace('SPACE', ' ');
+
+function getValueOfBetweenAndOperator(str) {
+    let newStr = str.split(' ');
+    if (isAndOperator(str) || isOrOperator(str))
+        newStr.shift();
+    return [newStr[1], newStr[3]];
 }
 
-let arrayOfValidOperatorQuery = [
-    OR,
-    AND,
-    LIKE,
-    BETWEEN,
-    OPERATOR_IN
-];
+
+function splitStringToArrayOfCharactersForBetweenOperator(str) {
+    if (typeof str === 'string')
+        return getValueOfBetweenAndOperator(str);
+}
 
 
-function getStringOfEnumTypesWithComma(arrayOfEnumTypes) {
-    let stringOfEnumTypesWithComma = '';
-    arrayOfEnumTypes.forEach((item, index, arr) => {
+function getStringOfValueForEnumOrSetDataTypesWithComma(arr) {
+    let stringTypesWithComma = '';
+    arr.forEach((item, index, arr) => {
 
         let lastIndex = arr.lastIndexOf(item);
 
         if (lastIndex) {
-            stringOfEnumTypesWithComma += `${COMMA} '${item}'`;
+            stringTypesWithComma += `${COMMA} '${item}'`;
         }
 
         if (!lastIndex) {
-            stringOfEnumTypesWithComma += `'${item}'`;
+            stringTypesWithComma += `'${item}'`;
         }
 
     });
-    return stringOfEnumTypesWithComma;
+    return stringTypesWithComma;
 }
 
 
 function getQueryAndCheckOtherConditionInWhereObject(jsonObject) {
     let index = 0,
-        isKeywordBetweenUsed = false,
         arrayOfEqualAndQuestionMarks = [];
 
     for (let key in jsonObject) {
-        let value = jsonObject[key];
-        let isFirstIndex = (index === 0);
-        let isOperatorBetween = (key === BETWEEN);
-        let isCharacter = (key.length === 1);
-        let isOperatorLike = (key === LIKE);
-        let keyword = removeUnderscoreInString(key);
-        let isOperatorAnd = (keyword === AND);
-        let checkSpaceWordInString = value.toString().search('SPACE') > -1;
+        let value = jsonObject[key],
+            arrayOfOperatorAndValue2d = jsonObject.op,
+            isFirstIndex = (index === 0),
+            isBetweenOperator = isBetweenOperatorInString(value),
+            isOpDefined = Array.isArray(value) && key === 'op',
+            isLikeOperator = isLikeOperatorInString(value),
+            newValue = getValueInSpaceString(value),
+            isInOperator = isInOperatorInString(value),
+            arrayOfSpecialQueryUtilitiesOperator = [],
+            isAccessToCheckOtherCondition = false,
+            newArrayForOperatorAndValue2d = [],
+            isNotOperator = !isInOperator && !isBetweenOperator && !isLikeOperator && !isSpaceWordInString(value) && !isOpDefined,
+            operator = getOperatorInSpaceString(value),
+            initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
-        let newValue = (checkSpaceWordInString) ? splitValueInString(removeSpaceWordInString(value)) :
-            splitValueInString(`${EQUAL_TO} ${value}`);
 
-        let isOperatorIn = (OPERATOR_IN === keyword);
-        let isValidOperatorForUpdateSqlQueryInArray = arrayOfValidOperatorQuery.includes(keyword);
-
-
-        if (!isCharacter && !isValidOperatorForUpdateSqlQueryInArray) {
+        if (isSpaceWordInString(value) && !isFirstIndex) {
             arrayOfKeyAndValueDataForQuery.push(key);
-            arrayOfKeyAndValueDataForQuery.push(`${newValue}`);
-        }
-
-
-        if (isOperatorIn && isFirstIndex) {
-            arrayOfEqualAndQuestionMarks.push(`${keyword} (?) `);
-            arrayOfKeyAndValueDataForQuery.push(splitColumnNameFromString(value));
-            arrayOfKeyAndValueDataForQuery.push(splitDataFormOperatorInAndPutOnArray(value));
+            arrayOfKeyAndValueDataForQuery.push(newValue);
+            arrayOfEqualAndQuestionMarks.push(`${splitOperatorAndOrInSpaceWord(value).toUpperCase()} ${initPlaceHolder}`);
             index++;
         }
 
 
-        if (isOperatorIn && !isFirstIndex) {
-            arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${keyword} (?) `);
-            arrayOfKeyAndValueDataForQuery.push(splitColumnNameFromString(value));
-            arrayOfKeyAndValueDataForQuery.push(splitDataFormOperatorInAndPutOnArray(value));
-            index++;
-        }
-
-        if (isOperatorLike || isOperatorBetween) {
-            arrayOfKeyAndValueDataForQuery.push(splitColumnNameFromString(value));
-            arrayOfKeyAndValueDataForQuery.push(splitValueFromString(value));
-        }
-
-        if (isOperatorAnd)
-            arrayOfKeyAndValueDataForQuery.push(`${value}`);
-
-
-        if (isOperatorBetween && !isFirstIndex) {
-            arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${keyword} ${QUESTION_MARK} `);
-            isKeywordBetweenUsed = true;
-            index++;
-        }
-
-        if (isOperatorBetween && isFirstIndex) {
-            arrayOfEqualAndQuestionMarks.push(`${keyword} ${QUESTION_MARK} `);
-            isKeywordBetweenUsed = true;
-            index++;
-        }
-
-        if (isOperatorAnd && isKeywordBetweenUsed) {
-            arrayOfEqualAndQuestionMarks.push(`${keyword} ${QUESTION_MARK} `);
-            isKeywordBetweenUsed = false;
+        if (isSpaceWordInString(value) && isFirstIndex) {
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfKeyAndValueDataForQuery.push(newValue);
+            arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK}`);
             index++;
         }
 
 
-        if (isOperatorLike && !isFirstIndex) {
-            arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${keyword} ${QUESTION_MARK} `);
+        if (!isAccessToCheckOtherCondition && isFirstIndex && isNotOperator) {
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfKeyAndValueDataForQuery.push(value);
+            arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK}`);
             index++;
         }
 
-        if (isOperatorLike && isFirstIndex) {
-            arrayOfEqualAndQuestionMarks.push(`${keyword} ${QUESTION_MARK} `);
+        if (!isAccessToCheckOtherCondition && !isFirstIndex && isNotOperator) {
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfKeyAndValueDataForQuery.push(value);
+            arrayOfEqualAndQuestionMarks.push(`${initPlaceHolder}`);
+            index++;
+        }
+
+        if (isInOperator && isFirstIndex) {
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfEqualAndQuestionMarks.push(`${IN}`);
+            arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
             index++;
         }
 
 
-        if (isValidOperatorForUpdateSqlQueryInArray) {
+        if (isInOperator && !isFirstIndex) {
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfEqualAndQuestionMarks.push(getOp(value))
+            arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IN} `);
+            arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
             index++;
+        }
+
+
+        if (isBetweenOperator && !isFirstIndex) {
+            arrayOfEqualAndQuestionMarks.push(getOp(value));
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK} `);
+            index++;
+        }
+
+        if (isBetweenOperator && isFirstIndex) {
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfEqualAndQuestionMarks.push(`${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK} `);
+            index++;
+        }
+
+        if (isBetweenOperator) {
+            arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(splitStringToArrayOfCharactersForBetweenOperator(value));
+            index++;
+        }
+
+        if (isLikeOperator && !isFirstIndex) {
+            arrayOfEqualAndQuestionMarks.push(getOp(value));
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfKeyAndValueDataForQuery.push(getValueOfLikeOperator(getValidValue(value)));
+            arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${LIKE} ${QUESTION_MARK} `);
+            index++;
+        }
+
+        if (isLikeOperator && isFirstIndex) {
+            arrayOfKeyAndValueDataForQuery.push(key);
+            arrayOfKeyAndValueDataForQuery.push(getValueOfLikeOperator(getValidValue(value)));
+            arrayOfEqualAndQuestionMarks.push(`${LIKE} ${QUESTION_MARK} `);
+            index++;
+        }
+
+
+        if (!isOpDefined)
             continue;
-        }
 
 
-        let operator = (checkSpaceWordInString) ? splitOperatorInString(removeSpaceWordInString(value)) :
-            splitOperatorInString(`${EQUAL_TO} ${value}`);
+        arrayOfOperatorAndValue2d.forEach(item2d => {
+
+            item2d.forEach((item, index) => {
+
+                let isAndOperator = item === AND;
+                let isOrOperator = item === OR;
+
+                if (isAndOperator || isOrOperator) {
+                    arrayOfSpecialQueryUtilitiesOperator.push(item);
+                    item2d.splice(index, 1);
+                }
+
+            });
+
+            arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(item2d);
+            newArrayForOperatorAndValue2d = newArrayForOperatorAndValue2d.concat(item2d);
+
+        });
+        delete jsonObject['op'];
+        let isArrayFor2dHaveOneKeyAndValue = (newArrayForOperatorAndValue2d.length === 2),
+            isArrayFor2dHaveMoreThanOneKeyAndValue = (newArrayForOperatorAndValue2d.length > 2);
 
 
-        let initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
-
-        if (isFirstIndex && !isCharacter) {
+        if (isFirstIndex && (isArrayFor2dHaveOneKeyAndValue || isArrayFor2dHaveMoreThanOneKeyAndValue)) {
             arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK} `);
             index++;
         }
 
-        if (!isFirstIndex && isCharacter) {
-            arrayOfEqualAndQuestionMarks.push(`${value}`);
+
+        if (isArrayFor2dHaveOneKeyAndValue || isArrayFor2dHaveMoreThanOneKeyAndValue) {
+
+            arrayOfSpecialQueryUtilitiesOperator.forEach(item => {
+
+                arrayOfEqualAndQuestionMarks.push(`${item}`);
+                arrayOfEqualAndQuestionMarks.push(`${initPlaceHolder} `);
+
+            });
+
             index++;
         }
-
-        if (!isFirstIndex && !isCharacter) {
-            arrayOfEqualAndQuestionMarks.push(`${initPlaceHolder} `);
-            index++;
-        }
-
 
     }
     return arrayOfEqualAndQuestionMarks.join(' ');
@@ -309,7 +434,7 @@ module.exports = {
             stringDataTypeField = `${type} ${data.join(' ')} `;
 
         if (isArray && !isValidType)
-            stringDataTypeField = `${type}(${getStringOfEnumTypesWithComma(data)}) `;
+            stringDataTypeField = `${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(data)}) `;
 
         return stringDataTypeField;
     },
@@ -320,19 +445,10 @@ module.exports = {
         if (typeof data === 'string')
             return module.exports.stringOfValueWithComma = data;
 
-        let arrayOfString = [],
-            stringOfValueWithComma = '',
-            arrayOfJson = JSON.parse(JSON.stringify(data));
-
-        arrayOfJson.forEach((item) => {
-
-            for (let i in item)
-                arrayOfString.push(item[i]);
-
-        });
+        let stringOfValueWithComma = '';
 
 
-        arrayOfString.forEach((item, index, array) => {
+        data.forEach((item, index, array) => {
 
             let isLastIndex = array.length === index + 1;
 
@@ -345,7 +461,6 @@ module.exports = {
 
 
         });
-
 
         return stringOfValueWithComma;
     },
@@ -396,13 +511,13 @@ module.exports = {
 
 
         jsonArray.optionKeyword.forEach((item, index, arrayOfKeyword) => {
-            let isFirstIndex = (index === 0);
-            let nextKeyword = arrayOfKeyword[index + 1];
-            let isItemInOperators = arrayOfOperator.includes(item);
-            let isOptionKeyword = arrayOfValidOptionKeyword.includes(nextKeyword);
-            let isNextKeywordUndefined = (nextKeyword !== undefined);
-            let isNextItemOffset = (isNextKeywordUndefined && nextKeyword === OFFSET) ? `${OFFSET} ${QUESTION_MARK}` : '';
-            let nextItemUndefinedToNullOrValue = (isNextKeywordUndefined && !isOptionKeyword) ? nextKeyword : '';
+            let isFirstIndex = (index === 0),
+                nextKeyword = arrayOfKeyword[index + 1],
+                isItemInOperators = arrayOfOperator.includes(item),
+                isOptionKeyword = arrayOfValidOptionKeyword.includes(nextKeyword),
+                isNextKeywordUndefined = (nextKeyword !== undefined),
+                isNextItemOffset = (isNextKeywordUndefined && nextKeyword === OFFSET) ? `${OFFSET} ${QUESTION_MARK}` : '',
+                nextItemUndefinedToNullOrValue = (isNextKeywordUndefined && !isOptionKeyword) ? nextKeyword : '';
 
 
             if (isFirstIndex && isItemInOperators)
@@ -510,6 +625,7 @@ module.exports = {
 
         module.exports.arrayOfDataForUpdateOrDeleteQuery = arrayOfKeyAndValueDataForQuery;
 
+
         arrayOfKeyAndValueDataForQuery = [];
     },
 
@@ -570,9 +686,9 @@ module.exports = {
 
 
     removeFieldDataInSelect(jsonArray) {
-        let index = jsonArray.optionKeyword[0];
-        let isPointField = /X\(/.test(index);
-        let optionKeywordArray = jsonArray.optionKeyword;
+        let index = jsonArray.optionKeyword[0],
+            isPointField = /X\(/.test(index),
+            optionKeywordArray = jsonArray.optionKeyword;
 
         if (index !== STAR && COUNT && !isPointField) {
             fieldData = DOUBLE_QUESTION_MARK;

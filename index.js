@@ -8,7 +8,7 @@ const {
         QUESTION_MARK,
         IF_NOT_EXISTS,
         DOUBLE_QUESTION_MARK
-    } = require('src/util/SqlKeyword'),
+    } = require('src/util/KeywordHelper'),
     {
         getData,
         removeSqlQuery,
@@ -29,8 +29,9 @@ const {
         connect
     } = require('src/DatabaseConnection'),
     DataType = require('src/util/DataType'),
-    SqlKeyword = require('src/util/SqlKeyword'),
-    FieldUtilities = require('src/util/FieldUtilities'),
+    KeywordHelper = require('src/util/KeywordHelper'),
+    FieldHelper = require('src/util/FieldHelper'),
+    QueryHelper = require('src/util/QueryHelper'),
     util = require('src/util/Utilites');
 
 
@@ -42,15 +43,17 @@ let realSql,
 module.exports = {
 
 
-    fieldUtilities: FieldUtilities,
+    fieldHelper: FieldHelper,
 
     dataType: DataType,
 
-    sqlKeyword: SqlKeyword,
+    keywordHelper: KeywordHelper,
+
+    queryHelper: QueryHelper,
 
 
-    connect(object) {
-        connect(object);
+    connect(jsonObject) {
+        connect(jsonObject);
         return this;
     },
 
@@ -65,12 +68,12 @@ module.exports = {
     },
 
 
-    createTable(jsonArray) {
+    createTable(jsonObject) {
 
-        getCreateTableSqlQuery(jsonArray);
+        getCreateTableSqlQuery(jsonObject);
 
         realSql = useDatabase +
-            ` CREATE TABLE ${IF_NOT_EXISTS} ` + '`' + jsonArray.table + '`' +
+            ` CREATE TABLE ${IF_NOT_EXISTS} ` + '`' + jsonObject.table + '`' +
             `(${util.sqlQuery})`;
 
         query(realSql, null);
@@ -143,10 +146,10 @@ module.exports = {
     },
 
 
-    addMultiValue(jsonArray) {
+    addMultiValue(jsonObject) {
 
-        realSql = useDatabase + ' INSERT INTO ' + jsonArray.table + ' (' +
-            generateDoubleQuestionMarkAndComma(jsonArray.data) + ') VALUES ' + QUESTION_MARK;
+        realSql = useDatabase + ' INSERT INTO ' + jsonObject.table + ' (' +
+            generateDoubleQuestionMarkAndComma(jsonObject.data) + ') VALUES ' + QUESTION_MARK;
 
         query(realSql, util.dataForInsertSqlQuery);
 
@@ -156,28 +159,28 @@ module.exports = {
     },
 
 
-    addOne(jsonArray) {
+    addOne(jsonObject) {
 
-        realSql = useDatabase + ' INSERT INTO ' + jsonArray.table + ' SET ' + QUESTION_MARK;
+        realSql = useDatabase + ' INSERT INTO ' + jsonObject.table + ' SET ' + QUESTION_MARK;
 
-        query(realSql, jsonArray.data);
+        query(realSql, jsonObject.data);
 
         return this;
 
     },
 
 
-    addWithFind(jsonArray) {
+    addWithFind(jsonObject) {
 
-        getOptionKeywordSqlQuery(jsonArray);
+        getOptionKeywordSqlQuery(jsonObject);
 
         let selectSqlQuery = ' SELECT ' + DOUBLE_QUESTION_MARK +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
-        realSql = useDatabase + ' INSERT INTO ' + jsonArray.table +
-            ` (${getStringOfColumnWithComma(jsonArray.data[0])}) ` + selectSqlQuery;
+        realSql = useDatabase + ' INSERT INTO ' + jsonObject.table +
+            ` (${getStringOfColumnWithComma(jsonObject.data[0])}) ` + selectSqlQuery;
 
-        query(realSql, jsonArray.data);
+        query(realSql, jsonObject.data);
 
         removeSqlQuery();
 
@@ -195,16 +198,16 @@ module.exports = {
     },
 
 
-    find(jsonArray) {
+    find(jsonObject) {
 
-        getOptionKeywordSqlQuery(jsonArray);
+        getOptionKeywordSqlQuery(jsonObject);
 
-        removeFieldDataInSelect(jsonArray);
+        removeFieldDataInSelect(jsonObject);
 
         realSql = useDatabase + ' SELECT ' + getData() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
-        query(realSql, jsonArray.data);
+        query(realSql, jsonObject.data);
 
         removeSqlQuery();
 
@@ -217,7 +220,7 @@ module.exports = {
         realSql = 'SELECT TABLE_NAME ' +
             'FROM INFORMATION_SCHEMA.TABLES ' +
             'WHERE TABLE_NAME = ' + "'" + tableName + "' " +
-            'and TABLE_SCHEMA = ' + "'" + databaseName + "'";
+            'AND TABLE_SCHEMA = ' + "'" + databaseName + "'";
 
         query(realSql, null);
 
