@@ -10,9 +10,9 @@ let int = 'int',
     real = 'real',
     year = 'year',
     blob = 'blob',
-    char = 'char',  // 0 - 255
-    date = 'date',  // 2022-03-20
-    time = 'time',  // 23:55:54
+    char = 'char',
+    date = 'date',
+    time = 'time',
     point = 'point',
     float = 'float',
     bigint = 'bigint',
@@ -28,7 +28,7 @@ let int = 'int',
     longtext = 'longtext',
     tinytext = 'tinytext',
     smallint = 'smallint',
-    datetime = 'datetime', // 2022-03-20 20:32:42
+    datetime = 'datetime',
     timestamp = 'timestamp',
     mediumint = 'mediumint',
     varbinary = 'varbinary',
@@ -49,16 +49,16 @@ module.exports = {
         return addDataTypeForFieldInFirstItemOfArray(char, data);
     },
 
-    DATE() {
-        return addDataTypeForFieldInFirstItemOfArray(date);
+    DATE(data) {
+        return addDataTypeForFieldInFirstItemOfArray(date, data);
     },
 
     TIME(data) {
         return addDataTypeForFieldInFirstItemOfArray(time, data);
     },
 
-    DATETIME() {
-        return addDataTypeForFieldInFirstItemOfArray(datetime);
+    DATETIME(data) {
+        return addDataTypeForFieldInFirstItemOfArray(datetime, data);
     },
 
     ENUM(data) {
@@ -113,16 +113,16 @@ module.exports = {
         return addDataTypeForFieldInFirstItemOfArray(serial, data);
     },
 
-    TIMESTAMP() {
-        return addDataTypeForFieldInFirstItemOfArray(timestamp);
+    TIMESTAMP(data) {
+        return addDataTypeForFieldInFirstItemOfArray(timestamp, data);
     },
 
-    TIME() {
-        return addDataTypeForFieldInFirstItemOfArray(time);
+    TIME(data) {
+        return addDataTypeForFieldInFirstItemOfArray(time, data);
     },
 
-    YEAR() {
-        return addDataTypeForFieldInFirstItemOfArray(year);
+    YEAR(data) {
+        return addDataTypeForFieldInFirstItemOfArray(year, data);
     },
 
     TINYTEXT(data) {
