@@ -72,4 +72,5 @@ describe('Query Helper Module', () => {
     it('should be return string equal and like %a', async () => {
         expect(LIKE('%a', keyHelper.AND)).toBe('and like %a');
     });
+
 });
