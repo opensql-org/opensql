@@ -17,6 +17,7 @@ const {
         DOUBLE_QUESTION_MARK,
     } = require('./KeywordHelper'),
     {
+        NULL,
         EQUAL_TO,
         NOT_NULL,
         LESS_THAN,
@@ -394,6 +395,11 @@ function getArrayToString(arr) {
     return arr.toString().replace(',', ' ').trim();
 }
 
+function isDefinedDefaultWordInFirstOfString(str) {
+    if (typeof str === 'string')
+        return str.search('DEFAULT') === 0;
+}
+
 module.exports = {
 
 
@@ -410,55 +416,74 @@ module.exports = {
         if (data === undefined)
             return type;
 
-        let stringDataTypeField = '',
-            isArray = Array.isArray(data),
-            isSecondIndexNumber = Number.isInteger(data[1]),
-            isDefinedIndexTwoInArray = typeof data[2] === undefined,
-            isLengthOfFieldInArray = isDefinedIndexTwoInArray && isSecondIndexNumber,
-            isFirstIndexArray = Array.isArray(data[0]);
+        let isArray = Array.isArray(data),
+            isValueOfIndexIsNumber = false,
+            newArrayForOptionsContains = [],
+            newArrayOfValue = [],
+            isDefinedValueInIndexTwoOfArray = false;
+
 
         let isDecimal = type === 'decimal';
-        let isFloat = type === 'float';
         let isDouble = type === 'double';
+        let isFloat = type === 'float';
         let isReal = type === 'real';
-
-        if (Number.isInteger(data))
-            stringDataTypeField = `${type}(${data})`;
-
-        if (isLengthOfFieldInArray)
-            stringDataTypeField = `${type}(${data})`;
-
-        if (isDecimal || isFloat || isReal || isDouble)
-            stringDataTypeField = `${type}(${data})`;
-
         let isEnum = type === 'enum';
         let isSet = type === 'set';
 
-        if (isArray && (isEnum || isSet) && !isFirstIndexArray)
-            stringDataTypeField = `${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(data)})`;
 
-        if (isArray && (isEnum || isSet) && isFirstIndexArray && !isLengthOfFieldInArray) {
-            let str = getArrayToString(data[0]);
-            data.shift();
-            stringDataTypeField += `${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(data)})`;
-            stringDataTypeField += ` ${str}`;
-        }
+        let arrayOfValidType = [
+            AUTO_INCREMENT,
+            NOT_NULL,
+            NULL
+        ];
 
-        if (isArray && isLengthOfFieldInArray && isFirstIndexArray && (!isEnum || !isSet)) {
-            let str = getArrayToString(data[0]);
-            data.shift();
-            stringDataTypeField += `${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(data)})`;
-            stringDataTypeField += ` ${str}`;
-        }
 
-        if (isArray && !isLengthOfFieldInArray && isFirstIndexArray && (!isEnum && !isSet)) {
-            let str = getArrayToString(data[0]);
-            data.shift();
-            stringDataTypeField += `${type}(${data[0]})`;
-            stringDataTypeField += ` ${str}`;
-        }
+        if (!isArray)
+            return (`${type}(${data})`).trim();
 
-        return stringDataTypeField.trim();
+
+        data.forEach((item, index, arr) => {
+
+            let isValidType = arrayOfValidType.includes(item);
+            let nextItem = arr[index + 1];
+            let isNextItemIsNumber = Number.isInteger(nextItem);
+            let isItemIsString = typeof item === 'string';
+            let isItemIsNumber = Number.isInteger(item);
+            let isDefaultType = isDefinedDefaultWordInFirstOfString(item);
+
+
+            if (isValidType || isDefaultType) {
+                newArrayForOptionsContains.push(item);
+                return;
+            }
+
+
+            if ((!isNextItemIsNumber && isItemIsNumber) || isItemIsString) {
+                isValueOfIndexIsNumber = true;
+                newArrayOfValue.push(item);
+            }
+
+            if (isNextItemIsNumber && isItemIsNumber) {
+                isDefinedValueInIndexTwoOfArray = true;
+                newArrayOfValue.push(item);
+            }
+
+
+        });
+
+        let stringOfOptionContains = getArrayToString(newArrayForOptionsContains);
+        let validateStringOfOptionContains = (stringOfOptionContains === undefined) ? ' ' : stringOfOptionContains;
+
+        if (isEnum || isSet)
+            return (`${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+
+        if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet) )
+            return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+
+        if ((isDecimal || isFloat || isReal || isDouble))
+            return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+
+        return (type + ' ' + validateStringOfOptionContains).trim();
     },
 
 

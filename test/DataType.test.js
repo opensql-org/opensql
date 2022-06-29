@@ -10,15 +10,15 @@ let DataType = require('../src/util/DataType'),
 describe('Options Contain', () => {
 
     it('should be return string equal to varchar(30) NOT NULL', async () => {
-        expect(DataType.VARCHAR([[NOT_NULL], 30])).toBe('varchar(30) NOT NULL');
+        expect(DataType.VARCHAR([NOT_NULL, 30])).toBe('varchar(30) NOT NULL');
     });
 
     it('should be return string equal to varchar(30) NOT NULL AUTO_INCREMENT', async () => {
-        expect(DataType.VARCHAR([[NOT_NULL, AUTO_INCREMENT], 30])).toBe('varchar(30) NOT NULL AUTO_INCREMENT');
+        expect(DataType.VARCHAR([NOT_NULL, AUTO_INCREMENT, 30])).toBe('varchar(30) NOT NULL AUTO_INCREMENT');
     });
 
     it("should be return string equal to enum('Low', 'Medium', 'High') NOT NULL AUTO_INCREMENT", async () => {
-        expect(DataType.ENUM([[NOT_NULL, AUTO_INCREMENT], 'Low', 'Medium', 'High'])).toBe("enum('Low', 'Medium', 'High') NOT NULL AUTO_INCREMENT");
+        expect(DataType.ENUM([NOT_NULL, AUTO_INCREMENT, 'Low', 'Medium', 'High'])).toBe("enum('Low', 'Medium', 'High') NOT NULL AUTO_INCREMENT");
     });
 
 });
