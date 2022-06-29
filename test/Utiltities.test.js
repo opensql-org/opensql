@@ -1,6 +1,8 @@
 const {
         removeSqlQuery,
-        getCreateTableSqlQuery
+        getCreateTableSqlQuery,
+        generateValueWithComma,
+        removeStringOfValueWithComma
     } = require('../src/util/Utilites'),
     {
         AUTO_INCREMENT
@@ -140,6 +142,27 @@ describe('getCreateTableSqlQuery', () => {
         });
         removeSqlQuery();
         expect(util.sqlQuery).toBe('');
+    });
+
+});
+
+
+describe('generateValueWithComma', () => {
+
+    it('should be return string equal to users', async () => {
+        generateValueWithComma('users');
+        expect(util.stringOfValueWithComma).toBe('users');
+    });
+
+    it('should be return null', async () => {
+        generateValueWithComma('users');
+        removeStringOfValueWithComma();
+        expect(util.stringOfValueWithComma).toBe('');
+    });
+
+    it('should be return string equal to book , users', async () => {
+        generateValueWithComma(['book', 'users']);
+        expect(util.stringOfValueWithComma).toBe('book , users');
     });
 
 });
