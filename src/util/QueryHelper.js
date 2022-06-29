@@ -1,8 +1,6 @@
 const {
     OR,
-    AND,
-    LIKE,
-    BETWEEN
+    AND
 } = require('./KeywordHelper');
 
 const
@@ -18,12 +16,6 @@ const
 
 let saveStateOfArray,
     arrayOfOperator = [
-        OR,
-        AND,
-        LIKE,
-        NULL,
-        BETWEEN,
-        NOT_NULL,
         EQUAL_TO,
         LESS_THAN,
         NOT_EQUAL_TO,
@@ -86,8 +78,8 @@ module.exports = {
     setOperator(operator, value, op) {
         let itemInArrayOfOperator = arrayOfOperator.includes(operator);
 
-        if (!itemInArrayOfOperator)
-            throw  new Error('Invalid data type');
+        if (!itemInArrayOfOperator || value === undefined)
+            throw new Error('Invalid data type');
 
         if (op !== undefined)
             return `${op.toLowerCase()} ${operator} SPACE ${value}`;
