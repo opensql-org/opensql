@@ -629,7 +629,8 @@ describe('generateDoubleQuestionMarkAndComma', () => {
     it('should be return empty array', async () => {
         generateDoubleQuestionMarkAndComma({
             data: [
-                'clean code', 'Robert C Martin'
+                'clean code', 'Robert C Martin',
+                'object oriented programing software engineer', 'Ivar Jacobson'
             ],
             field: ['name', 'author']
         });

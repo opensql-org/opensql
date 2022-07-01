@@ -517,9 +517,6 @@ module.exports = {
 
     generateDoubleQuestionMarkAndComma(jsonObject) {
 
-        let newStringOfDoubleQuestionMarkAndComma = '';
-
-
         let array2D = [];
 
         let data = jsonObject.data;
@@ -534,18 +531,7 @@ module.exports = {
 
         module.exports.dataForInsertSqlQuery = [array2D];
 
-        field.forEach((item, index, arr) => {
-            let isLastIndex = arr[arr.length - 1];
-
-            if (!isLastIndex)
-                newStringOfDoubleQuestionMarkAndComma += `${item} ${COMMA} `;
-
-            if (isLastIndex)
-                newStringOfDoubleQuestionMarkAndComma += item;
-
-        });
-
-        return newStringOfDoubleQuestionMarkAndComma;
+        return field.toString();
     },
 
 
