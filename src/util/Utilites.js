@@ -515,16 +515,13 @@ module.exports = {
     },
 
 
-    generateDoubleQuestionMarkAndComma(jsonObject) {
-
-        let newStringOfDoubleQuestionMarkAndComma = '';
-
+    getGeneratedColumns(jsonObject) {
 
         let array2D = [];
 
         let data = jsonObject.data;
-        let field = jsonObject.field;
-        let sizeOfField = jsonObject.field.length;
+        let column = jsonObject.column;
+        let sizeOfField = jsonObject.column.length;
 
 
         for (let i = 0; i < data.length; i += sizeOfField) {
@@ -534,18 +531,7 @@ module.exports = {
 
         module.exports.dataForInsertSqlQuery = [array2D];
 
-        field.forEach((item, index, arr) => {
-            let isLastIndex = arr[arr.length - 1];
-
-            if (!isLastIndex)
-                newStringOfDoubleQuestionMarkAndComma += `${item} ${COMMA} `;
-
-            if (isLastIndex)
-                newStringOfDoubleQuestionMarkAndComma += item;
-
-        });
-
-        return newStringOfDoubleQuestionMarkAndComma;
+        return column.toString();
     },
 
 
@@ -553,7 +539,7 @@ module.exports = {
 
         let newArrayOfKeywordsWithSqlContext = [],
             isWhereCondition = (jsonArray.where !== undefined),
-            isLimit = (jsonArray.limit !== undefined);
+            isLimit = (typeof jsonArray.limit !== 'undefined');
 
 
         if (jsonArray.optKey === undefined)
@@ -566,7 +552,7 @@ module.exports = {
                 isItemInOperators = arrayOfOperator.includes(item),
                 isOptionKeyword = arrayOfValidOptionKeyword.includes(nextKeyword),
                 isNextKeywordUndefined = (nextKeyword !== undefined),
-                isNextItemOffset = (isNextKeywordUndefined && nextKeyword === OFFSET) ? `${OFFSET} ${QUESTION_MARK}` : '',
+                isNextItemOffset = (nextKeyword === OFFSET) ? `${OFFSET} ${QUESTION_MARK}` : '',
                 nextItemUndefinedToNullOrValue = (isNextKeywordUndefined && !isOptionKeyword) ? nextKeyword : '';
 
 
@@ -603,11 +589,11 @@ module.exports = {
 
 
             if (item === ORDER_BY)
-                newArrayOfKeywordsWithSqlContext.push(` ${ORDER_BY} ${QUESTION_MARK}`)
+                newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${QUESTION_MARK}`)
 
 
             if (item === ASC || item === DESC)
-                newArrayOfKeywordsWithSqlContext.push(`${item}`);
+                newArrayOfKeywordsWithSqlContext.push(` ${item} `);
 
 
             if ((item === ASC && nextKeyword === DESC) || (item === DESC && nextKeyword === ASC))
@@ -615,19 +601,19 @@ module.exports = {
 
 
             if (isLimit && item === LIMIT)
-                newArrayOfKeywordsWithSqlContext.push(` ${item} ${QUESTION_MARK} ${COMMA} ${QUESTION_MARK} ${isNextItemOffset}`);
+                newArrayOfKeywordsWithSqlContext.push(`${item} ${QUESTION_MARK} ${COMMA} ${QUESTION_MARK} ${isNextItemOffset}`);
 
 
             if (!isLimit && item === LIMIT)
-                newArrayOfKeywordsWithSqlContext.push(` ${item} ${QUESTION_MARK} ${isNextItemOffset}`);
+                newArrayOfKeywordsWithSqlContext.push(`${item} ${QUESTION_MARK} ${isNextItemOffset}`);
 
 
             if (item === IS_NOT_NULL && !isFirstIndex)
-                newArrayOfKeywordsWithSqlContext.push(`${DOUBLE_QUESTION_MARK} ${item}`);
+                newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${nextItemUndefinedToNullOrValue}`);
 
 
             if (item === IS_NOT_NULL && isFirstIndex)
-                newArrayOfKeywordsWithSqlContext.push(`${item}`);
+                newArrayOfKeywordsWithSqlContext.push(`${item} ${nextItemUndefinedToNullOrValue}`);
 
 
         });
@@ -693,14 +679,11 @@ module.exports = {
 
 
     getStringOfColumnWithComma(data) {
-        let newData = data;
-        return (data !== Array) ? newData : data.forEach((item, index, arrayOfColumns) => {
-            let isLastIndex = arrayOfColumns[arrayOfColumns.length - 1];
-            if (!isLastIndex)
-                newData += `${item} ${COMMA}`;
-            if (isLastIndex)
-                newData += item;
-        });
+
+        if (!Array.isArray(data))
+            return data;
+
+        return data.toString();
     },
 
 

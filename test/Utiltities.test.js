@@ -1,12 +1,14 @@
 const {
         removeSqlQuery,
+        getGeneratedColumns,
         getCreateTableSqlQuery,
         generateValueWithComma,
+        getOptionKeywordSqlQuery,
+        getStringOfColumnWithComma,
         removeDataForInsertSqlQuery,
         removeStringOfDataForForSet,
         removeStringOfValueWithComma,
         generateUpdateSqlQueryWithData,
-        generateDoubleQuestionMarkAndComma,
         removeArrayOfDataForUpdateOrDeleteQuery
     } = require('../src/util/Utilites'),
     {
@@ -32,7 +34,8 @@ const {
         BETWEEN,
         NOT_NULL,
         LESS_THAN,
-        setOperator
+        setOperator,
+        IS_NOT_NULL
     } = require('../src/util/QueryHelper');
 
 
@@ -606,13 +609,13 @@ describe('generateUpdateSqlQueryWithData', () => {
 describe('generateDoubleQuestionMarkAndComma', () => {
 
     it("should be return array of arrays wrapped in an array", async () => {
-        generateDoubleQuestionMarkAndComma({
+        getGeneratedColumns({
             data: [
                 'clean code', 'Robert C Martin',
                 'javascript ES6', 'Mozilla',
                 'object oriented programing software engineer', 'Ivar Jacobson'
             ],
-            field: ['name', 'author']
+            column: ['name', 'author']
         });
         expect(util.dataForInsertSqlQuery).toEqual([
             [
@@ -627,14 +630,265 @@ describe('generateDoubleQuestionMarkAndComma', () => {
     });
 
     it('should be return empty array', async () => {
-        generateDoubleQuestionMarkAndComma({
+        getGeneratedColumns({
             data: [
-                'clean code', 'Robert C Martin'
+                'clean code', 'Robert C Martin',
+                'object oriented programing software engineer', 'Ivar Jacobson'
             ],
-            field: ['name', 'author']
+            column: ['name', 'author']
         });
         removeDataForInsertSqlQuery();
         expect(util.dataForInsertSqlQuery).toEqual([]);
+    });
+
+});
+
+
+describe('getStringOfColumnWithComma', () => {
+
+    it('should be return string equal to username,status', async () => {
+        expect(getStringOfColumnWithComma(['username', 'status'])).toBe('username,status');
+    });
+
+});
+
+
+describe('getOptionKeywordSqlQuery', () => {
+
+    it('should be return empty string', async () => {
+        getOptionKeywordSqlQuery({
+            where: true
+        });
+        expect(util.sqlQuery).toBe('');
+    });
+
+    it('should be return string equal to WHERE ?? < ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ?');
+    });
+
+    it('should be return string equal to WHERE ?? BETWEEN ? AND ? AND ?? < ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                keyHelper.BETWEEN,
+                keyHelper.AND,
+                LESS_THAN
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? < ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? AND ?? BETWEEN ? AND ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.AND,
+                keyHelper.BETWEEN
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? BETWEEN ? AND ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? AND ?? IN (?)', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.AND,
+                keyHelper.IN
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? IN (?)');
+    });
+
+    it('should be return string equal to WHERE ?? IN (?) AND ?? < ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                keyHelper.IN,
+                keyHelper.AND,
+                LESS_THAN
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? IN (?) AND ?? < ?');
+    });
+
+    it('should be return string equal to WHERE ?? LIKE ? AND ?? < ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                keyHelper.LIKE,
+                keyHelper.AND,
+                LESS_THAN
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? LIKE ? AND ?? < ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? AND ?? LIKE ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.AND,
+                keyHelper.LIKE
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? LIKE ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? AND ?? IS NOT NULL', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.AND,
+                IS_NOT_NULL
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? IS NOT NULL');
+    });
+
+    it('should be return string equal to WHERE ?? IS NOT NULL AND ?? < ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                IS_NOT_NULL,
+                keyHelper.AND,
+                LESS_THAN
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? IS NOT NULL AND ?? < ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? AND ?? LIKE ? AND ?? IN (?)', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.AND,
+                keyHelper.LIKE,
+                keyHelper.AND,
+                keyHelper.IN
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? LIKE ? AND ?? IN (?)');
+    });
+
+    it('should be return string equal to WHERE ?? < ? ORDER BY ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.ORDER_BY
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.ORDER_BY,
+                keyHelper.DESC
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC');
+    });
+
+    it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC LIMIT ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.ORDER_BY,
+                keyHelper.DESC,
+                keyHelper.LIMIT
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC LIMIT ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC , ? ASC LIMIT ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.ORDER_BY,
+                keyHelper.DESC,
+                keyHelper.ASC,
+                keyHelper.LIMIT
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC , ? ASC LIMIT ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC , ? ASC', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.ORDER_BY,
+                keyHelper.DESC,
+                keyHelper.ASC
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC , ? ASC');
+    });
+
+    it('should be return string equal to WHERE ?? < ? LIMIT ? OFFSET ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.LIMIT,
+                keyHelper.OFFSET
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? LIMIT ? OFFSET ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? LIMIT ? , ? OFFSET ?', async () => {
+        getOptionKeywordSqlQuery({
+            where: true,
+            limit: true,
+            optKey: [
+                LESS_THAN,
+                keyHelper.LIMIT,
+                keyHelper.OFFSET
+            ]
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? LIMIT ? , ? OFFSET ?');
+    });
+
+    it('should be return string equal to LIMIT ? , ? OFFSET ?', async () => {
+        getOptionKeywordSqlQuery({
+            limit: true,
+            optKey: [
+                keyHelper.LIMIT,
+                keyHelper.OFFSET
+            ]
+        });
+        expect(util.sqlQuery).toBe('LIMIT ? , ? OFFSET ?');
+    });
+
+    it('should be return string equal to LIMIT ? , ?', async () => {
+        getOptionKeywordSqlQuery({
+            limit: true,
+            optKey: [
+                keyHelper.LIMIT
+            ]
+        });
+        expect(util.sqlQuery).toBe('LIMIT ? , ?');
     });
 
 });
