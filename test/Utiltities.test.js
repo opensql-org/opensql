@@ -1,8 +1,10 @@
 const {
+        getData,
         removeSqlQuery,
         getGeneratedColumns,
         getCreateTableSqlQuery,
         generateValueWithComma,
+        removeFieldDataInSelect,
         getOptionKeywordSqlQuery,
         getStringOfColumnWithComma,
         removeDataForInsertSqlQuery,
@@ -889,6 +891,47 @@ describe('getOptionKeywordSqlQuery', () => {
             ]
         });
         expect(util.sqlQuery).toBe('LIMIT ? , ?');
+    });
+
+});
+
+
+describe('removeFieldDataInSelect', () => {
+
+    it('should be return * char', async () => {
+        removeFieldDataInSelect({
+            optKey: [
+                keyHelper.STAR
+            ]
+        });
+        expect(getData()).toBe('*');
+    });
+
+    it('should be return string equal to COUNT(*) AS size', async () => {
+        removeFieldDataInSelect({
+            optKey: [
+                keyHelper.COUNT
+            ]
+        });
+        expect(getData()).toBe('COUNT(*) AS size');
+    });
+
+    it('should be return string equal to X(location) AS Lat , Y(location) AS Lon', async () => {
+        removeFieldDataInSelect({
+            optKey: [
+                'X(location) AS Lat , Y(location) AS Lon'
+            ]
+        });
+        expect(getData()).toBe('X(location) AS Lat , Y(location) AS Lon');
+    });
+
+    it('should be return string equal to ??', async () => {
+        removeFieldDataInSelect({
+            optKey: [
+                'users'
+            ]
+        });
+        expect(getData()).toBe('??');
     });
 
 });
