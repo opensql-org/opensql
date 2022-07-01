@@ -78,8 +78,8 @@ function generateArrayOfKeyAndValueForEditField(jsonObject) {
     let arrayOfKeyAndValue = [],
         index = 0,
         size = 0;
-    for (let key in jsonObject.edit) {
-        let value = jsonObject.edit[key];
+    for (let key in jsonObject) {
+        let value = jsonObject[key];
         arrayOfKeyAndValueDataForQuery.push(key);
         arrayOfKeyAndValueDataForQuery.push(value.toString());
         arrayOfKeyAndValue.push(`${key}`);
@@ -136,7 +136,7 @@ function splitOperatorInString(str) {
         let newStr = str.split(' ');
         if (newStr[1] === 'SPACE')
             newStr.splice(1, 1);
-        if (newStr[0] === ('and' || 'or'))
+        if (newStr[0] === 'and' || newStr[0] === 'or')
             newStr.shift();
         return newStr[0];
     } catch (e) {
@@ -255,20 +255,22 @@ function getQueryAndCheckOtherConditionInWhereObject(jsonObject) {
             arrayOfSpecialQueryUtilitiesOperator = [],
             isAccessToCheckOtherCondition = false,
             newArrayForOperatorAndValue2d = [],
-            isNotOperator = !isInOperator && !isBetweenOperator && !isLikeOperator && !isSpaceWordInString(value) && !isOpDefined,
+            isUsedSetOperatorFuncForField = isSpaceWordInString(value),
+            getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
+            isNotOperator = !isInOperator && !isBetweenOperator && !isLikeOperator && !isUsedSetOperatorFuncForField && !isOpDefined,
             operator = getOperatorInSpaceString(value),
             initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
 
-        if (isSpaceWordInString(value) && !isFirstIndex) {
+        if (isUsedSetOperatorFuncForField && !isFirstIndex) {
             arrayOfKeyAndValueDataForQuery.push(key);
             arrayOfKeyAndValueDataForQuery.push(newValue);
-            arrayOfEqualAndQuestionMarks.push(`${splitOperatorAndOrInSpaceWord(value).toUpperCase()} ${initPlaceHolder}`);
+            arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator} ${initPlaceHolder}`);
             index++;
         }
 
 
-        if (isSpaceWordInString(value) && isFirstIndex) {
+        if (isUsedSetOperatorFuncForField && isFirstIndex) {
             arrayOfKeyAndValueDataForQuery.push(key);
             arrayOfKeyAndValueDataForQuery.push(newValue);
             arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK}`);
@@ -286,7 +288,7 @@ function getQueryAndCheckOtherConditionInWhereObject(jsonObject) {
         if (!isAccessToCheckOtherCondition && !isFirstIndex && isNotOperator) {
             arrayOfKeyAndValueDataForQuery.push(key);
             arrayOfKeyAndValueDataForQuery.push(value);
-            arrayOfEqualAndQuestionMarks.push(`${initPlaceHolder}`);
+            arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator} ${initPlaceHolder}`);
             index++;
         }
 
@@ -477,7 +479,7 @@ module.exports = {
         if (isEnum || isSet)
             return (`${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
 
-        if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet) )
+        if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet))
             return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
 
         if ((isDecimal || isFloat || isReal || isDouble))
@@ -513,36 +515,37 @@ module.exports = {
     },
 
 
-    generateDoubleQuestionMarkAndComma(jsonArray) {
+    generateDoubleQuestionMarkAndComma(jsonObject) {
 
         let newStringOfDoubleQuestionMarkAndComma = '';
 
-        for (let keys = Object.keys(jsonArray), i = 0, end = keys.length; i < end; i++) {
 
-            let key = keys[i], value = jsonArray[key];
+        let array2D = [];
 
-
-            if (typeof value === 'object') {
-
-                let array2D = [];
-                value.forEach((item) => {
-                    array2D.push([item]);
-                });
-
-                module.exports.dataForInsertSqlQuery[i] = array2D;
-            }
+        let data = jsonObject.data;
+        let field = jsonObject.field;
+        let sizeOfField = jsonObject.field.length;
 
 
-            if (end !== (i + 1))
-                newStringOfDoubleQuestionMarkAndComma += `${key} ${COMMA} `;
-
-            if (end === (i + 1))
-                newStringOfDoubleQuestionMarkAndComma += key;
-
+        for (let i = 0; i < data.length; i += sizeOfField) {
+            let chunk = data.slice(i, i + sizeOfField);
+            array2D.push(chunk);
         }
 
-        return newStringOfDoubleQuestionMarkAndComma;
+        module.exports.dataForInsertSqlQuery = [array2D];
 
+        field.forEach((item, index, arr) => {
+            let isLastIndex = arr[arr.length - 1];
+
+            if (!isLastIndex)
+                newStringOfDoubleQuestionMarkAndComma += `${item} ${COMMA} `;
+
+            if (isLastIndex)
+                newStringOfDoubleQuestionMarkAndComma += item;
+
+        });
+
+        return newStringOfDoubleQuestionMarkAndComma;
     },
 
 
@@ -653,7 +656,7 @@ module.exports = {
             .replace(/,\s*$/, ''); // replace last comma in array
 
         if (jsonArray.primaryKey !== undefined)
-            query += ` ${COMMA} PRIMARY KEY (${jsonArray.primaryKey}) `;
+            query += ` ${COMMA} PRIMARY KEY (${jsonArray.primaryKey})`;
 
 
         return module.exports.sqlQuery = query;
@@ -661,7 +664,7 @@ module.exports = {
 
     generateUpdateSqlQueryWithData(jsonObject) {
 
-        generateArrayOfKeyAndValueForEditField(jsonObject);
+        generateArrayOfKeyAndValueForEditField(jsonObject.edit);
 
         module.exports.sqlQuery = getQueryAndCheckOtherConditionInWhereObject(jsonObject.where);
 
@@ -722,7 +725,7 @@ module.exports = {
 
 
     removeArrayOfDataForUpdateOrDeleteQuery() {
-        return module.exports.arrayOfDataForUpdateOrDeleteQuery = '';
+        return module.exports.arrayOfDataForUpdateOrDeleteQuery = [];
     },
 
 

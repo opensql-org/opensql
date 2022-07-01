@@ -149,7 +149,7 @@ module.exports = {
     addMultiValue(jsonObject) {
 
         realSql = useDatabase + ' INSERT INTO ' + jsonObject.table + ' (' +
-            generateDoubleQuestionMarkAndComma(jsonObject.data) + ') VALUES ' + QUESTION_MARK;
+            generateDoubleQuestionMarkAndComma(jsonObject) + ') VALUES ' + QUESTION_MARK;
 
         query(realSql, util.dataForInsertSqlQuery);
 
