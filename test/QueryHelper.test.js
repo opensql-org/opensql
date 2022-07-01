@@ -36,17 +36,17 @@ describe('Query Helper Module', () => {
     it('should be return array equal to [\'OR\',\'id\',\'10\']', async () => {
         expect(OR({
             id: 10
-        })).toEqual(expect.arrayContaining(
+        })).toEqual(
             ['OR', 'id', '10']
-        ));
+        );
     });
 
     it('should be return array equal to [\'AND\',\'id\',\'10\']', async () => {
         expect(AND({
             id: 10
-        })).toEqual(expect.arrayContaining(
+        })).toEqual(
             ['AND', 'id', '10']
-        ));
+        );
     });
 
     it('should be return string equal to in 1,5', async () => {
