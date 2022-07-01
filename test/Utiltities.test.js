@@ -6,7 +6,7 @@ const {
         removeStringOfDataForForSet,
         removeStringOfValueWithComma,
         generateUpdateSqlQueryWithData,
-        generateDoubleQuestionMarkAndComma,
+        getGeneratedColumns,
         removeArrayOfDataForUpdateOrDeleteQuery
     } = require('../src/util/Utilites'),
     {
@@ -606,13 +606,13 @@ describe('generateUpdateSqlQueryWithData', () => {
 describe('generateDoubleQuestionMarkAndComma', () => {
 
     it("should be return array of arrays wrapped in an array", async () => {
-        generateDoubleQuestionMarkAndComma({
+        getGeneratedColumns({
             data: [
                 'clean code', 'Robert C Martin',
                 'javascript ES6', 'Mozilla',
                 'object oriented programing software engineer', 'Ivar Jacobson'
             ],
-            field: ['name', 'author']
+            column: ['name', 'author']
         });
         expect(util.dataForInsertSqlQuery).toEqual([
             [
@@ -627,12 +627,12 @@ describe('generateDoubleQuestionMarkAndComma', () => {
     });
 
     it('should be return empty array', async () => {
-        generateDoubleQuestionMarkAndComma({
+        getGeneratedColumns({
             data: [
                 'clean code', 'Robert C Martin',
                 'object oriented programing software engineer', 'Ivar Jacobson'
             ],
-            field: ['name', 'author']
+            column: ['name', 'author']
         });
         removeDataForInsertSqlQuery();
         expect(util.dataForInsertSqlQuery).toEqual([]);

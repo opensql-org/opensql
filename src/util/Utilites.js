@@ -515,13 +515,13 @@ module.exports = {
     },
 
 
-    generateDoubleQuestionMarkAndComma(jsonObject) {
+    getGeneratedColumns(jsonObject) {
 
         let array2D = [];
 
         let data = jsonObject.data;
-        let field = jsonObject.field;
-        let sizeOfField = jsonObject.field.length;
+        let column = jsonObject.column;
+        let sizeOfField = jsonObject.column.length;
 
 
         for (let i = 0; i < data.length; i += sizeOfField) {
@@ -531,7 +531,7 @@ module.exports = {
 
         module.exports.dataForInsertSqlQuery = [array2D];
 
-        return field.toString();
+        return column.toString();
     },
 
 
