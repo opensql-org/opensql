@@ -679,14 +679,11 @@ module.exports = {
 
 
     getStringOfColumnWithComma(data) {
-        let newData = data;
-        return (data !== Array) ? newData : data.forEach((item, index, arrayOfColumns) => {
-            let isLastIndex = arrayOfColumns[arrayOfColumns.length - 1];
-            if (!isLastIndex)
-                newData += `${item} ${COMMA}`;
-            if (isLastIndex)
-                newData += item;
-        });
+
+        if (!Array.isArray(data))
+            return data;
+
+        return data.toString();
     },
 
 

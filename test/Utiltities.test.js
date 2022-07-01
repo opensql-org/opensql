@@ -1,12 +1,13 @@
 const {
         removeSqlQuery,
+        getGeneratedColumns,
         getCreateTableSqlQuery,
         generateValueWithComma,
+        getStringOfColumnWithComma,
         removeDataForInsertSqlQuery,
         removeStringOfDataForForSet,
         removeStringOfValueWithComma,
         generateUpdateSqlQueryWithData,
-        getGeneratedColumns,
         removeArrayOfDataForUpdateOrDeleteQuery
     } = require('../src/util/Utilites'),
     {
@@ -636,6 +637,15 @@ describe('generateDoubleQuestionMarkAndComma', () => {
         });
         removeDataForInsertSqlQuery();
         expect(util.dataForInsertSqlQuery).toEqual([]);
+    });
+
+});
+
+
+describe('getStringOfColumnWithComma', () => {
+
+    it('should be return string equal to username , status', async () => {
+        expect(getStringOfColumnWithComma(['username', 'status'])).toBe('username,status');
     });
 
 });
