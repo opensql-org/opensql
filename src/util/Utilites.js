@@ -549,6 +549,16 @@ module.exports = {
         jsonArray.optKey.forEach((item, index, arrayOfKeyword) => {
             let isFirstIndex = (index === 0),
                 nextKeyword = arrayOfKeyword[index + 1],
+                isUsedOrderByWord = item === ORDER_BY,
+                isUsedAscWord = item === ASC,
+                isUsedDescWord = item === DESC,
+                isUsedLimitWord = item === LIMIT,
+                isUsedIsNotNullWord = item === IS_NOT_NULL,
+                isUsedBetweenWord = item === BETWEEN,
+                isUsedInWord = item === IN,
+                isUsedLikeWord = item === LIKE,
+                isNextKeywordAsc = nextKeyword === ASC,
+                isNextKeywordDesc = nextKeyword === DESC,
                 isItemInOperators = arrayOfOperator.includes(item),
                 isOptionKeyword = arrayOfValidOptionKeyword.includes(nextKeyword),
                 isNextKeywordUndefined = (nextKeyword !== undefined),
@@ -564,55 +574,55 @@ module.exports = {
                 newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (item === BETWEEN && !isFirstIndex && isWhereCondition)
+            if (isUsedBetweenWord && !isFirstIndex && isWhereCondition)
                 newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (item === BETWEEN && isFirstIndex && isWhereCondition)
+            if (isUsedBetweenWord && isFirstIndex && isWhereCondition)
                 newArrayOfKeywordsWithSqlContext.push(` ${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (item === IN && isFirstIndex)
+            if (isUsedInWord && isFirstIndex)
                 newArrayOfKeywordsWithSqlContext.push(` ${item} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (item === IN && !isFirstIndex)
+            if (isUsedInWord && !isFirstIndex)
                 newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (item === LIKE && isFirstIndex)
+            if (isUsedLikeWord && isFirstIndex)
                 newArrayOfKeywordsWithSqlContext.push(` ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (item === LIKE && !isFirstIndex)
+            if (isUsedLikeWord && !isFirstIndex)
                 newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (item === ORDER_BY)
-                newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${QUESTION_MARK}`)
+            if (isUsedOrderByWord)
+                newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${QUESTION_MARK}`);
 
 
-            if (item === ASC || item === DESC)
+            if (isUsedAscWord || isUsedDescWord)
                 newArrayOfKeywordsWithSqlContext.push(` ${item} `);
 
 
-            if ((item === ASC && nextKeyword === DESC) || (item === DESC && nextKeyword === ASC))
+            if ((isUsedAscWord && isNextKeywordDesc) || (isUsedDescWord && isNextKeywordAsc))
                 newArrayOfKeywordsWithSqlContext.push(`${COMMA} ${QUESTION_MARK}`);
 
 
-            if (isLimit && item === LIMIT)
+            if (isLimit && isUsedLimitWord)
                 newArrayOfKeywordsWithSqlContext.push(`${item} ${QUESTION_MARK} ${COMMA} ${QUESTION_MARK} ${isNextItemOffset}`);
 
 
-            if (!isLimit && item === LIMIT)
+            if (!isLimit && isUsedLimitWord)
                 newArrayOfKeywordsWithSqlContext.push(`${item} ${QUESTION_MARK} ${isNextItemOffset}`);
 
 
-            if (item === IS_NOT_NULL && !isFirstIndex)
+            if (isUsedIsNotNullWord && !isFirstIndex)
                 newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (item === IS_NOT_NULL && isFirstIndex)
+            if (isUsedIsNotNullWord && isFirstIndex)
                 newArrayOfKeywordsWithSqlContext.push(`${item} ${nextItemUndefinedToNullOrValue}`);
 
 
