@@ -605,6 +605,146 @@ describe('generateUpdateSqlQueryWithData', () => {
         expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual([]);
     });
 
+    it('should be return string equal to = ? ORDER BY ?', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                order: 'id'
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? ORDER BY ?');
+    });
+
+    it('should be return string equal to = ? ORDER BY ? , ?', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                order: ['id', 'name']
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? ORDER BY ? , ?');
+    });
+
+    it('should be return string equal to = ? LIMIT ?', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                limit: 10
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? LIMIT ?');
+    });
+
+    it('should be return string equal to = ? LIMIT ? , ?', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                limit: [10, 50]
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? LIMIT ? , ?');
+    });
+
+    it('should be return string equal to = ? OFFSET ?', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                offset: 0
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? OFFSET ?');
+    });
+
+    it('should be return string equal to = ? ORDER BY ? DESC', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                order: 'id',
+                name: keyHelper.DESC
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? ORDER BY ? DESC');
+    });
+
+    it('should be return string equal to = ? ORDER BY ? ASC', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                order: 'id',
+                name: keyHelper.ASC
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? ORDER BY ? ASC');
+    });
+
+    it('should be return string equal to = ? ORDER BY ? ASC LIMIT ?', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                order: 'id',
+                name: keyHelper.ASC,
+                limit: 10
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? ORDER BY ? ASC LIMIT ?');
+    });
+
+    it('should be return string equal to = ? ORDER BY ? ASC LIMIT ? OFFSET ?', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                order: 'id',
+                name: keyHelper.ASC,
+                limit: 10,
+                offset: 5
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? ORDER BY ? ASC LIMIT ? OFFSET ?');
+    });
+
+
+    it('should be return string equal to = ? ORDER BY ? ASC , ? DESC', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                order: 'id',
+                name: keyHelper.ASC,
+                id: keyHelper.DESC
+            }
+        });
+        expect(util.sqlQuery).toBe('= ? ORDER BY ? ASC , ? DESC');
+    });
+
 });
 
 
