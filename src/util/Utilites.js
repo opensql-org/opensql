@@ -239,13 +239,22 @@ function getStringOfValueForEnumOrSetDataTypesWithComma(arr) {
 }
 
 
-function getQueryAndCheckOtherConditionInWhereObject(jsonObject) {
+function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     let index = 0,
+        where = jsonObject.where,
+        option = jsonObject.option,
+        isUndefinedWhereCondition = where === undefined,
+        isUndefinedOptionKeyword = option === undefined,
         arrayOfEqualAndQuestionMarks = [];
 
-    for (let key in jsonObject) {
-        let value = jsonObject[key],
-            arrayOfOperatorAndValue2d = jsonObject.op,
+
+
+    if (isUndefinedWhereCondition)
+        return '';
+
+    for (let key in where) {
+        let value = where[key],
+            arrayOfOperatorAndValue2d = where.op,
             isFirstIndex = (index === 0),
             isBetweenOperator = isBetweenOperatorInString(value),
             isOpDefined = Array.isArray(value) && key === 'op',
@@ -322,10 +331,12 @@ function getQueryAndCheckOtherConditionInWhereObject(jsonObject) {
             index++;
         }
 
+
         if (isBetweenOperator) {
             arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(splitStringToArrayOfCharactersForBetweenOperator(value));
             index++;
         }
+
 
         if (isLikeOperator && !isFirstIndex) {
             arrayOfEqualAndQuestionMarks.push(getOp(value));
@@ -334,6 +345,7 @@ function getQueryAndCheckOtherConditionInWhereObject(jsonObject) {
             arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${LIKE} ${QUESTION_MARK}`);
             index++;
         }
+
 
         if (isLikeOperator && isFirstIndex) {
             arrayOfKeyAndValueDataForQuery.push(key);
@@ -365,7 +377,7 @@ function getQueryAndCheckOtherConditionInWhereObject(jsonObject) {
             newArrayForOperatorAndValue2d = newArrayForOperatorAndValue2d.concat(item2d);
 
         });
-        delete jsonObject['op'];
+        delete where['op'];
         let isArrayFor2dHaveOneKeyAndValue = (newArrayForOperatorAndValue2d.length === 2),
             isArrayFor2dHaveMoreThanOneKeyAndValue = (newArrayForOperatorAndValue2d.length > 2);
 
@@ -388,8 +400,95 @@ function getQueryAndCheckOtherConditionInWhereObject(jsonObject) {
             index++;
         }
 
+
     }
+
+
+    if (isUndefinedOptionKeyword)
+        return arrayOfEqualAndQuestionMarks.join(' ');
+
+
+    let isPreviousWordEqualDesc,
+        isPreviousWordEqualAsc;
+
+    for (let key in option) {
+        let value = option[key],
+            isUsedOrderByWord = key === 'order',
+            isValueOfOrderByWordArray = Array.isArray(value),
+            isValueOfLimitWordArray = Array.isArray(value),
+            isUsedAscWord = value === ASC,
+            isUsedDescWord = value === DESC,
+            isUsedOffsetWord = key === OFFSET.toLowerCase(),
+            isUsedLimitWord = key === LIMIT.toLowerCase();
+
+        if ((isUsedAscWord && isPreviousWordEqualDesc) || (isUsedDescWord && isPreviousWordEqualAsc)) {
+            arrayOfEqualAndQuestionMarks.push(`${COMMA} ${QUESTION_MARK}`);
+            arrayOfKeyAndValueDataForQuery.push(key);
+        }
+
+        isPreviousWordEqualDesc = value === DESC;
+        isPreviousWordEqualAsc = value === ASC;
+
+
+        if (isUsedOrderByWord && !isValueOfOrderByWordArray) {
+            arrayOfEqualAndQuestionMarks.push(`${ORDER_BY} ${QUESTION_MARK}`);
+            arrayOfKeyAndValueDataForQuery.push(value);
+        }
+
+
+        if (isUsedOrderByWord && isValueOfOrderByWordArray) {
+            arrayOfEqualAndQuestionMarks.push(`${ORDER_BY} ${getDoubleQuestionMarkAndCommaForOrderBy(value)}`);
+            arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(value);
+        }
+
+
+        if (isUsedAscWord || isUsedDescWord) {
+            arrayOfEqualAndQuestionMarks.push(`${value}`);
+            arrayOfKeyAndValueDataForQuery.push(key);
+        }
+
+
+        if (isUsedLimitWord && isValueOfLimitWordArray) {
+            arrayOfEqualAndQuestionMarks.push(`${LIMIT} ${QUESTION_MARK} ${COMMA} ${QUESTION_MARK}`);
+            arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(value);
+        }
+
+
+        if (isUsedLimitWord && !isValueOfLimitWordArray) {
+            arrayOfEqualAndQuestionMarks.push(`${LIMIT} ${QUESTION_MARK}`);
+            arrayOfKeyAndValueDataForQuery.push(value);
+        }
+
+
+        if (isUsedOffsetWord) {
+            arrayOfEqualAndQuestionMarks.push(`${OFFSET} ${QUESTION_MARK}`);
+            arrayOfKeyAndValueDataForQuery.push(value);
+        }
+
+
+    }
+
     return arrayOfEqualAndQuestionMarks.join(' ');
+
+}
+
+
+function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
+    let str = '';
+    arr.forEach((item, index, arr) => {
+
+        let lastIndex = arr.lastIndexOf(item);
+
+        if (lastIndex) {
+            str += ` ${COMMA} ${QUESTION_MARK}`;
+        }
+
+        if (!lastIndex) {
+            str += `${QUESTION_MARK}`;
+        }
+
+    });
+    return str;
 }
 
 
@@ -662,7 +761,7 @@ module.exports = {
 
         generateArrayOfKeyAndValueForEditField(jsonObject.edit);
 
-        module.exports.sqlQuery = getQueryAndCheckOtherConditionInWhereObject(jsonObject.where);
+        module.exports.sqlQuery = getQueryAndCheckOtherConditionInJsonObject(jsonObject);
 
         module.exports.stringOfDataForForSet = stringOfQuestionMarkAndEqual;
 
@@ -677,7 +776,7 @@ module.exports = {
 
     generateDeleteSqlQueryWithData(jsonObject) {
 
-        module.exports.sqlQuery = getQueryAndCheckOtherConditionInWhereObject(jsonObject.where);
+        module.exports.sqlQuery = getQueryAndCheckOtherConditionInJsonObject(jsonObject);
 
         arrayOfKeyAndValueDataForQuery.unshift(jsonObject.table);
 
