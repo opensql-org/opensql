@@ -392,184 +392,184 @@ describe('generateUpdateSqlQueryWithData', () => {
         );
     });
 
-    it('should be return string equal to = ? AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? = ? AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: 12,
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('= ? AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? AND ?? = ?');
     });
 
-    it('should be return string equal to < ? AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? < ? AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: setOperator(LESS_THAN, 15),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('< ? AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? = ?');
     });
 
-    it('should be return string equal to < ? AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? < ? AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: setOperator(LESS_THAN, 15, keyHelper.OR),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('< ? AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? = ?');
     });
 
-    it('should be return string equal to < ? AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? < ? AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: setOperator(LESS_THAN, 15),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('< ? AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? = ?');
     });
 
-    it('should be return string equal to = ? AND ?? < ?', async () => {
+    it('should be return string equal to WHERE ?? = ? AND ?? < ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 username: 'root',
                 id: setOperator(LESS_THAN, 15),
             }
         });
-        expect(util.sqlQuery).toBe('= ? AND ?? < ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? AND ?? < ?');
     });
 
-    it('should be return string equal to = ? OR ?? < ?', async () => {
+    it('should be return string equal to WHERE ?? = ? OR ?? < ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 username: 'root',
                 id: setOperator(LESS_THAN, 15, keyHelper.OR),
             }
         });
-        expect(util.sqlQuery).toBe('= ? OR ?? < ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? OR ?? < ?');
     });
 
-    it('should be return string equal to = ? AND ?? IN (?)', async () => {
+    it('should be return string equal to WHERE ?? = ? AND ?? IN (?)', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 username: 'root',
                 id: IN([0, 15]),
             }
         });
-        expect(util.sqlQuery).toBe('= ? AND ?? IN (?)');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? AND ?? IN (?)');
     });
 
-    it('should be return string equal to IN (?) AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? IN (?) AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: IN([0, 15]),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('IN (?) AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? IN (?) AND ?? = ?');
     });
 
-    it('should be return string equal to IN (?) AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? IN (?) AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: IN([0, 15], keyHelper.OR),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('IN (?) AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? IN (?) AND ?? = ?');
     });
 
-    it('should be return string equal to = ? OR ?? IN (?)', async () => {
+    it('should be return string equal to WHERE ?? = ? OR ?? IN (?)', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 username: 'root',
                 id: IN([0, 15], keyHelper.OR),
             }
         });
-        expect(util.sqlQuery).toBe('= ? OR ?? IN (?)');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? OR ?? IN (?)');
     });
 
-    it('should be return string equal to = ? OR ?? BETWEEN ? AND ?', async () => {
+    it('should be return string equal to WHERE ?? = ? OR ?? BETWEEN ? AND ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 username: 'root',
                 id: BETWEEN(0, 15, keyHelper.OR),
             }
         });
-        expect(util.sqlQuery).toBe('= ? OR ?? BETWEEN ? AND ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? OR ?? BETWEEN ? AND ?');
     });
 
-    it('should be return string equal to = ? AND ?? BETWEEN ? AND ?', async () => {
+    it('should be return string equal to WHERE ?? = ? AND ?? BETWEEN ? AND ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 username: 'root',
                 id: BETWEEN(0, 15),
             }
         });
-        expect(util.sqlQuery).toBe('= ? AND ?? BETWEEN ? AND ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? AND ?? BETWEEN ? AND ?');
     });
 
-    it('should be return string equal to BETWEEN ? AND ? AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? BETWEEN ? AND ? AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: BETWEEN(0, 15),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('BETWEEN ? AND ? AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? = ?');
     });
 
-    it('should be return string equal to BETWEEN ? AND ? AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? BETWEEN ? AND ? AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: BETWEEN(0, 15, keyHelper.OR),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('BETWEEN ? AND ? AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? = ?');
     });
 
-    it('should be return string equal to LIKE ? AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? LIKE ? AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: LIKE(0, keyHelper.OR),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('LIKE ? AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? LIKE ? AND ?? = ?');
     });
 
-    it('should be return string equal to LIKE ? AND ?? = ?', async () => {
+    it('should be return string equal to WHERE ?? LIKE ? AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 id: LIKE(50),
                 username: 'root',
             }
         });
-        expect(util.sqlQuery).toBe('LIKE ? AND ?? = ?');
+        expect(util.sqlQuery).toBe('WHERE ?? LIKE ? AND ?? = ?');
     });
 
-    it('should be return string equal to = ? AND ?? LIKE ?', async () => {
+    it('should be return string equal to WHERE ?? = ? AND ?? LIKE ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 username: 'root',
                 id: LIKE(50),
             }
         });
-        expect(util.sqlQuery).toBe('= ? AND ?? LIKE ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? AND ?? LIKE ?');
     });
 
-    it('should be return string equal to = ? OR ?? LIKE ?', async () => {
+    it('should be return string equal to WHERE ?? = ? OR ?? LIKE ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
                 username: 'root',
                 id: LIKE(50, keyHelper.OR),
             }
         });
-        expect(util.sqlQuery).toBe('= ? OR ?? LIKE ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? OR ?? LIKE ?');
     });
 
     it('should be return empty string', async () => {
@@ -605,7 +605,7 @@ describe('generateUpdateSqlQueryWithData', () => {
         expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual([]);
     });
 
-    it('should be return string equal to = ? ORDER BY ?', async () => {
+    it('should be return string equal to WHERE ?? = ? ORDER BY ?', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -615,10 +615,10 @@ describe('generateUpdateSqlQueryWithData', () => {
                 order: 'id'
             }
         });
-        expect(util.sqlQuery).toBe('= ? ORDER BY ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ?');
     });
 
-    it('should be return string equal to = ? ORDER BY ? , ?', async () => {
+    it('should be return string equal to WHERE ?? = ? ORDER BY ? , ?', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -628,10 +628,10 @@ describe('generateUpdateSqlQueryWithData', () => {
                 order: ['id', 'name']
             }
         });
-        expect(util.sqlQuery).toBe('= ? ORDER BY ? , ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ? , ?');
     });
 
-    it('should be return string equal to = ? LIMIT ?', async () => {
+    it('should be return string equal to WHERE ?? = ? LIMIT ?', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -641,10 +641,10 @@ describe('generateUpdateSqlQueryWithData', () => {
                 limit: 10
             }
         });
-        expect(util.sqlQuery).toBe('= ? LIMIT ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? LIMIT ?');
     });
 
-    it('should be return string equal to = ? LIMIT ? , ?', async () => {
+    it('should be return string equal to WHERE ?? = ? LIMIT ? , ?', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -654,10 +654,10 @@ describe('generateUpdateSqlQueryWithData', () => {
                 limit: [10, 50]
             }
         });
-        expect(util.sqlQuery).toBe('= ? LIMIT ? , ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? LIMIT ? , ?');
     });
 
-    it('should be return string equal to = ? OFFSET ?', async () => {
+    it('should be return string equal to WHERE ?? = ? OFFSET ?', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -667,10 +667,10 @@ describe('generateUpdateSqlQueryWithData', () => {
                 offset: 0
             }
         });
-        expect(util.sqlQuery).toBe('= ? OFFSET ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? OFFSET ?');
     });
 
-    it('should be return string equal to = ? ORDER BY ? DESC', async () => {
+    it('should be return string equal to WHERE ?? = ? ORDER BY ? DESC', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -681,10 +681,10 @@ describe('generateUpdateSqlQueryWithData', () => {
                 name: keyHelper.DESC
             }
         });
-        expect(util.sqlQuery).toBe('= ? ORDER BY ? DESC');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ? DESC');
     });
 
-    it('should be return string equal to = ? ORDER BY ? ASC', async () => {
+    it('should be return string equal to WHERE ?? = ? ORDER BY ? ASC', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -695,10 +695,10 @@ describe('generateUpdateSqlQueryWithData', () => {
                 name: keyHelper.ASC
             }
         });
-        expect(util.sqlQuery).toBe('= ? ORDER BY ? ASC');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ? ASC');
     });
 
-    it('should be return string equal to = ? ORDER BY ? ASC LIMIT ?', async () => {
+    it('should be return string equal to WHERE ?? = ? ORDER BY ? ASC LIMIT ?', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -710,10 +710,10 @@ describe('generateUpdateSqlQueryWithData', () => {
                 limit: 10
             }
         });
-        expect(util.sqlQuery).toBe('= ? ORDER BY ? ASC LIMIT ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ? ASC LIMIT ?');
     });
 
-    it('should be return string equal to = ? ORDER BY ? ASC LIMIT ? OFFSET ?', async () => {
+    it('should be return string equal to WHERE ?? = ? ORDER BY ? ASC LIMIT ? OFFSET ?', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -726,11 +726,11 @@ describe('generateUpdateSqlQueryWithData', () => {
                 offset: 5
             }
         });
-        expect(util.sqlQuery).toBe('= ? ORDER BY ? ASC LIMIT ? OFFSET ?');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ? ASC LIMIT ? OFFSET ?');
     });
 
 
-    it('should be return string equal to = ? ORDER BY ? ASC , ? DESC', async () => {
+    it('should be return string equal to WHERE ?? = ? ORDER BY ? ASC , ? DESC', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             where: {
@@ -742,7 +742,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 id: keyHelper.DESC
             }
         });
-        expect(util.sqlQuery).toBe('= ? ORDER BY ? ASC , ? DESC');
+        expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ? ASC , ? DESC');
     });
 
 });
