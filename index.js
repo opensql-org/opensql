@@ -4,7 +4,6 @@ const {
         sqlQueryResult
     } = require('src/DatabaseConnection'),
     {
-        WHERE,
         QUESTION_MARK,
         IF_NOT_EXISTS,
         DOUBLE_QUESTION_MARK
@@ -116,8 +115,7 @@ module.exports = {
 
         generateDeleteSqlQueryWithData(jsonObject);
 
-        realSql = useDatabase + 'DELETE FROM ' + DOUBLE_QUESTION_MARK + ' WHERE ' +
-            DOUBLE_QUESTION_MARK + util.sqlQuery;
+        realSql = useDatabase + 'DELETE FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
         query(realSql, util.arrayOfDataForUpdateOrDeleteQuery);
 
@@ -134,7 +132,7 @@ module.exports = {
         generateUpdateSqlQueryWithData(jsonObject);
 
         realSql = useDatabase + ' UPDATE ' + DOUBLE_QUESTION_MARK +
-            `SET ${util.stringOfDataForForSet} ${WHERE} ${DOUBLE_QUESTION_MARK} ` + util.sqlQuery;
+            `SET ${util.stringOfDataForForSet} ` + util.sqlQuery;
 
         query(realSql, util.arrayOfDataForUpdateOrDeleteQuery);
 
@@ -166,7 +164,6 @@ module.exports = {
         query(realSql, jsonObject.data);
 
         return this;
-
     },
 
 
