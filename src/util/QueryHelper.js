@@ -1,7 +1,7 @@
 const {
-    OR,
-    AND
-} = require('./KeywordHelper');
+        OR,
+        AND, COMMA, QUESTION_MARK
+    } = require('./KeywordHelper');
 
 const
     NULL = 'NULL',
@@ -36,6 +36,23 @@ function getKeyAndValue(jsonObject, type) {
     return `${type} ` + data['key'] + ' ' + data['value'];
 }
 
+function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
+    let str = '';
+    arr.forEach((item, index, arr) => {
+
+        let lastIndex = arr.lastIndexOf(item);
+
+        if (lastIndex) {
+            str += ` ${COMMA} ${QUESTION_MARK}`;
+        }
+
+        if (!lastIndex) {
+            str += `${QUESTION_MARK}`;
+        }
+
+    });
+    return str;
+}
 
 function validateOperator(jsonObject, operator, type) {
     let arrayOfKeyAndValue = getKeyAndValue(jsonObject, type).split(' ');
@@ -111,6 +128,17 @@ module.exports = {
         if (op !== undefined)
             return `${op.toLowerCase()} like ${str}`;
         return `like ${str}`;
+    },
+
+    ORDER(data) {
+        let isArray = Array.isArray(data);
+
+        if (isArray)
+            return {
+                placeHolder: getDoubleQuestionMarkAndCommaForOrderBy(data)
+            };
+
+        return '';
     }
 
 }

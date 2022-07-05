@@ -238,6 +238,24 @@ function getStringOfValueForEnumOrSetDataTypesWithComma(arr) {
     return stringTypesWithComma;
 }
 
+function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
+    let str = '';
+    arr.forEach((item, index, arr) => {
+
+        let lastIndex = arr.lastIndexOf(item);
+
+        if (lastIndex) {
+            str += ` ${COMMA} ${QUESTION_MARK}`;
+        }
+
+        if (!lastIndex) {
+            str += `${QUESTION_MARK}`;
+        }
+
+    });
+    return str;
+}
+
 
 function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     let index = 0,
@@ -477,25 +495,6 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
 }
 
 
-function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
-    let str = '';
-    arr.forEach((item, index, arr) => {
-
-        let lastIndex = arr.lastIndexOf(item);
-
-        if (lastIndex) {
-            str += ` ${COMMA} ${QUESTION_MARK}`;
-        }
-
-        if (!lastIndex) {
-            str += `${QUESTION_MARK}`;
-        }
-
-    });
-    return str;
-}
-
-
 function getArrayToString(arr) {
     return arr.toString().replace(',', ' ').trim();
 }
@@ -591,7 +590,6 @@ module.exports = {
         return (type + ' ' + validateStringOfOptionContains).trim();
     },
 
-
     generateValueWithComma(data) {
 
         if (typeof data === 'string')
@@ -659,6 +657,7 @@ module.exports = {
                 isUsedIsNotNullWord = item === IS_NOT_NULL,
                 isUsedBetweenWord = item === BETWEEN,
                 isUsedInWord = item === IN,
+                isJsonObject = item.constructor === ({}).constructor,
                 isUsedLikeWord = item === LIKE,
                 isNextKeywordAsc = nextKeyword === ASC,
                 isNextKeywordDesc = nextKeyword === DESC,
@@ -701,8 +700,12 @@ module.exports = {
                 newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (isUsedOrderByWord)
+            if (isUsedOrderByWord && !isJsonObject)
                 newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${QUESTION_MARK}`);
+
+
+            if (!isUsedOrderByWord && isJsonObject)
+                newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${item.placeHolder} `);
 
 
             if (isUsedAscWord || isUsedDescWord)

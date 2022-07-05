@@ -164,7 +164,6 @@ module.exports = {
         query(realSql, jsonObject.data);
 
         return this;
-
     },
 
 

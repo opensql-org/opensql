@@ -33,6 +33,7 @@ const {
         IN,
         AND,
         LIKE,
+        ORDER,
         BETWEEN,
         NOT_NULL,
         LESS_THAN,
@@ -1031,6 +1032,26 @@ describe('getOptionKeywordSqlQuery', () => {
             ]
         });
         expect(util.sqlQuery).toBe('LIMIT ? , ?');
+    });
+
+    it('should be return string equal to ORDER BY ? , ?', async () => {
+        getOptionKeywordSqlQuery({
+            limit: true,
+            optKey: [
+                ORDER(['id','name'])
+            ]
+        });
+        expect(util.sqlQuery).toBe('ORDER BY ? , ?');
+    });
+
+    it('should be return string equal to ORDER BY ? , ? LIMIT ?', async () => {
+        getOptionKeywordSqlQuery({
+            optKey: [
+                ORDER(['id','name']),
+                keyHelper.LIMIT
+            ]
+        });
+        expect(util.sqlQuery).toBe('ORDER BY ? , ? LIMIT ?');
     });
 
 });
