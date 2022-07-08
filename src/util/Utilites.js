@@ -15,7 +15,7 @@ const {
         QUESTION_MARK,
         AUTO_INCREMENT,
         DOUBLE_QUESTION_MARK,
-    } = require('./KeywordHelper'),
+    } = require('../util/KeywordHelper'),
     {
         NULL,
         EQUAL_TO,
@@ -26,7 +26,7 @@ const {
         NOT_EQUAL_TO,
         LESS_THAN_OR_EQUAL_TO,
         GREATER_THAN_OR_EQUAL_TO
-    } = require('./QueryHelper');
+    } = require('../util/QueryHelper');
 
 
 let stringOfQuestionMarkAndEqual,

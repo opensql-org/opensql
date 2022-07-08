@@ -1,7 +1,7 @@
 let mysql = require('mysql'),
     {
         DatabaseConnectionError
-    } = require('src/exception/DatabaseConnectionError');
+    } = require('./exception/DatabaseConnectionError');
 
 let queryResult;
 

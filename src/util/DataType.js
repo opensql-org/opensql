@@ -1,6 +1,6 @@
 const {
     addDataTypeForFieldInFirstItemOfArray
-} = require('./Utilites');
+} = require('../util/Utilites');
 
 let int = 'int',
     bit = 'bit',
