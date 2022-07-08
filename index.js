@@ -34,9 +34,13 @@ const {
 
 
 let realSql,
+    connectJsonObject,
     databaseName = '';
 
-const POINTER_FOR_USE_DB = 'USE_DB_?';
+function getUseDatabaseName() {
+    return (connectJsonObject['database'] !== undefined) ?
+        '' : 'USE ' + databaseName + '; ';
+}
 
 module.exports = {
 
@@ -51,6 +55,7 @@ module.exports = {
 
 
     connect(jsonObject) {
+        connectJsonObject = jsonObject;
         connect(jsonObject);
         return this;
     },
@@ -69,7 +74,7 @@ module.exports = {
 
         getCreateTableSqlQuery(jsonObject);
 
-        realSql = POINTER_FOR_USE_DB +
+        realSql = getUseDatabaseName() +
             ` CREATE TABLE ${IF_NOT_EXISTS} ` + '`' + jsonObject.table + '`' +
             `(${util.sqlQuery})`;
 
@@ -85,7 +90,7 @@ module.exports = {
 
         generateValueWithComma(data);
 
-        realSql = POINTER_FOR_USE_DB + 'DROP TABLE IF EXISTS ' + util.stringOfValueWithComma;
+        realSql = getUseDatabaseName() + 'DROP TABLE IF EXISTS ' + util.stringOfValueWithComma;
 
         query(realSql, null);
 
@@ -97,7 +102,7 @@ module.exports = {
 
     addForeignKey(jsonObject) {
 
-        realSql = POINTER_FOR_USE_DB + ' ALTER TABLE ' + '`' + jsonObject.table + '`' +
+        realSql = getUseDatabaseName() + ' ALTER TABLE ' + '`' + jsonObject.table + '`' +
             ` ADD FOREIGN KEY (` + '`' + jsonObject.foreignKey + '`' + `) ` +
             `REFERENCES ` + '`' + jsonObject.referenceTable + '`' +
             `(` + '`' + jsonObject.field + '`' + `) ON DELETE ` +
@@ -113,7 +118,7 @@ module.exports = {
 
         generateDeleteSqlQueryWithData(jsonObject);
 
-        realSql = POINTER_FOR_USE_DB + ' DELETE FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
+        realSql = getUseDatabaseName() + ' DELETE FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
         query(realSql, util.arrayOfDataForUpdateOrDeleteQuery);
 
@@ -129,7 +134,7 @@ module.exports = {
 
         generateUpdateSqlQueryWithData(jsonObject);
 
-        realSql = POINTER_FOR_USE_DB + ' UPDATE ' + DOUBLE_QUESTION_MARK +
+        realSql = getUseDatabaseName() + ' UPDATE ' + DOUBLE_QUESTION_MARK +
             `SET ${util.stringOfDataForForSet} ` + util.sqlQuery;
 
         query(realSql, util.arrayOfDataForUpdateOrDeleteQuery);
@@ -144,7 +149,7 @@ module.exports = {
 
     addMultiValue(jsonObject) {
 
-        realSql = POINTER_FOR_USE_DB + ' INSERT INTO ' + jsonObject.table + ' (' +
+        realSql = getUseDatabaseName() + ' INSERT INTO ' + jsonObject.table + ' (' +
             getGeneratedColumns(jsonObject) + ') VALUES ' + QUESTION_MARK;
 
         query(realSql, util.dataForInsertSqlQuery);
@@ -157,7 +162,7 @@ module.exports = {
 
     addOne(jsonObject) {
 
-        realSql = POINTER_FOR_USE_DB + ' INSERT INTO ' + jsonObject.table + ' SET ' + QUESTION_MARK;
+        realSql = getUseDatabaseName() + ' INSERT INTO ' + jsonObject.table + ' SET ' + QUESTION_MARK;
 
         query(realSql, jsonObject.data);
 
@@ -169,10 +174,12 @@ module.exports = {
 
         getOptionKeywordSqlQuery(jsonObject);
 
-        let selectSqlQuery = ' SELECT ' + DOUBLE_QUESTION_MARK +
+        removeFieldDataInSelect(jsonObject);
+
+        let selectSqlQuery = ' SELECT ' + getData() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
-        realSql = POINTER_FOR_USE_DB + ' INSERT INTO ' + jsonObject.table +
+        realSql = getUseDatabaseName() + ' INSERT INTO ' + jsonObject.table +
             ` (${getStringOfColumnWithComma(jsonObject.data[0])}) ` + selectSqlQuery;
 
         query(realSql, jsonObject.data);
@@ -185,7 +192,7 @@ module.exports = {
 
     customQuery(sqlQuery) {
 
-        realSql = POINTER_FOR_USE_DB + ` ${sqlQuery}`;
+        realSql = getUseDatabaseName() + ` ${sqlQuery}`;
 
         query(realSql, null);
 
@@ -199,7 +206,7 @@ module.exports = {
 
         removeFieldDataInSelect(jsonObject);
 
-        realSql = POINTER_FOR_USE_DB + ' SELECT ' + getData() +
+        realSql = getUseDatabaseName() + ' SELECT ' + getData() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
         query(realSql, jsonObject.data);

@@ -834,6 +834,8 @@ module.exports = {
 
 
     removeFieldDataInSelect(jsonArray) {
+        if (jsonArray.optKey === undefined)
+            return;
         let index = jsonArray.optKey[0],
             isPointField = /X\(/.test(index),
             optionKeywordArray = jsonArray.optKey;
