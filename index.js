@@ -1,13 +1,12 @@
-require('app-module-path').addPath(__dirname);
 const {
         query,
         sqlQueryResult
-    } = require('src/DatabaseConnection'),
+    } = require('./src/DatabaseConnection'),
     {
         QUESTION_MARK,
         IF_NOT_EXISTS,
         DOUBLE_QUESTION_MARK
-    } = require('src/util/KeywordHelper'),
+    } = require('./src/util/KeywordHelper'),
     {
         getData,
         removeSqlQuery,
@@ -23,15 +22,15 @@ const {
         generateUpdateSqlQueryWithData,
         getGeneratedColumns,
         removeArrayOfDataForUpdateOrDeleteQuery
-    } = require('src/util/Utilites'),
+    } = require('./src/util/Utilites'),
     {
         connect
-    } = require('src/DatabaseConnection'),
-    DataType = require('src/util/DataType'),
-    KeywordHelper = require('src/util/KeywordHelper'),
-    FieldHelper = require('src/util/FieldHelper'),
-    QueryHelper = require('src/util/QueryHelper'),
-    util = require('src/util/Utilites');
+    } = require('./src/DatabaseConnection'),
+    DataType = require('./src/util/DataType'),
+    KeywordHelper = require('./src/util/KeywordHelper'),
+    FieldHelper = require('./src/util/FieldHelper'),
+    QueryHelper = require('./src/util/QueryHelper'),
+    util = require('./src/util/Utilites');
 
 
 let realSql,

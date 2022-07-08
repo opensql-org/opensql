@@ -1,6 +1,6 @@
 const {
     COMMA
-} = require('./KeywordHelper');
+} = require('../util/KeywordHelper');
 
 
 

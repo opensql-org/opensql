@@ -1,7 +1,7 @@
 const {
         OR,
         AND, COMMA, QUESTION_MARK
-    } = require('./KeywordHelper');
+    } = require('../util/KeywordHelper');
 
 const
     NULL = 'NULL',
