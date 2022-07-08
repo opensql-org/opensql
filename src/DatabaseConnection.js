@@ -3,8 +3,18 @@ let mysql = require('mysql'),
         DatabaseConnectionError
     } = require('./exception/DatabaseConnectionError');
 
-let queryResult;
+const POINTER_FOR_USE_DB = 'USE_DB_?';
 
+function isPointerForUseDbDefined(str) {
+    return str.search(POINTER_FOR_USE_DB) === 0;
+}
+
+function replacePointerForUseDbToSpace(str) {
+    return str.replace(POINTER_FOR_USE_DB, '').trim();
+}
+
+let queryResult;
+let databaseName;
 let con;
 
 module.exports = {
@@ -17,14 +27,20 @@ module.exports = {
             if (charset === undefined)
                 charset = 'utf8mb4';
 
-            object['multipleStatements'] = true
+            object['multipleStatements'] = true;
 
-
-            con = mysql.createConnection(object);
         }
+        if (object['database'] !== undefined)
+            databaseName = object['database'];
+
+        con = mysql.createConnection(object);
     },
 
     query(sql, arrayObjects) {
+
+        if (isPointerForUseDbDefined(sql)) {
+            sql = module.exports.getDatabaseName() + replacePointerForUseDbToSpace(sql);
+        }
 
         try {
             con.query(sql, arrayObjects, (err, result) => {
@@ -39,8 +55,13 @@ module.exports = {
             DatabaseConnectionError(e);
         }
 
-
     },
+
+
+    getDatabaseName() {
+        return (databaseName !== undefined) ? `USE ${databaseName}; ` : '';
+    },
+
 
     sqlQueryResult(callBackResult) {
         queryResult = (result => {

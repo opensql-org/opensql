@@ -657,7 +657,7 @@ module.exports = {
                 isUsedIsNotNullWord = item === IS_NOT_NULL,
                 isUsedBetweenWord = item === BETWEEN,
                 isUsedInWord = item === IN,
-                isJsonObject = item.constructor === ({}).constructor,
+                isJsonObject = typeof item === 'object',
                 isUsedLikeWord = item === LIKE,
                 isNextKeywordAsc = nextKeyword === ASC,
                 isNextKeywordDesc = nextKeyword === DESC,
