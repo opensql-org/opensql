@@ -4,7 +4,6 @@ let mysql = require('mysql'),
     } = require('./exception/DatabaseConnectionError');
 
 let queryResult;
-
 let con;
 
 module.exports = {
@@ -17,10 +16,10 @@ module.exports = {
             if (charset === undefined)
                 charset = 'utf8mb4';
 
-            object['multipleStatements'] = true
-
+            object['multipleStatements'] = true;
 
             con = mysql.createConnection(object);
+
         }
     },
 
@@ -39,8 +38,8 @@ module.exports = {
             DatabaseConnectionError(e);
         }
 
-
     },
+
 
     sqlQueryResult(callBackResult) {
         queryResult = (result => {

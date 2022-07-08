@@ -657,7 +657,7 @@ module.exports = {
                 isUsedIsNotNullWord = item === IS_NOT_NULL,
                 isUsedBetweenWord = item === BETWEEN,
                 isUsedInWord = item === IN,
-                isJsonObject = item.constructor === ({}).constructor,
+                isJsonObject = typeof item === 'object',
                 isUsedLikeWord = item === LIKE,
                 isNextKeywordAsc = nextKeyword === ASC,
                 isNextKeywordDesc = nextKeyword === DESC,
@@ -834,6 +834,8 @@ module.exports = {
 
 
     removeFieldDataInSelect(jsonArray) {
+        if (jsonArray.optKey === undefined)
+            return;
         let index = jsonArray.optKey[0],
             isPointField = /X\(/.test(index),
             optionKeywordArray = jsonArray.optKey;
