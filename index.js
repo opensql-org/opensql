@@ -35,11 +35,17 @@ const {
 
 let realSql,
     connectJsonObject,
+    userInputDatabaseName,
     databaseName = '';
 
 function getUseDatabaseName() {
     return (connectJsonObject['database'] !== undefined) ?
         '' : 'USE ' + databaseName + '; ';
+}
+
+function getDatabaseName() {
+    return (userInputDatabaseName !== undefined) ?
+        userInputDatabaseName : databaseName;
 }
 
 module.exports = {
@@ -200,6 +206,16 @@ module.exports = {
     },
 
 
+    dropDatabase(databaseName) {
+        if (databaseName !== undefined)
+            userInputDatabaseName = databaseName;
+
+        query("DROP DATABASE " + "`" + getDatabaseName() + "`", null);
+
+        return this;
+    },
+
+
     find(jsonObject) {
 
         getOptionKeywordSqlQuery(jsonObject);
@@ -217,12 +233,14 @@ module.exports = {
     },
 
 
-    findTable(tableName) {
+    findTable(tableName, databaseName) {
+        if (databaseName !== undefined)
+            userInputDatabaseName = databaseName;
 
         realSql = 'SELECT TABLE_NAME ' +
             'FROM INFORMATION_SCHEMA.TABLES ' +
             'WHERE TABLE_NAME = ' + "'" + tableName + "' " +
-            'AND TABLE_SCHEMA = ' + "'" + databaseName + "'";
+            'AND TABLE_SCHEMA = ' + "'" + getDatabaseName() + "'";
 
         query(realSql, null);
 
