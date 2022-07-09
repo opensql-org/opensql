@@ -253,7 +253,10 @@ module.exports = {
             sqlQueryResult(result => {
                 callBackResult(result);
             });
-    }
+    },
 
+    getSqlQuery() {
+       return realSql;
+    }
 
 }
