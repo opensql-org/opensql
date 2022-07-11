@@ -1,10 +1,10 @@
 const {
-        getData,
+        getIdentifier,
         removeSqlQuery,
         getGeneratedColumns,
         getCreateTableSqlQuery,
         generateValueWithComma,
-        removeFieldDataInSelect,
+        validateIdentifiers,
         getOptionKeywordSqlQuery,
         getStringOfColumnWithComma,
         removeDataForInsertSqlQuery,
@@ -1038,7 +1038,7 @@ describe('getOptionKeywordSqlQuery', () => {
         getOptionKeywordSqlQuery({
             limit: true,
             optKey: [
-                ORDER(['id','name'])
+                ORDER(['id', 'name'])
             ]
         });
         expect(util.sqlQuery).toBe('ORDER BY ? , ?');
@@ -1047,12 +1047,40 @@ describe('getOptionKeywordSqlQuery', () => {
     it('should be return string equal to ORDER BY ? , ? LIMIT ?', async () => {
         getOptionKeywordSqlQuery({
             optKey: [
-                ORDER(['id','name']),
+                ORDER(['id', 'name']),
                 keyHelper.LIMIT
             ]
         });
         expect(util.sqlQuery).toBe('ORDER BY ? , ? LIMIT ?');
     });
+
+    it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
+        getOptionKeywordSqlQuery({
+            optKey: [
+                keyHelper.UNION
+            ]
+        });
+        expect(util.sqlQuery).toBe('UNION SELECT ?? FROM ??');
+    });
+
+    it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
+        getOptionKeywordSqlQuery({
+            optKey: [
+                keyHelper.STAR, keyHelper.UNION
+            ]
+        });
+        expect(util.sqlQuery).toBe('UNION SELECT ?? FROM ??');
+    });
+
+    it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
+        getOptionKeywordSqlQuery({
+            optKey: [
+                keyHelper.STAR, keyHelper.UNION, keyHelper.STAR
+            ]
+        });
+        expect(util.sqlQuery).toBe('UNION SELECT * FROM ??');
+    });
+
 
 });
 
@@ -1060,39 +1088,33 @@ describe('getOptionKeywordSqlQuery', () => {
 describe('removeFieldDataInSelect', () => {
 
     it('should be return * char', async () => {
-        removeFieldDataInSelect({
-            optKey: [
-                keyHelper.STAR
-            ]
-        });
-        expect(getData()).toBe('*');
+        validateIdentifiers(
+            keyHelper.STAR
+        );
+        expect(getIdentifier()).toBe('*');
     });
 
     it('should be return string equal to COUNT(*) AS size', async () => {
-        removeFieldDataInSelect({
-            optKey: [
-                keyHelper.COUNT
-            ]
-        });
-        expect(getData()).toBe('COUNT(*) AS size');
+        validateIdentifiers(
+            keyHelper.COUNT
+        );
+        expect(getIdentifier()).toBe('COUNT(*) AS size');
     });
 
     it('should be return string equal to X(location) AS Lat , Y(location) AS Lon', async () => {
-        removeFieldDataInSelect({
-            optKey: [
-                'X(location) AS Lat , Y(location) AS Lon'
-            ]
-        });
-        expect(getData()).toBe('X(location) AS Lat , Y(location) AS Lon');
+        validateIdentifiers(
+            'X(location) AS Lat , Y(location) AS Lon'
+        );
+        expect(getIdentifier()).toBe('X(location) AS Lat , Y(location) AS Lon');
     });
 
     it('should be return string equal to ??', async () => {
-        removeFieldDataInSelect({
+        validateIdentifiers({
             optKey: [
                 'users'
             ]
         });
-        expect(getData()).toBe('??');
+        expect(getIdentifier()).toBe('??');
     });
 
 });

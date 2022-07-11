@@ -8,9 +8,9 @@ const {
         DOUBLE_QUESTION_MARK
     } = require('./src/util/KeywordHelper'),
     {
-        getData,
+        getIdentifier,
         removeSqlQuery,
-        removeFieldDataInSelect,
+        validateIdentifiers,
         generateValueWithComma,
         getCreateTableSqlQuery,
         getOptionKeywordSqlQuery,
@@ -180,9 +180,9 @@ module.exports = {
 
         getOptionKeywordSqlQuery(jsonObject);
 
-        removeFieldDataInSelect(jsonObject);
+        validateIdentifiers((jsonObject.optKey !== undefined) ? jsonObject.optKey[0] : null);
 
-        let selectSqlQuery = ' SELECT ' + getData() +
+        let selectSqlQuery = ' SELECT ' + getIdentifier() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
         realSql = getUseDatabaseName() + ' INSERT INTO ' + jsonObject.table +
@@ -220,9 +220,9 @@ module.exports = {
 
         getOptionKeywordSqlQuery(jsonObject);
 
-        removeFieldDataInSelect(jsonObject);
+        validateIdentifiers((jsonObject.optKey !== undefined) ? jsonObject.optKey[0] : null);
 
-        realSql = getUseDatabaseName() + ' SELECT ' + getData() +
+        realSql = getUseDatabaseName() + ' SELECT ' + getIdentifier() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
         query(realSql, jsonObject.data);
@@ -255,8 +255,9 @@ module.exports = {
             });
     },
 
+
     getSqlQuery() {
-       return realSql;
+        return realSql;
     }
 
 }
