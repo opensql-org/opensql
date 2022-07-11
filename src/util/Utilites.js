@@ -9,9 +9,11 @@ const {
         COMMA,
         LIMIT,
         COUNT,
+        UNION,
         OFFSET,
         BETWEEN,
         ORDER_BY,
+        UNION_ALL,
         QUESTION_MARK,
         AUTO_INCREMENT,
         DOUBLE_QUESTION_MARK,
@@ -31,7 +33,7 @@ const {
 
 let stringOfQuestionMarkAndEqual,
     arrayOfKeyAndValueDataForQuery = [],
-    fieldData;
+    identifier;
 
 
 let arrayOfOperator = [
@@ -657,6 +659,8 @@ module.exports = {
                 isUsedIsNotNullWord = item === IS_NOT_NULL,
                 isUsedBetweenWord = item === BETWEEN,
                 isUsedInWord = item === IN,
+                isUsedUnion = item === UNION,
+                isUsedUnionAll = item === UNION_ALL,
                 isJsonObject = typeof item === 'object',
                 isUsedLikeWord = item === LIKE,
                 isNextKeywordAsc = nextKeyword === ASC,
@@ -666,6 +670,12 @@ module.exports = {
                 isNextKeywordUndefined = (nextKeyword !== undefined),
                 isNextItemOffset = (nextKeyword === OFFSET) ? `${OFFSET} ${QUESTION_MARK}` : '',
                 nextItemUndefinedToNullOrValue = (isNextKeywordUndefined && !isOptionKeyword) ? nextKeyword : '';
+
+
+            if (isUsedUnion || isUsedUnionAll) {
+                module.exports.validateIdentifiers(nextKeyword);
+                newArrayOfKeywordsWithSqlContext.push(` ${item} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} `);
+            }
 
 
             if (isFirstIndex && isItemInOperators)
@@ -828,38 +838,30 @@ module.exports = {
     },
 
 
-    getData() {
-        return fieldData;
+    getIdentifier() {
+        return identifier;
     },
 
 
-    removeFieldDataInSelect(jsonArray) {
-        if (jsonArray.optKey === undefined)
-            return;
-        let index = jsonArray.optKey[0],
-            isPointField = /X\(/.test(index),
-            optionKeywordArray = jsonArray.optKey;
+    validateIdentifiers(index) {
+        let isPointField = /X\(/.test(index);
 
         if (index !== STAR && COUNT && !isPointField) {
-            fieldData = DOUBLE_QUESTION_MARK;
+            identifier = DOUBLE_QUESTION_MARK;
         }
 
         if (index !== STAR && COUNT && isPointField) {
-            fieldData = index;
-            optionKeywordArray.shift();
+            identifier = index;
         }
 
         if (index === STAR) {
-            fieldData = STAR;
-            optionKeywordArray.shift();
+            identifier = STAR;
         }
 
         if (index === COUNT) {
-            fieldData = `${COUNT} AS size`;
-            optionKeywordArray.shift();
+            identifier = `${COUNT} AS size`;
         }
 
-        return optionKeywordArray;
     }
 
 
