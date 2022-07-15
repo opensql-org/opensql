@@ -29,6 +29,7 @@ const {
     DataType = require('./src/util/DataType'),
     KeywordHelper = require('./src/util/KeywordHelper'),
     FieldHelper = require('./src/util/FieldHelper'),
+    VariableDataType = require('./src/util/VariableDataType'),
     QueryHelper = require('./src/util/QueryHelper'),
     util = require('./src/util/Utilites');
 
@@ -56,6 +57,8 @@ module.exports = {
     dataType: DataType,
 
     keywordHelper: KeywordHelper,
+
+    variableDataType: VariableDataType,
 
     queryHelper: QueryHelper,
 
