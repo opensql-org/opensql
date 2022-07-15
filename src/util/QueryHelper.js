@@ -170,8 +170,8 @@ module.exports = {
     },
 
 
-    SOURCE(name) {
-        return `POINTER_FOR_SOURCE ${name} AS SOURCE`;
+    SOURCE(name, typeName) {
+        return (typeName !== undefined) ? `POINTER_FOR_SOURCE '` + name + `' AS ${typeName}` : `POINTER_FOR_SOURCE '` + name + `' AS Source`;
     }
 
 
