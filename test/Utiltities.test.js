@@ -38,6 +38,7 @@ const {
         CAST,
         COUNT,
         ORDER,
+        SOURCE,
         BETWEEN,
         NOT_NULL,
         LESS_THAN,
@@ -1112,11 +1113,25 @@ describe('removeFieldDataInSelect', () => {
         expect(getIdentifier()).toBe('i AS id');
     });
 
-    it("should be return string equal to i AS id , n AS name", async () => {
+    it('should be return string equal to i AS id , n AS name', async () => {
         validateIdentifiers(
             [AS('i', 'id'), AS('n', 'name')]
         );
-        expect(getIdentifier()).toBe("i AS id , n AS name");
+        expect(getIdentifier()).toBe('i AS id , n AS name');
+    });
+
+    it('should be return string equal to i AS id , name AS SOURCE', async () => {
+        validateIdentifiers(
+            [AS('i', 'id'), SOURCE('name')]
+        );
+        expect(getIdentifier()).toBe('i AS id , name AS SOURCE');
+    });
+
+    it('should be return string equal to name AS SOURCE', async () => {
+        validateIdentifiers(
+             SOURCE('name')
+        );
+        expect(getIdentifier()).toBe('name AS SOURCE');
     });
 
     it("should be return string equal to CAST('group' AS varchar)", async () => {
