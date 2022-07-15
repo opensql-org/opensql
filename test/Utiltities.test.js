@@ -32,9 +32,11 @@ const {
     {
         OR,
         IN,
+        AS,
         AND,
         LIKE,
         CAST,
+        COUNT,
         ORDER,
         BETWEEN,
         NOT_NULL,
@@ -1098,9 +1100,23 @@ describe('removeFieldDataInSelect', () => {
 
     it('should be return string equal to COUNT(*) AS size', async () => {
         validateIdentifiers(
-            keyHelper.COUNT
+            COUNT()
         );
         expect(getIdentifier()).toBe('COUNT(*) AS size');
+    });
+
+    it('should be return string equal to i AS id', async () => {
+        validateIdentifiers(
+            AS('i', 'id')
+        );
+        expect(getIdentifier()).toBe('i AS id');
+    });
+
+    it("should be return string equal to i AS id , n AS name", async () => {
+        validateIdentifiers(
+            [AS('i', 'id'), AS('n', 'name')]
+        );
+        expect(getIdentifier()).toBe("i AS id , n AS name");
     });
 
     it("should be return string equal to CAST('group' AS varchar)", async () => {

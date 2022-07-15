@@ -6,7 +6,6 @@ const {
         STAR,
         DESC,
         LIKE,
-        CAST,
         COMMA,
         LIMIT,
         COUNT,
@@ -661,6 +660,7 @@ module.exports = {
                 isUsedBetweenWord = item === BETWEEN,
                 isUsedInWord = item === IN,
                 isUsedUnion = item === UNION,
+                isArray = Array.isArray(item),
                 isUsedUnionAll = item === UNION_ALL,
                 isJsonObject = typeof item === 'object',
                 isUsedLikeWord = item === LIKE,
@@ -711,11 +711,11 @@ module.exports = {
                 newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
 
 
-            if (isUsedOrderByWord && !isJsonObject)
+            if (isUsedOrderByWord && !isJsonObject && !isArray)
                 newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${QUESTION_MARK}`);
 
 
-            if (!isUsedOrderByWord && isJsonObject)
+            if (!isUsedOrderByWord && isJsonObject && !isArray)
                 newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${item.placeHolder} `);
 
 
@@ -845,8 +845,51 @@ module.exports = {
 
 
     validateIdentifiers(index) {
+        let isArray = Array.isArray(index);
+        if (isArray) {
+
+            let newArr = [];
+
+            index.forEach((item, indexOfArr) => {
+                let isPointField = /X\(/.test(item);
+                let isCAST = /CAST\(/.test(item);
+                let isAS = /POINTER_FOR_AS /.test(item);
+                let isCOUNT = /COUNT\(/.test(item);
+                let isLastIndex = index.length === indexOfArr + 1;
+
+
+                if (item !== STAR && COUNT && !isPointField && !isCAST && !isAS) {
+                    newArr.push(DOUBLE_QUESTION_MARK);
+                }
+
+                if (item !== STAR && COUNT && isPointField && !isCAST && !isAS) {
+                    newArr.push(item);
+                }
+
+                if (isCAST || isCOUNT) {
+                    newArr.push(item);
+                }
+
+                if (index === STAR) {
+                    newArr.push(STAR);
+                }
+
+                if (isAS) {
+                    newArr.push(item.replace('POINTER_FOR_AS ', ''));
+                }
+
+                if (!isLastIndex)
+                    newArr.push(COMMA);
+
+            });
+
+            return identifier = newArr.join(' ');
+        }
+
         let isPointField = /X\(/.test(index);
         let isCAST = /CAST\(/.test(index);
+        let isAS = /POINTER_FOR_AS /.test(index);
+        let isCOUNT = /COUNT\(/.test(index);
 
         if (index !== STAR && COUNT && !isPointField) {
             identifier = DOUBLE_QUESTION_MARK;
@@ -860,12 +903,12 @@ module.exports = {
             identifier = STAR;
         }
 
-        if (index === COUNT) {
-            identifier = `${COUNT} AS size`;
+        if (isCAST || isCOUNT) {
+            identifier = index;
         }
 
-        if (isCAST) {
-            identifier = index;
+        if (isAS && !isPointField && !isCAST && !isCOUNT) {
+            identifier = index.replace('POINTER_FOR_AS ', '');
         }
 
     }
