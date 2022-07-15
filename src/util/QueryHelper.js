@@ -1,6 +1,9 @@
 const {
     OR,
-    AND, COMMA, QUESTION_MARK
+    AND,
+    COMMA,
+    COUNT,
+    QUESTION_MARK
 } = require('../util/KeywordHelper');
 
 const
@@ -103,6 +106,7 @@ module.exports = {
         return `${operator} SPACE ${value}`;
     },
 
+
     OR(jsonObject, operator) {
         return validateOperator(jsonObject, operator, OR);
     },
@@ -112,11 +116,13 @@ module.exports = {
         return validateOperator(jsonObject, operator, AND);
     },
 
+
     IN(arr, op) {
         if (op !== undefined)
             return `${op.toLowerCase()} in ${arr}`;
         return `in ${arr}`;
     },
+
 
     BETWEEN(first, second, op) {
         if (op !== undefined)
@@ -124,11 +130,13 @@ module.exports = {
         return `between ${first} and ${second}`;
     },
 
+
     LIKE(str, op) {
         if (op !== undefined)
             return `${op.toLowerCase()} like ${str}`;
         return `like ${str}`;
     },
+
 
     ORDER(data) {
         let isArray = Array.isArray(data);
@@ -142,13 +150,24 @@ module.exports = {
     },
 
 
-    CAST(data, type){
+    CAST(data, type) {
         let isString = typeof data === 'string';
 
         if (isString)
             return `CAST('${data}' AS ${type})`;
 
         return `CAST(${data} AS ${type})`;
+    },
+
+
+    COUNT(column) {
+        return (column === undefined) ? `${COUNT} AS size` : `COUNT(${column})`;
+    },
+
+
+    AS(first, second) {
+        return `POINTER_FOR_AS ${first} AS ${second}`;
     }
+
 
 }
