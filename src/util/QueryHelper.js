@@ -167,6 +167,11 @@ module.exports = {
 
     AS(first, second) {
         return `POINTER_FOR_AS ${first} AS ${second}`;
+    },
+
+
+    SOURCE(name) {
+        return `POINTER_FOR_SOURCE ${name} AS SOURCE`;
     }
 
 

@@ -852,21 +852,22 @@ module.exports = {
 
             index.forEach((item, indexOfArr) => {
                 let isPointField = /X\(/.test(item);
-                let isCAST = /CAST\(/.test(item);
-                let isAS = /POINTER_FOR_AS /.test(item);
-                let isCOUNT = /COUNT\(/.test(item);
+                let isCast = /CAST\(/.test(item);
+                let isAs = /POINTER_FOR_AS /.test(item);
+                let isSource = /POINTER_FOR_SOURCE /.test(item);
+                let isCount = /COUNT\(/.test(item);
                 let isLastIndex = index.length === indexOfArr + 1;
 
 
-                if (item !== STAR && COUNT && !isPointField && !isCAST && !isAS) {
+                if (item !== STAR && COUNT && !isPointField && !isCast && !isAs && !isSource) {
                     newArr.push(DOUBLE_QUESTION_MARK);
                 }
 
-                if (item !== STAR && COUNT && isPointField && !isCAST && !isAS) {
+                if (item !== STAR && COUNT && isPointField && !isCast && !isAs && !isSource) {
                     newArr.push(item);
                 }
 
-                if (isCAST || isCOUNT) {
+                if (isCast || isCount) {
                     newArr.push(item);
                 }
 
@@ -874,8 +875,12 @@ module.exports = {
                     newArr.push(STAR);
                 }
 
-                if (isAS) {
+                if (isAs) {
                     newArr.push(item.replace('POINTER_FOR_AS ', ''));
+                }
+
+                if (isSource) {
+                    newArr.push(item.replace('POINTER_FOR_SOURCE ', ''));
                 }
 
                 if (!isLastIndex)
@@ -887,9 +892,10 @@ module.exports = {
         }
 
         let isPointField = /X\(/.test(index);
-        let isCAST = /CAST\(/.test(index);
-        let isAS = /POINTER_FOR_AS /.test(index);
-        let isCOUNT = /COUNT\(/.test(index);
+        let isCast = /CAST\(/.test(index);
+        let isAs = /POINTER_FOR_AS /.test(index);
+        let isCount = /COUNT\(/.test(index);
+        let isSource = /POINTER_FOR_SOURCE /.test(index);
 
         if (index !== STAR && COUNT && !isPointField) {
             identifier = DOUBLE_QUESTION_MARK;
@@ -903,12 +909,16 @@ module.exports = {
             identifier = STAR;
         }
 
-        if (isCAST || isCOUNT) {
+        if (isCast || isCount) {
             identifier = index;
         }
 
-        if (isAS && !isPointField && !isCAST && !isCOUNT) {
+        if (isAs && !isPointField && !isCast && !isCount && !isSource) {
             identifier = index.replace('POINTER_FOR_AS ', '');
+        }
+
+        if (isSource) {
+            identifier = index.replace('POINTER_FOR_SOURCE ', '');
         }
 
     }
