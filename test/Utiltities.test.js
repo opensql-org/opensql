@@ -1120,18 +1120,18 @@ describe('removeFieldDataInSelect', () => {
         expect(getIdentifier()).toBe('i AS id , n AS name');
     });
 
-    it('should be return string equal to i AS id , name AS SOURCE', async () => {
+    it("should be return string equal to i AS id , 'name' AS Source", async () => {
         validateIdentifiers(
             [AS('i', 'id'), SOURCE('name')]
         );
-        expect(getIdentifier()).toBe('i AS id , name AS SOURCE');
+        expect(getIdentifier()).toBe("i AS id , 'name' AS Source");
     });
 
-    it('should be return string equal to name AS SOURCE', async () => {
+    it("should be return string equal to 'name' AS Source", async () => {
         validateIdentifiers(
              SOURCE('name')
         );
-        expect(getIdentifier()).toBe('name AS SOURCE');
+        expect(getIdentifier()).toBe("'name' AS Source");
     });
 
     it("should be return string equal to CAST('group' AS varchar)", async () => {
