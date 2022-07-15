@@ -6,6 +6,7 @@ const {
         STAR,
         DESC,
         LIKE,
+        CAST,
         COMMA,
         LIMIT,
         COUNT,
@@ -845,6 +846,7 @@ module.exports = {
 
     validateIdentifiers(index) {
         let isPointField = /X\(/.test(index);
+        let isCAST = /CAST\(/.test(index);
 
         if (index !== STAR && COUNT && !isPointField) {
             identifier = DOUBLE_QUESTION_MARK;
@@ -860,6 +862,10 @@ module.exports = {
 
         if (index === COUNT) {
             identifier = `${COUNT} AS size`;
+        }
+
+        if (isCAST) {
+            identifier = index;
         }
 
     }

@@ -1,7 +1,7 @@
 const {
-        OR,
-        AND, COMMA, QUESTION_MARK
-    } = require('../util/KeywordHelper');
+    OR,
+    AND, COMMA, QUESTION_MARK
+} = require('../util/KeywordHelper');
 
 const
     NULL = 'NULL',
@@ -139,6 +139,16 @@ module.exports = {
             };
 
         return '';
+    },
+
+
+    CAST(data, type){
+        let isString = typeof data === 'string';
+
+        if (isString)
+            return `CAST('${data}' AS ${type})`;
+
+        return `CAST(${data} AS ${type})`;
     }
 
 }

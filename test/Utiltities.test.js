@@ -18,6 +18,7 @@ const {
     } = require('../src/util/KeywordHelper'),
     util = require('../src/util/Utilites'),
     keyHelper = require('../src/util/KeywordHelper'),
+    variableDataType = require('../src/util/VariableDataType'),
     {
         DEFAULT
     } = require('../src/util/FieldHelper'),
@@ -33,6 +34,7 @@ const {
         IN,
         AND,
         LIKE,
+        CAST,
         ORDER,
         BETWEEN,
         NOT_NULL,
@@ -1099,6 +1101,20 @@ describe('removeFieldDataInSelect', () => {
             keyHelper.COUNT
         );
         expect(getIdentifier()).toBe('COUNT(*) AS size');
+    });
+
+    it("should be return string equal to CAST('group' AS varchar)", async () => {
+        validateIdentifiers(
+            CAST('group', variableDataType.varchar)
+        );
+        expect(getIdentifier()).toBe("CAST('group' AS varchar)");
+    });
+
+    it("should be return string equal to CAST(13 AS int)", async () => {
+        validateIdentifiers(
+            CAST(13, variableDataType.int)
+        );
+        expect(getIdentifier()).toBe("CAST(13 AS int)");
     });
 
     it('should be return string equal to X(location) AS Lat , Y(location) AS Lon', async () => {
