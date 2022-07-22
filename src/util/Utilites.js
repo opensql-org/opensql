@@ -276,7 +276,6 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
         arrayOfKeyAndValueDataForQuery.push(from);
 
 
-
     if (!isUndefinedWhereCondition)
 
         for (let key in where) {
@@ -453,6 +452,8 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     for (let key in option) {
         let value = option[key],
             isUsedOrderByWord = key === 'order',
+            getIndexOneFromOrderBy = value[1],
+            isArrayIndexZeroFromOrderBy = Array.isArray(value[0]),
             isValueOfOrderByWordArray = Array.isArray(value),
             isValueOfLimitWordArray = Array.isArray(value),
             isUsedAscWord = value === ASC,
@@ -475,9 +476,14 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
         }
 
 
-        if (isUsedOrderByWord && isValueOfOrderByWordArray) {
+        if (isUsedOrderByWord && isValueOfOrderByWordArray && !isArrayIndexZeroFromOrderBy) {
             arrayOfEqualAndQuestionMarks.push(`${ORDER_BY} ${getDoubleQuestionMarkAndCommaForOrderBy(value)}`);
             arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(value);
+        }
+
+        if (isUsedOrderByWord && isValueOfOrderByWordArray && isArrayIndexZeroFromOrderBy) {
+            arrayOfEqualAndQuestionMarks.push(`${ORDER_BY} ${getDoubleQuestionMarkAndCommaForOrderBy(value[0])} ${getIndexOneFromOrderBy} ${COMMA} ${QUESTION_MARK}`);
+            arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(value[0]);
         }
 
 

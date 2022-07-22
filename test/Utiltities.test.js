@@ -804,8 +804,7 @@ describe('getStringOfColumnWithComma', () => {
 describe('getOptionKeywordSqlQuery', () => {
 
     it('should be return empty string', async () => {
-        getFindSqlQuery({
-        });
+        getFindSqlQuery({});
         expect(util.sqlQuery).toBe('');
     });
 
@@ -825,7 +824,7 @@ describe('getOptionKeywordSqlQuery', () => {
             get: ['id'],
             from: 'users',
             where: {
-                id: BETWEEN(1,10),
+                id: BETWEEN(1, 10),
                 password: setOperator(LESS_THAN, 8)
             }
         });
@@ -838,7 +837,7 @@ describe('getOptionKeywordSqlQuery', () => {
             from: 'users',
             where: {
                 password: setOperator(LESS_THAN, 8),
-                id: BETWEEN(1,10)
+                id: BETWEEN(1, 10)
             }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? BETWEEN ? AND ?');
@@ -991,6 +990,7 @@ describe('getOptionKeywordSqlQuery', () => {
         expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC , ? ASC LIMIT ?');
     });
 
+
     it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC , ? ASC', async () => {
         getFindSqlQuery({
             get: ['id'],
@@ -999,8 +999,7 @@ describe('getOptionKeywordSqlQuery', () => {
                 id: setOperator(LESS_THAN, 5)
             },
             option: {
-                order: 'id',
-                name: keyHelper.DESC,
+                order: [['id'], keyHelper.DESC],
                 id: keyHelper.ASC
             }
         });
