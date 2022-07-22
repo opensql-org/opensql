@@ -22,36 +22,13 @@ const {
         NULL,
         EQUAL_TO,
         NOT_NULL,
-        LESS_THAN,
-        IS_NOT_NULL,
-        GREATER_THAN,
-        NOT_EQUAL_TO,
-        LESS_THAN_OR_EQUAL_TO,
-        GREATER_THAN_OR_EQUAL_TO
+        IS_NOT_NULL
     } = require('../util/QueryHelper');
 
 
 let stringOfQuestionMarkAndEqual,
     arrayOfKeyAndValueDataForQuery = [],
     identifier;
-
-
-let arrayOfOperator = [
-    EQUAL_TO,
-    LESS_THAN,
-    GREATER_THAN,
-    NOT_EQUAL_TO,
-    LESS_THAN_OR_EQUAL_TO,
-    GREATER_THAN_OR_EQUAL_TO
-];
-
-let arrayOfValidOptionKeyword = [
-    ASC,
-    DESC,
-    LIMIT,
-    OFFSET,
-    ORDER_BY
-];
 
 
 function generateDoubleQuestionMarksEqualQuestionMark(sizeOfKey) {
@@ -261,18 +238,50 @@ function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
 
 function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     let index = 0,
-        where = jsonObject.where,
-        option = jsonObject.option,
+        where = jsonObject?.where,
+        option = jsonObject?.option,
+        get = jsonObject?.get,
+        from = jsonObject?.from,
         isUndefinedWhereCondition = where === undefined,
+        isDefinedGet = get !== undefined,
+        isDefinedFrom = from !== undefined,
         isUndefinedOptionKeyword = option === undefined,
         arrayOfEqualAndQuestionMarks = [];
+
+
+    if (isUndefinedWhereCondition && isUndefinedOptionKeyword && !isDefinedFrom && !isDefinedGet)
+        return module.exports.sqlQuery = '';
+
+
+    if (isDefinedGet) {
+
+        arrayOfKeyAndValueDataForQuery.push(get);
+
+        get.forEach((item, index, arrayOfKeyword) => {
+
+            let isUsedUnionAll = item === UNION_ALL,
+                nextKeyword = arrayOfKeyword[index + 1],
+                isUsedUnion = item === UNION;
+
+            if (isUsedUnion || isUsedUnionAll) {
+                module.exports.validateIdentifiers(nextKeyword);
+                arrayOfEqualAndQuestionMarks.push(` ${item} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} `);
+            }
+
+        });
+    }
+
+
+    if (isDefinedFrom)
+        arrayOfKeyAndValueDataForQuery.push(from);
+
 
 
     if (!isUndefinedWhereCondition)
 
         for (let key in where) {
             let value = where[key],
-                arrayOfOperatorAndValue2d = where.op,
+                arrayOfOperatorAndValue2d = where?.op,
                 isFirstIndex = (index === 0),
                 isBetweenOperator = isBetweenOperatorInString(value),
                 isOpDefined = Array.isArray(value) && key === 'op',
@@ -282,9 +291,10 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
                 arrayOfSpecialQueryUtilitiesOperator = [],
                 isAccessToCheckOtherCondition = false,
                 newArrayForOperatorAndValue2d = [],
+                isUsedIsNotNullWord = value === IS_NOT_NULL,
                 isUsedSetOperatorFuncForField = isSpaceWordInString(value),
                 getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
-                isNotOperator = !isInOperator && !isBetweenOperator && !isLikeOperator && !isUsedSetOperatorFuncForField && !isOpDefined,
+                isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator && !isUsedSetOperatorFuncForField && !isOpDefined,
                 operator = getOperatorInSpaceString(value),
                 initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
@@ -373,6 +383,21 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
             }
 
 
+            if (isUsedIsNotNullWord && !isFirstIndex) {
+                arrayOfEqualAndQuestionMarks.push(getOp(value));
+                arrayOfKeyAndValueDataForQuery.push(key);
+                arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IS_NOT_NULL}`);
+                index++;
+            }
+
+
+            if (isUsedIsNotNullWord && isFirstIndex) {
+                arrayOfKeyAndValueDataForQuery.push(key);
+                arrayOfEqualAndQuestionMarks.push(`${IS_NOT_NULL}`);
+                index++;
+            }
+
+
             if (!isOpDefined)
                 continue;
 
@@ -420,11 +445,6 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
 
 
         }
-
-
-    if (isUndefinedOptionKeyword)
-        return `WHERE ${DOUBLE_QUESTION_MARK} ` +
-            `${arrayOfEqualAndQuestionMarks.join(' ').trim()}`;
 
 
     let isPreviousWordEqualDesc,
@@ -488,11 +508,11 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     }
 
 
-    if (!isUndefinedOptionKeyword && !isUndefinedWhereCondition)
+    if (!isUndefinedWhereCondition)
         return `WHERE ${DOUBLE_QUESTION_MARK} ` +
             `${arrayOfEqualAndQuestionMarks.join(' ').trim()}`;
 
-    return arrayOfEqualAndQuestionMarks.join(' ');
+    return arrayOfEqualAndQuestionMarks.join(' ').trim();
 
 }
 
@@ -525,7 +545,6 @@ function isCount(data) {
 function isSource(data) {
     return /POINTER_FOR_SOURCE /.test(data);
 }
-
 
 
 module.exports = {
@@ -660,120 +679,10 @@ module.exports = {
     },
 
 
-    getOptionKeywordSqlQuery(jsonArray) {
+    getFindSqlQuery(jsonObject) {
 
-        let newArrayOfKeywordsWithSqlContext = [],
-            isWhereCondition = (jsonArray.where !== undefined),
-            isLimit = (typeof jsonArray.limit !== 'undefined');
+        module.exports.sqlQuery = getQueryAndCheckOtherConditionInJsonObject(jsonObject);
 
-
-        if (jsonArray.optKey === undefined)
-            return module.exports.sqlQuery = '';
-
-
-        jsonArray.optKey.forEach((item, index, arrayOfKeyword) => {
-            let isFirstIndex = (index === 0),
-                nextKeyword = arrayOfKeyword[index + 1],
-                isUsedOrderByWord = item === ORDER_BY,
-                isUsedAscWord = item === ASC,
-                isUsedDescWord = item === DESC,
-                isUsedLimitWord = item === LIMIT,
-                isUsedIsNotNullWord = item === IS_NOT_NULL,
-                isUsedBetweenWord = item === BETWEEN,
-                isUsedInWord = item === IN,
-                isUsedUnion = item === UNION,
-                isArray = Array.isArray(item),
-                isUsedUnionAll = item === UNION_ALL,
-                isJsonObject = typeof item === 'object',
-                isUsedLikeWord = item === LIKE,
-                isNextKeywordAsc = nextKeyword === ASC,
-                isNextKeywordDesc = nextKeyword === DESC,
-                isItemInOperators = arrayOfOperator.includes(item),
-                isOptionKeyword = arrayOfValidOptionKeyword.includes(nextKeyword),
-                isNextKeywordUndefined = (nextKeyword !== undefined),
-                isNextItemOffset = (nextKeyword === OFFSET) ? `${OFFSET} ${QUESTION_MARK}` : '',
-                nextItemUndefinedToNullOrValue = (isNextKeywordUndefined && !isOptionKeyword) ? nextKeyword : '';
-
-
-            if (isUsedUnion || isUsedUnionAll) {
-                module.exports.validateIdentifiers(nextKeyword);
-                newArrayOfKeywordsWithSqlContext.push(` ${item} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} `);
-            }
-
-
-            if (isFirstIndex && isItemInOperators)
-                newArrayOfKeywordsWithSqlContext.push(` ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (!isFirstIndex && isItemInOperators)
-                newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (isUsedBetweenWord && !isFirstIndex && isWhereCondition)
-                newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (isUsedBetweenWord && isFirstIndex && isWhereCondition)
-                newArrayOfKeywordsWithSqlContext.push(` ${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (isUsedInWord && isFirstIndex)
-                newArrayOfKeywordsWithSqlContext.push(` ${item} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (isUsedInWord && !isFirstIndex)
-                newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (isUsedLikeWord && isFirstIndex)
-                newArrayOfKeywordsWithSqlContext.push(` ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (isUsedLikeWord && !isFirstIndex)
-                newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${QUESTION_MARK} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (isUsedOrderByWord && !isJsonObject && !isArray)
-                newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${QUESTION_MARK}`);
-
-
-            if (!isUsedOrderByWord && isJsonObject && !isArray)
-                newArrayOfKeywordsWithSqlContext.push(`${ORDER_BY} ${item.placeHolder} `);
-
-
-            if (isUsedAscWord || isUsedDescWord)
-                newArrayOfKeywordsWithSqlContext.push(` ${item} `);
-
-
-            if ((isUsedAscWord && isNextKeywordDesc) || (isUsedDescWord && isNextKeywordAsc))
-                newArrayOfKeywordsWithSqlContext.push(`${COMMA} ${QUESTION_MARK}`);
-
-
-            if (isLimit && isUsedLimitWord)
-                newArrayOfKeywordsWithSqlContext.push(`${item} ${QUESTION_MARK} ${COMMA} ${QUESTION_MARK} ${isNextItemOffset}`);
-
-
-            if (!isLimit && isUsedLimitWord)
-                newArrayOfKeywordsWithSqlContext.push(`${item} ${QUESTION_MARK} ${isNextItemOffset}`);
-
-
-            if (isUsedIsNotNullWord && !isFirstIndex)
-                newArrayOfKeywordsWithSqlContext.push(` ${DOUBLE_QUESTION_MARK} ${item} ${nextItemUndefinedToNullOrValue}`);
-
-
-            if (isUsedIsNotNullWord && isFirstIndex)
-                newArrayOfKeywordsWithSqlContext.push(`${item} ${nextItemUndefinedToNullOrValue}`);
-
-
-        });
-
-        module.exports.sqlQuery = newArrayOfKeywordsWithSqlContext.join('').trim();
-
-        if (isWhereCondition)
-            return module.exports.sqlQuery = `WHERE ${DOUBLE_QUESTION_MARK} ` +
-                `${newArrayOfKeywordsWithSqlContext.join('').trim()}`;
-
-        return module.exports.sqlQuery;
     },
 
 
@@ -867,6 +776,9 @@ module.exports = {
 
 
     validateIdentifiers(index) {
+        if (index === null)
+            return;
+
         let isArray = Array.isArray(index);
         if (isArray) {
 

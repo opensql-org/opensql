@@ -138,18 +138,6 @@ module.exports = {
     },
 
 
-    ORDER(data) {
-        let isArray = Array.isArray(data);
-
-        if (isArray)
-            return {
-                placeHolder: getDoubleQuestionMarkAndCommaForOrderBy(data)
-            };
-
-        return '';
-    },
-
-
     CAST(data, type) {
         let isString = typeof data === 'string';
 
@@ -172,6 +160,13 @@ module.exports = {
 
     SOURCE(name, typeName) {
         return (typeName !== undefined) ? `POINTER_FOR_SOURCE '` + name + `' AS ${typeName}` : `POINTER_FOR_SOURCE '` + name + `' AS Source`;
+    },
+
+
+    ATTACH(array, op) {
+        if (op !== undefined)
+            return `${op.toLowerCase()} attach ${array.join(' ').trim()}`;
+        return `attach ${array.join(' ').trim()}`;
     }
 
 

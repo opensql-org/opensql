@@ -13,7 +13,7 @@ const {
         validateIdentifiers,
         generateValueWithComma,
         getCreateTableSqlQuery,
-        getOptionKeywordSqlQuery,
+        getFindSqlQuery,
         getStringOfColumnWithComma,
         removeStringOfDataForForSet,
         removeDataForInsertSqlQuery,
@@ -181,7 +181,7 @@ module.exports = {
 
     addWithFind(jsonObject) {
 
-        getOptionKeywordSqlQuery(jsonObject);
+        getFindSqlQuery(jsonObject);
 
         validateIdentifiers((jsonObject.optKey !== undefined) ? jsonObject.optKey[0] : null);
 
@@ -221,7 +221,7 @@ module.exports = {
 
     find(jsonObject) {
 
-        getOptionKeywordSqlQuery(jsonObject);
+        getFindSqlQuery(jsonObject);
 
         validateIdentifiers((jsonObject.optKey !== undefined) ? jsonObject.optKey[0] : null);
 
