@@ -25,12 +25,12 @@ describe('Query Helper Module', () => {
         }).toThrow('Invalid data type');
     });
 
-    it('should be return string equal to < SPACE Treegex', async () => {
-        expect(setOperator(LESS_THAN, 'Treegex')).toBe('< SPACE Treegex');
+    it('should be return string equal to < POINTER_FOR_SPACE Treegex', async () => {
+        expect(setOperator(LESS_THAN, 'Treegex')).toBe('< POINTER_FOR_SPACE Treegex');
     });
 
-    it('should be return string equal to and < SPACE Treegex', async () => {
-        expect(setOperator(LESS_THAN, 'Treegex', keyHelper.AND)).toBe('and < SPACE Treegex');
+    it('should be return string equal to and < POINTER_FOR_SPACE Treegex', async () => {
+        expect(setOperator(LESS_THAN, 'Treegex', keyHelper.AND)).toBe('and < POINTER_FOR_SPACE Treegex');
     });
 
     it('should be return array equal to [\'OR\',\'id\',\'10\']', async () => {
@@ -49,28 +49,28 @@ describe('Query Helper Module', () => {
         );
     });
 
-    it('should be return string equal to in 1,5', async () => {
-        expect(IN([1, 5])).toBe('in 1,5');
+    it('should be return string equal to POINTER_FOR_IN 1,5', async () => {
+        expect(IN([1, 5])).toBe('POINTER_FOR_IN 1,5');
     });
 
-    it('should be return string equal and to in 1,5', async () => {
-        expect(IN([1, 5], keyHelper.AND)).toBe('and in 1,5');
+    it('should be return string equal and to POINTER_FOR_IN 1,5', async () => {
+        expect(IN([1, 5], keyHelper.AND)).toBe('and POINTER_FOR_IN 1,5');
     });
 
-    it('should be return string equal to between 1 and 5', async () => {
-        expect(BETWEEN(1, 5)).toBe('between 1 and 5');
+    it('should be return string equal to  POINTER_FOR_BETWEEN 1 POINTER_FOR_AND 5', async () => {
+        expect(BETWEEN(1, 5)).toBe('POINTER_FOR_BETWEEN 1 POINTER_FOR_AND 5');
     });
 
-    it('should be return string equal and between 1 and 5', async () => {
-        expect(BETWEEN(1, 5, keyHelper.AND)).toBe('and between 1 and 5');
+    it('should be return string equal and  POINTER_FOR_BETWEEN 1 POINTER_FOR_AND 5', async () => {
+        expect(BETWEEN(1, 5, keyHelper.AND)).toBe('and POINTER_FOR_BETWEEN 1 POINTER_FOR_AND 5');
     });
 
-    it('should be return string equal to like %a', async () => {
-        expect(LIKE('%a')).toBe('like %a');
+    it('should be return string equal to POINTER_FOR_LIKE %a', async () => {
+        expect(LIKE('%a')).toBe('POINTER_FOR_LIKE %a');
     });
 
-    it('should be return string equal and like %a', async () => {
-        expect(LIKE('%a', keyHelper.AND)).toBe('and like %a');
+    it('should be return string equal and POINTER_FOR_LIKE %a', async () => {
+        expect(LIKE('%a', keyHelper.AND)).toBe('and POINTER_FOR_LIKE %a');
     });
 
 });

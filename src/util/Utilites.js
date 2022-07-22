@@ -72,7 +72,7 @@ function generateArrayOfKeyAndValueForEditField(jsonObject) {
 
 
 function isSpaceWordInString(str) {
-    return str.toString().search('SPACE') > -1;
+    return str.toString().search('POINTER_FOR_SPACE') > -1;
 }
 
 
@@ -103,7 +103,7 @@ function splitValueOfSpaceWordInString(str) {
         let newStr = str.split(' ');
         if (newStr[0] === ('and' || 'or'))
             newStr.shift();
-        if (newStr[1] === 'SPACE')
+        if (newStr[1] === 'POINTER_FOR_SPACE')
             newStr.splice(1, 1);
         return newStr[1];
     } catch (e) {
@@ -113,7 +113,7 @@ function splitValueOfSpaceWordInString(str) {
 function splitOperatorInString(str) {
     try {
         let newStr = str.split(' ');
-        if (newStr[1] === 'SPACE')
+        if (newStr[1] === 'POINTER_FOR_SPACE')
             newStr.splice(1, 1);
         if (newStr[0] === 'and' || newStr[0] === 'or')
             newStr.shift();
@@ -123,15 +123,19 @@ function splitOperatorInString(str) {
 }
 
 function stringToArrayForInOperator(str) {
-    return str.replace('in ', '').split(',');
+    return str.replace('POINTER_FOR_IN', '').trim().split(',');
 }
 
 function removeAndOperatorInString(str) {
-    return str.replace('and ', '').trim();
+    return str.replace('POINTER_FOR_IN', '').trim();
 }
 
 function removeOrOperatorInString(str) {
     return str.replace('or ', '').trim();
+}
+
+function removeAttachPointerFromString(str) {
+    return str.replace('POINTER_FOR_ATTACH ', '').trim();
 }
 
 function isAndOperator(str) {
@@ -152,23 +156,30 @@ function getValidValue(str) {
 
 function isInOperatorInString(str) {
     if (typeof str === 'string')
-        return /in /.test(str);
+        return /POINTER_FOR_IN/.test(str);
     return false;
 }
 
 function isBetweenOperatorInString(str) {
     if (typeof str === 'string')
-        return /between /.test(str);
+        return /POINTER_FOR_BETWEEN/.test(str);
     return false;
 }
+
+
 
 
 function isLikeOperatorInString(str) {
     if (typeof str === 'string')
-        return /like /.test(str);
+        return /POINTER_FOR_LIKE/.test(str);
     return false;
 }
 
+function isAttachFunc(str) {
+    if (typeof str === 'string')
+        return /POINTER_FOR_ATTACH/.test(str);
+    return false;
+}
 
 function getValueOfLikeOperator(str) {
     return str.split(' ')[1];
@@ -290,6 +301,7 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
                 arrayOfSpecialQueryUtilitiesOperator = [],
                 isAccessToCheckOtherCondition = false,
                 newArrayForOperatorAndValue2d = [],
+                isUsedAttachFunc = isAttachFunc(value),
                 isUsedIsNotNullWord = value === IS_NOT_NULL,
                 isUsedSetOperatorFuncForField = isSpaceWordInString(value),
                 getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
@@ -560,7 +572,7 @@ module.exports = {
     stringOfDataForForSet: '',
     dataForInsertSqlQuery: [],
     stringOfValueWithComma: '',
-    arrayOfDataForUpdateOrDeleteQuery: '',
+    arrayOfDataForSqlInjection: '',
     stringOfDoubleQuestionMarkAndComma: '',
 
 

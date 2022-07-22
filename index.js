@@ -129,7 +129,7 @@ module.exports = {
 
         realSql = getUseDatabaseName() + ' DELETE FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
-        query(realSql, util.arrayOfDataForUpdateOrDeleteQuery);
+        query(realSql, util.arrayOfDataForSqlInjection);
 
         removeSqlQuery();
         removeStringOfDataForForSet();
@@ -146,7 +146,7 @@ module.exports = {
         realSql = getUseDatabaseName() + ' UPDATE ' + DOUBLE_QUESTION_MARK +
             `SET ${util.stringOfDataForForSet} ` + util.sqlQuery;
 
-        query(realSql, util.arrayOfDataForUpdateOrDeleteQuery);
+        query(realSql, util.arrayOfDataForSqlInjection);
 
         removeSqlQuery();
         removeStringOfDataForForSet();
@@ -183,15 +183,15 @@ module.exports = {
 
         getFindSqlQuery(jsonObject);
 
-        validateIdentifiers((jsonObject.optKey !== undefined) ? jsonObject.optKey[0] : null);
+        validateIdentifiers((jsonObject.get !== undefined) ? jsonObject.get : null);
 
         let selectSqlQuery = ' SELECT ' + getIdentifier() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
         realSql = getUseDatabaseName() + ' INSERT INTO ' + jsonObject.table +
-            ` (${getStringOfColumnWithComma(jsonObject.data[0])}) ` + selectSqlQuery;
+            ` (${getStringOfColumnWithComma(jsonObject.get)}) ` + selectSqlQuery;
 
-        query(realSql, jsonObject.data);
+        query(realSql, util.arrayOfDataForSqlInjection);
 
         removeSqlQuery();
 
@@ -223,12 +223,12 @@ module.exports = {
 
         getFindSqlQuery(jsonObject);
 
-        validateIdentifiers((jsonObject.optKey !== undefined) ? jsonObject.optKey[0] : null);
+        validateIdentifiers((jsonObject.get !== undefined) ? jsonObject.get : null);
 
         realSql = getUseDatabaseName() + ' SELECT ' + getIdentifier() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
-        query(realSql, jsonObject.data);
+        query(realSql, util.arrayOfDataForSqlInjection);
 
         removeSqlQuery();
 
