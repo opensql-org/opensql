@@ -506,6 +506,28 @@ function isDefinedDefaultWordInFirstOfString(str) {
         return str.search('DEFAULT') === 0;
 }
 
+function isPointField(data) {
+    return /X\(/.test(data);
+}
+
+function isCast(data) {
+    return /CAST\(/.test(data);
+}
+
+function isAs(data) {
+    return /POINTER_FOR_AS /.test(data);
+}
+
+function isCount(data) {
+    return /COUNT\(/.test(data);
+}
+
+function isSource(data) {
+    return /POINTER_FOR_SOURCE /.test(data);
+}
+
+
+
 module.exports = {
 
 
@@ -851,23 +873,18 @@ module.exports = {
             let newArr = [];
 
             index.forEach((item, indexOfArr) => {
-                let isPointField = /X\(/.test(item);
-                let isCast = /CAST\(/.test(item);
-                let isAs = /POINTER_FOR_AS /.test(item);
-                let isSource = /POINTER_FOR_SOURCE /.test(item);
-                let isCount = /COUNT\(/.test(item);
                 let isLastIndex = index.length === indexOfArr + 1;
 
 
-                if (item !== STAR && COUNT && !isPointField && !isCast && !isAs && !isSource) {
+                if (item !== STAR && COUNT && !isPointField(item) && !isCast(item) && !isAs(item) && !isSource(item)) {
                     newArr.push(DOUBLE_QUESTION_MARK);
                 }
 
-                if (item !== STAR && COUNT && isPointField && !isCast && !isAs && !isSource) {
+                if (item !== STAR && COUNT && isPointField(item) && !isCast(item) && !isAs(item) && !isSource(item)) {
                     newArr.push(item);
                 }
 
-                if (isCast || isCount) {
+                if (isCast(item) || isCount(item)) {
                     newArr.push(item);
                 }
 
@@ -875,11 +892,11 @@ module.exports = {
                     newArr.push(STAR);
                 }
 
-                if (isAs) {
+                if (isAs(item)) {
                     newArr.push(item.replace('POINTER_FOR_AS ', ''));
                 }
 
-                if (isSource) {
+                if (isSource(item)) {
                     newArr.push(item.replace('POINTER_FOR_SOURCE ', ''));
                 }
 
@@ -891,17 +908,12 @@ module.exports = {
             return identifier = newArr.join(' ');
         }
 
-        let isPointField = /X\(/.test(index);
-        let isCast = /CAST\(/.test(index);
-        let isAs = /POINTER_FOR_AS /.test(index);
-        let isCount = /COUNT\(/.test(index);
-        let isSource = /POINTER_FOR_SOURCE /.test(index);
 
-        if (index !== STAR && COUNT && !isPointField) {
+        if (index !== STAR && COUNT && !isPointField(index)) {
             identifier = DOUBLE_QUESTION_MARK;
         }
 
-        if (index !== STAR && COUNT && isPointField) {
+        if (index !== STAR && COUNT && isPointField(index)) {
             identifier = index;
         }
 
@@ -909,15 +921,15 @@ module.exports = {
             identifier = STAR;
         }
 
-        if (isCast || isCount) {
+        if (isCast(index) || isCount(index)) {
             identifier = index;
         }
 
-        if (isAs && !isPointField && !isCast && !isCount && !isSource) {
+        if (isAs(index) && !isPointField(index) && !isCast(index) && !isCount(index) && !isSource(index)) {
             identifier = index.replace('POINTER_FOR_AS ', '');
         }
 
-        if (isSource) {
+        if (isSource(index)) {
             identifier = index.replace('POINTER_FOR_SOURCE ', '');
         }
 
