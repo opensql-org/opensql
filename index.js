@@ -1,53 +1,12 @@
-const {
-        query,
-        sqlQueryResult
-    } = require('./src/DatabaseConnection'),
-    {
-        QUESTION_MARK,
-        IF_NOT_EXISTS,
-        DOUBLE_QUESTION_MARK
-    } = require('./src/util/KeywordHelper'),
-    {
-        getIdentifier,
-        removeSqlQuery,
-        validateIdentifiers,
-        generateValueWithComma,
-        getCreateTableSqlQuery,
-        getFindSqlQuery,
-        getStringOfColumnWithComma,
-        removeStringOfDataForForSet,
-        removeDataForInsertSqlQuery,
-        removeStringOfValueWithComma,
-        generateDeleteSqlQueryWithData,
-        generateUpdateSqlQueryWithData,
-        getGeneratedColumns,
-        removeArrayOfDataForUpdateOrDeleteQuery
-    } = require('./src/util/Utilites'),
-    {
-        connect
-    } = require('./src/DatabaseConnection'),
+let api = require('./src/api/api'),
     DataType = require('./src/util/DataType'),
     KeywordHelper = require('./src/util/KeywordHelper'),
     FieldHelper = require('./src/util/FieldHelper'),
     VariableDataType = require('./src/util/VariableDataType'),
     QueryHelper = require('./src/util/QueryHelper'),
-    util = require('./src/util/Utilites');
-
-
-let realSql,
-    connectJsonObject,
-    userInputDatabaseName,
-    databaseName = '';
-
-function getUseDatabaseName() {
-    return (connectJsonObject['database'] !== undefined) ?
-        '' : 'USE ' + databaseName + '; ';
-}
-
-function getDatabaseName() {
-    return (userInputDatabaseName !== undefined) ?
-        userInputDatabaseName : databaseName;
-}
+    {
+        sqlQueryResult
+    } = require('./src/DatabaseConnection');
 
 module.exports = {
 
@@ -64,32 +23,24 @@ module.exports = {
 
 
     connect(jsonObject) {
-        connectJsonObject = jsonObject;
-        connect(jsonObject);
+
+        api.connect(jsonObject);
+
         return this;
     },
 
 
     createDatabase(name) {
-        databaseName = name;
-        query(`CREATE DATABASE IF NOT EXISTS ${name}`
-            + ` CHARACTER SET utf8 COLLATE utf8_unicode_ci`,
-            null);
+
+        api.createDatabase(name);
+
         return this;
     },
 
 
     createTable(jsonObject) {
 
-        getCreateTableSqlQuery(jsonObject);
-
-        realSql = getUseDatabaseName() +
-            ` CREATE TABLE ${IF_NOT_EXISTS} ` + '`' + jsonObject.table + '`' +
-            `(${util.sqlQuery})`;
-
-        query(realSql, null);
-
-        removeSqlQuery();
+        api.createTable(jsonObject);
 
         return this;
     },
@@ -97,13 +48,7 @@ module.exports = {
 
     dropTable(data) {
 
-        generateValueWithComma(data);
-
-        realSql = getUseDatabaseName() + 'DROP TABLE IF EXISTS ' + util.stringOfValueWithComma;
-
-        query(realSql, null);
-
-        removeStringOfValueWithComma();
+        api.dropTable(data);
 
         return this;
     },
@@ -111,13 +56,7 @@ module.exports = {
 
     addForeignKey(jsonObject) {
 
-        realSql = getUseDatabaseName() + ' ALTER TABLE ' + '`' + jsonObject.table + '`' +
-            ` ADD FOREIGN KEY (` + '`' + jsonObject.foreignKey + '`' + `) ` +
-            `REFERENCES ` + '`' + jsonObject.referenceTable + '`' +
-            `(` + '`' + jsonObject.field + '`' + `) ON DELETE ` +
-            `${jsonObject.onDelete} ON UPDATE ${jsonObject.onUpdate}`;
-
-        query(realSql, null);
+        api.addForeignKey(jsonObject);
 
         return this;
     },
@@ -125,15 +64,7 @@ module.exports = {
 
     remove(jsonObject) {
 
-        generateDeleteSqlQueryWithData(jsonObject);
-
-        realSql = getUseDatabaseName() + ' DELETE FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
-
-        query(realSql, util.arrayOfDataForSqlInjection);
-
-        removeSqlQuery();
-        removeStringOfDataForForSet();
-        removeArrayOfDataForUpdateOrDeleteQuery();
+        api.remove(jsonObject);
 
         return this;
     },
@@ -141,16 +72,7 @@ module.exports = {
 
     update(jsonObject) {
 
-        generateUpdateSqlQueryWithData(jsonObject);
-
-        realSql = getUseDatabaseName() + ' UPDATE ' + DOUBLE_QUESTION_MARK +
-            `SET ${util.stringOfDataForForSet} ` + util.sqlQuery;
-
-        query(realSql, util.arrayOfDataForSqlInjection);
-
-        removeSqlQuery();
-        removeStringOfDataForForSet();
-        removeArrayOfDataForUpdateOrDeleteQuery();
+        api.update(jsonObject);
 
         return this;
     },
@@ -158,12 +80,7 @@ module.exports = {
 
     addMultiValue(jsonObject) {
 
-        realSql = getUseDatabaseName() + ' INSERT INTO ' + jsonObject.table + ' (' +
-            getGeneratedColumns(jsonObject) + ') VALUES ' + QUESTION_MARK;
-
-        query(realSql, util.dataForInsertSqlQuery);
-
-        removeDataForInsertSqlQuery();
+        api.addMultiValue(jsonObject);
 
         return this;
     },
@@ -171,9 +88,7 @@ module.exports = {
 
     addOne(jsonObject) {
 
-        realSql = getUseDatabaseName() + ' INSERT INTO ' + jsonObject.table + ' SET ' + QUESTION_MARK;
-
-        query(realSql, jsonObject.data);
+        api.addOne(jsonObject);
 
         return this;
     },
@@ -181,39 +96,23 @@ module.exports = {
 
     addWithFind(jsonObject) {
 
-        getFindSqlQuery(jsonObject);
-
-        validateIdentifiers((jsonObject.get !== undefined) ? jsonObject.get : null);
-
-        let selectSqlQuery = ' SELECT ' + getIdentifier() +
-            ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
-
-        realSql = getUseDatabaseName() + ' INSERT INTO ' + jsonObject.table +
-            ` (${getStringOfColumnWithComma(jsonObject.get)}) ` + selectSqlQuery;
-
-        query(realSql, util.arrayOfDataForSqlInjection);
-
-        removeSqlQuery();
+        api.addWithFind(jsonObject);
 
         return this;
     },
 
 
-    customQuery(sqlQuery) {
+    customQuery(sqlQuery, inject) {
 
-        realSql = getUseDatabaseName() + ` ${sqlQuery}`;
-
-        query(realSql, null);
+        api.customQuery(sqlQuery, inject);
 
         return this;
     },
 
 
     dropDatabase(databaseName) {
-        if (databaseName !== undefined)
-            userInputDatabaseName = databaseName;
 
-        query("DROP DATABASE " + "`" + getDatabaseName() + "`", null);
+        api.dropDatabase(databaseName);
 
         return this;
     },
@@ -221,31 +120,15 @@ module.exports = {
 
     find(jsonObject) {
 
-        getFindSqlQuery(jsonObject);
-
-        validateIdentifiers((jsonObject.get !== undefined) ? jsonObject.get : null);
-
-        realSql = getUseDatabaseName() + ' SELECT ' + getIdentifier() +
-            ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
-
-        query(realSql, util.arrayOfDataForSqlInjection);
-
-        removeSqlQuery();
+        api.find(jsonObject);
 
         return this;
     },
 
 
     findTable(tableName, databaseName) {
-        if (databaseName !== undefined)
-            userInputDatabaseName = databaseName;
 
-        realSql = 'SELECT TABLE_NAME ' +
-            'FROM INFORMATION_SCHEMA.TABLES ' +
-            'WHERE TABLE_NAME = ' + "'" + tableName + "' " +
-            'AND TABLE_SCHEMA = ' + "'" + getDatabaseName() + "'";
-
-        query(realSql, null);
+        api.findTable(tableName, databaseName);
 
         return this;
     },
@@ -256,11 +139,6 @@ module.exports = {
             sqlQueryResult(result => {
                 callBackResult(result);
             });
-    },
-
-
-    getSqlQuery() {
-        return realSql;
     }
 
 }

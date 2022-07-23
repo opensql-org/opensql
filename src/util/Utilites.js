@@ -27,6 +27,8 @@ const {
 
 
 let stringOfQuestionMarkAndEqual,
+    indexForWhereJsonObject = 0,
+    arrayOfEqualAndQuestionMarks = [],
     arrayOfKeyAndValueDataForQuery = [],
     identifier;
 
@@ -167,8 +169,6 @@ function isBetweenOperatorInString(str) {
 }
 
 
-
-
 function isLikeOperatorInString(str) {
     if (typeof str === 'string')
         return /POINTER_FOR_LIKE/.test(str);
@@ -260,17 +260,132 @@ function countRepeatedWords(sentence) {
     return count;
 }
 
+
+function valueValidationForWhereJsonObject(key, value) {
+    let isFirstIndex = (indexForWhereJsonObject === 0),
+        isBetweenOperator = isBetweenOperatorInString(value),
+        isOpDefined = Array.isArray(value) && key === 'op',
+        isLikeOperator = isLikeOperatorInString(value),
+        newValue = getValueInSpaceString(value),
+        isInOperator = isInOperatorInString(value),
+        isAccessToCheckOtherCondition = false,
+        isUsedIsNotNullWord = value === IS_NOT_NULL,
+        isUsedSetOperatorFuncForField = isSpaceWordInString(value),
+        getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
+        isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator && !isUsedSetOperatorFuncForField && !isOpDefined,
+        operator = getOperatorInSpaceString(value),
+        initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
+
+
+    if (isUsedSetOperatorFuncForField && !isFirstIndex) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfKeyAndValueDataForQuery.push(newValue);
+        arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator} ${initPlaceHolder}`);
+        indexForWhereJsonObject++;
+    }
+
+
+    if (isUsedSetOperatorFuncForField && isFirstIndex) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfKeyAndValueDataForQuery.push(newValue);
+        arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK}`);
+        indexForWhereJsonObject++;
+    }
+
+
+    if (!isAccessToCheckOtherCondition && isFirstIndex && isNotOperator) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfKeyAndValueDataForQuery.push(value);
+        arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK}`);
+        indexForWhereJsonObject++;
+    }
+
+    if (!isAccessToCheckOtherCondition && !isFirstIndex && isNotOperator) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfKeyAndValueDataForQuery.push(value);
+        arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator} ${initPlaceHolder}`);
+        indexForWhereJsonObject++;
+    }
+
+    if (isInOperator && isFirstIndex) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfEqualAndQuestionMarks.push(`${IN}`);
+        arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
+        indexForWhereJsonObject++;
+    }
+
+
+    if (isInOperator && !isFirstIndex) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfEqualAndQuestionMarks.push(getOp(value))
+        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IN}`);
+        arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
+        indexForWhereJsonObject++;
+    }
+
+
+    if (isBetweenOperator && !isFirstIndex) {
+        arrayOfEqualAndQuestionMarks.push(getOp(value));
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
+        indexForWhereJsonObject++;
+    }
+
+    if (isBetweenOperator && isFirstIndex) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfEqualAndQuestionMarks.push(`${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
+        indexForWhereJsonObject++;
+    }
+
+
+    if (isBetweenOperator) {
+        arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(splitStringToArrayOfCharactersForBetweenOperator(value));
+        indexForWhereJsonObject++;
+    }
+
+
+    if (isLikeOperator && !isFirstIndex) {
+        arrayOfEqualAndQuestionMarks.push(getOp(value));
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfKeyAndValueDataForQuery.push(getValueOfLikeOperator(getValidValue(value)));
+        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${LIKE} ${QUESTION_MARK}`);
+        indexForWhereJsonObject++;
+    }
+
+
+    if (isLikeOperator && isFirstIndex) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfKeyAndValueDataForQuery.push(getValueOfLikeOperator(getValidValue(value)));
+        arrayOfEqualAndQuestionMarks.push(`${LIKE} ${QUESTION_MARK}`);
+        indexForWhereJsonObject++;
+    }
+
+
+    if (isUsedIsNotNullWord && !isFirstIndex) {
+        arrayOfEqualAndQuestionMarks.push(getOp(value));
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IS_NOT_NULL}`);
+        indexForWhereJsonObject++;
+    }
+
+
+    if (isUsedIsNotNullWord && isFirstIndex) {
+        arrayOfKeyAndValueDataForQuery.push(key);
+        arrayOfEqualAndQuestionMarks.push(`${IS_NOT_NULL}`);
+        indexForWhereJsonObject++;
+    }
+
+}
+
 function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
-    let index = 0,
-        where = jsonObject?.where,
+    let where = jsonObject?.where,
         option = jsonObject?.option,
         get = jsonObject?.get,
         from = jsonObject?.from,
         isUndefinedWhereCondition = where === undefined,
         isDefinedGet = get !== undefined,
         isDefinedFrom = from !== undefined,
-        isUndefinedOptionKeyword = option === undefined,
-        arrayOfEqualAndQuestionMarks = [];
+        isUndefinedOptionKeyword = option === undefined;
 
 
     if (isUndefinedWhereCondition && isUndefinedOptionKeyword && !isDefinedFrom && !isDefinedGet)
@@ -305,126 +420,15 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
         for (let key in where) {
             let value = where[key],
                 arrayOfOperatorAndValue2d = where?.op,
-                isFirstIndex = (index === 0),
-                isBetweenOperator = isBetweenOperatorInString(value),
-                isOpDefined = Array.isArray(value) && key === 'op',
-                isLikeOperator = isLikeOperatorInString(value),
-                newValue = getValueInSpaceString(value),
-                isInOperator = isInOperatorInString(value),
-                arrayOfSpecialQueryUtilitiesOperator = [],
-                isAccessToCheckOtherCondition = false,
-                newArrayForOperatorAndValue2d = [],
                 isUsedAttachFunc = isAttachFunc(value),
-                isUsedIsNotNullWord = value === IS_NOT_NULL,
-                isUsedSetOperatorFuncForField = isSpaceWordInString(value),
-                getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
-                isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator && !isUsedSetOperatorFuncForField && !isOpDefined,
+                isFirstIndex = (indexForWhereJsonObject === 0),
+                isOpDefined = Array.isArray(value) && key === 'op',
+                arrayOfSpecialQueryUtilitiesOperator = [],
+                newArrayForOperatorAndValue2d = [],
                 operator = getOperatorInSpaceString(value),
                 initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
-
-
-
-
-
-            if (isUsedSetOperatorFuncForField && !isFirstIndex) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfKeyAndValueDataForQuery.push(newValue);
-                arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator} ${initPlaceHolder}`);
-                index++;
-            }
-
-
-            if (isUsedSetOperatorFuncForField && isFirstIndex) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfKeyAndValueDataForQuery.push(newValue);
-                arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK}`);
-                index++;
-            }
-
-
-            if (!isAccessToCheckOtherCondition && isFirstIndex && isNotOperator) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfKeyAndValueDataForQuery.push(value);
-                arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK}`);
-                index++;
-            }
-
-            if (!isAccessToCheckOtherCondition && !isFirstIndex && isNotOperator) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfKeyAndValueDataForQuery.push(value);
-                arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator} ${initPlaceHolder}`);
-                index++;
-            }
-
-            if (isInOperator && isFirstIndex) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfEqualAndQuestionMarks.push(`${IN}`);
-                arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
-                index++;
-            }
-
-
-            if (isInOperator && !isFirstIndex) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfEqualAndQuestionMarks.push(getOp(value))
-                arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IN}`);
-                arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
-                index++;
-            }
-
-
-            if (isBetweenOperator && !isFirstIndex) {
-                arrayOfEqualAndQuestionMarks.push(getOp(value));
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
-                index++;
-            }
-
-            if (isBetweenOperator && isFirstIndex) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfEqualAndQuestionMarks.push(`${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
-                index++;
-            }
-
-
-            if (isBetweenOperator) {
-                arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(splitStringToArrayOfCharactersForBetweenOperator(value));
-                index++;
-            }
-
-
-            if (isLikeOperator && !isFirstIndex) {
-                arrayOfEqualAndQuestionMarks.push(getOp(value));
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfKeyAndValueDataForQuery.push(getValueOfLikeOperator(getValidValue(value)));
-                arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${LIKE} ${QUESTION_MARK}`);
-                index++;
-            }
-
-
-            if (isLikeOperator && isFirstIndex) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfKeyAndValueDataForQuery.push(getValueOfLikeOperator(getValidValue(value)));
-                arrayOfEqualAndQuestionMarks.push(`${LIKE} ${QUESTION_MARK}`);
-                index++;
-            }
-
-
-            if (isUsedIsNotNullWord && !isFirstIndex) {
-                arrayOfEqualAndQuestionMarks.push(getOp(value));
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IS_NOT_NULL}`);
-                index++;
-            }
-
-
-            if (isUsedIsNotNullWord && isFirstIndex) {
-                arrayOfKeyAndValueDataForQuery.push(key);
-                arrayOfEqualAndQuestionMarks.push(`${IS_NOT_NULL}`);
-                index++;
-            }
-
+            valueValidationForWhereJsonObject(key, value);
 
             if (!isOpDefined)
                 continue;
@@ -455,7 +459,7 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
 
             if (isFirstIndex && (isArrayFor2dHaveOneKeyAndValue || isArrayFor2dHaveMoreThanOneKeyAndValue)) {
                 arrayOfEqualAndQuestionMarks.push(`${operator} ${QUESTION_MARK}`);
-                index++;
+                indexForWhereJsonObject++;
             }
 
 
@@ -468,7 +472,7 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
 
                 });
 
-                index++;
+                indexForWhereJsonObject++;
             }
 
 
@@ -589,7 +593,7 @@ module.exports = {
     stringOfDataForForSet: '',
     dataForInsertSqlQuery: [],
     stringOfValueWithComma: '',
-    arrayOfDataForSqlInjection: '',
+    arrayOfDataForSqlInjection: [],
     stringOfDoubleQuestionMarkAndComma: '',
 
 
@@ -751,10 +755,8 @@ module.exports = {
 
         arrayOfKeyAndValueDataForQuery.unshift(jsonObject.table);
 
-        module.exports.arrayOfDataForUpdateOrDeleteQuery = arrayOfKeyAndValueDataForQuery;
+        module.exports.arrayOfDataForSqlInjection = arrayOfKeyAndValueDataForQuery;
 
-
-        arrayOfKeyAndValueDataForQuery = [];
     },
 
 
@@ -764,10 +766,7 @@ module.exports = {
 
         arrayOfKeyAndValueDataForQuery.unshift(jsonObject.table);
 
-        module.exports.arrayOfDataForUpdateOrDeleteQuery = arrayOfKeyAndValueDataForQuery;
-
-        arrayOfKeyAndValueDataForQuery = [];
-        module.exports.sqlQuery = '';
+        module.exports.arrayOfDataForSqlInjection = arrayOfKeyAndValueDataForQuery;
     },
 
 
@@ -780,29 +779,20 @@ module.exports = {
     },
 
 
-    removeStringOfValueWithComma() {
-        return module.exports.stringOfValueWithComma = '';
+    setNullValueInRam() {
+        identifier = '';
+        indexForWhereJsonObject = 0;
+        module.exports.sqlQuery = '';
+        arrayOfEqualAndQuestionMarks = [];
+        stringOfQuestionMarkAndEqual = '';
+        arrayOfKeyAndValueDataForQuery = [];
+        module.exports.stringOfDataForForSet = '';
+        module.exports.dataForInsertSqlQuery = [];
+        module.exports.stringOfValueWithComma = '';
+        module.exports.arrayOfDataForSqlInjection = [];
+        module.exports.stringOfDoubleQuestionMarkAndComma = '';
     },
 
-
-    removeSqlQuery() {
-        return module.exports.sqlQuery = '';
-    },
-
-
-    removeStringOfDataForForSet() {
-        return module.exports.stringOfDataForForSet = '';
-    },
-
-
-    removeDataForInsertSqlQuery() {
-        return module.exports.dataForInsertSqlQuery = [];
-    },
-
-
-    removeArrayOfDataForUpdateOrDeleteQuery() {
-        return module.exports.arrayOfDataForUpdateOrDeleteQuery = [];
-    },
 
 
     getIdentifier() {
