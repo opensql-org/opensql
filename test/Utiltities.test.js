@@ -1,17 +1,13 @@
 const {
         getIdentifier,
-        removeSqlQuery,
+        getFindSqlQuery,
+        setNullValueInRam,
         getGeneratedColumns,
+        validateIdentifiers,
         getCreateTableSqlQuery,
         generateValueWithComma,
-        validateIdentifiers,
-        getOptionKeywordSqlQuery,
         getStringOfColumnWithComma,
-        removeDataForInsertSqlQuery,
-        removeStringOfDataForForSet,
-        removeStringOfValueWithComma,
-        generateUpdateSqlQueryWithData,
-        removeArrayOfDataForUpdateOrDeleteQuery
+        generateUpdateSqlQueryWithData
     } = require('../src/util/Utilites'),
     {
         AUTO_INCREMENT
@@ -37,7 +33,6 @@ const {
         LIKE,
         CAST,
         COUNT,
-        ORDER,
         SOURCE,
         BETWEEN,
         NOT_NULL,
@@ -48,6 +43,10 @@ const {
 
 
 describe('getCreateTableSqlQuery', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
 
     it('should be return string equal to id int AUTO_INCREMENT', async () => {
         getCreateTableSqlQuery({
@@ -175,7 +174,7 @@ describe('getCreateTableSqlQuery', () => {
                 name: DECIMAL([9, 5])
             }
         });
-        removeSqlQuery();
+        setNullValueInRam();
         expect(util.sqlQuery).toBe('');
     });
 
@@ -184,6 +183,11 @@ describe('getCreateTableSqlQuery', () => {
 
 describe('generateValueWithComma', () => {
 
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
+
     it('should be return string equal to users', async () => {
         generateValueWithComma('users');
         expect(util.stringOfValueWithComma).toBe('users');
@@ -191,7 +195,7 @@ describe('generateValueWithComma', () => {
 
     it('should be return empty string', async () => {
         generateValueWithComma('users');
-        removeStringOfValueWithComma();
+        setNullValueInRam();
         expect(util.stringOfValueWithComma).toBe('');
     });
 
@@ -204,6 +208,11 @@ describe('generateValueWithComma', () => {
 
 
 describe('generateUpdateSqlQueryWithData', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
 
     it('should be return string equal to ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
@@ -224,14 +233,14 @@ describe('generateUpdateSqlQueryWithData', () => {
         expect(util.stringOfDataForForSet).toBe('?? = ? , ?? = ?');
     });
 
-    it("should be return array equal to ['users', 'status','1']", async () => {
+    it("should be return array equal to ['users', 'status', '1']", async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             edit: {
                 status: 1
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'status', '1']
         );
     });
@@ -244,7 +253,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'treegex'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'status', '1', 'username', 'treegex']
         );
     });
@@ -256,7 +265,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 id: 12
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', 12]
         );
     });
@@ -269,7 +278,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', 12, 'username', 'root']
         );
     });
@@ -282,7 +291,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', '12', 'username', 'root']
         );
     });
@@ -295,7 +304,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', '12', 'username', 'root']
         );
     });
@@ -308,7 +317,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', ['10', '15'], 'username', 'root']
         );
     });
@@ -321,7 +330,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', ['10', '15'], 'username', 'root']
         );
     });
@@ -334,7 +343,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', '10', '15', 'username', 'root']
         );
     });
@@ -347,7 +356,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', '10', '15', 'username', 'root']
         );
     });
@@ -360,7 +369,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', '10', 'username', 'root']
         );
     });
@@ -373,7 +382,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', '10', 'username', 'root']
         );
     });
@@ -393,7 +402,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 ]
             }
         });
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
+        expect(util.arrayOfDataForSqlInjection).toEqual(
             ['users', 'id', '10', 'username', 'root', 'id', '1', 'status', 'true']
         );
     });
@@ -560,6 +569,7 @@ describe('generateUpdateSqlQueryWithData', () => {
 
     it('should be return string equal to WHERE ?? = ? AND ?? LIKE ?', async () => {
         generateUpdateSqlQueryWithData({
+
             where: {
                 username: 'root',
                 id: LIKE(50),
@@ -585,7 +595,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 id: LIKE(50, keyHelper.OR),
             }
         });
-        removeSqlQuery();
+        setNullValueInRam();
         expect(util.sqlQuery).toBe('');
     });
 
@@ -596,19 +606,12 @@ describe('generateUpdateSqlQueryWithData', () => {
                 id: LIKE(50, keyHelper.OR),
             }
         });
-        removeStringOfDataForForSet();
         expect(util.stringOfDataForForSet).toBe('');
     });
 
     it('should be return empty array', async () => {
-        generateUpdateSqlQueryWithData({
-            where: {
-                username: 'root',
-                id: LIKE(50, keyHelper.OR),
-            }
-        });
-        removeArrayOfDataForUpdateOrDeleteQuery();
-        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual([]);
+        generateUpdateSqlQueryWithData({});
+        expect(util.arrayOfDataForSqlInjection).toEqual([]);
     });
 
     it('should be return string equal to WHERE ?? = ? ORDER BY ?', async () => {
@@ -756,6 +759,11 @@ describe('generateUpdateSqlQueryWithData', () => {
 
 describe('generateDoubleQuestionMarkAndComma', () => {
 
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
+
     it("should be return array of arrays wrapped in an array", async () => {
         getGeneratedColumns({
             data: [
@@ -785,7 +793,7 @@ describe('generateDoubleQuestionMarkAndComma', () => {
             ],
             column: ['name', 'author']
         });
-        removeDataForInsertSqlQuery();
+        setNullValueInRam();
         expect(util.dataForInsertSqlQuery).toEqual([]);
     });
 
@@ -793,6 +801,11 @@ describe('generateDoubleQuestionMarkAndComma', () => {
 
 
 describe('getStringOfColumnWithComma', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
 
     it('should be return string equal to username,status', async () => {
         expect(getStringOfColumnWithComma(['username', 'status'])).toBe('username,status');
@@ -803,265 +816,269 @@ describe('getStringOfColumnWithComma', () => {
 
 describe('getOptionKeywordSqlQuery', () => {
 
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
     it('should be return empty string', async () => {
-        getOptionKeywordSqlQuery({
-            where: true
-        });
+        getFindSqlQuery({});
         expect(util.sqlQuery).toBe('');
     });
 
     it('should be return string equal to WHERE ?? < ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                password: setOperator(LESS_THAN, 8)
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ?');
     });
 
     it('should be return string equal to WHERE ?? BETWEEN ? AND ? AND ?? < ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                keyHelper.BETWEEN,
-                keyHelper.AND,
-                LESS_THAN
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: BETWEEN(1, 10),
+                password: setOperator(LESS_THAN, 8)
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? < ?');
     });
 
     it('should be return string equal to WHERE ?? < ? AND ?? BETWEEN ? AND ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.AND,
-                keyHelper.BETWEEN
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                password: setOperator(LESS_THAN, 8),
+                id: BETWEEN(1, 10)
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? BETWEEN ? AND ?');
     });
 
     it('should be return string equal to WHERE ?? < ? AND ?? IN (?)', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.AND,
-                keyHelper.IN
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                password: setOperator(LESS_THAN, 8),
+                id: IN([1, 80])
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? IN (?)');
     });
 
     it('should be return string equal to WHERE ?? IN (?) AND ?? < ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                keyHelper.IN,
-                keyHelper.AND,
-                LESS_THAN
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: IN([1, 80]),
+                password: setOperator(LESS_THAN, 8)
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? IN (?) AND ?? < ?');
     });
 
     it('should be return string equal to WHERE ?? LIKE ? AND ?? < ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                keyHelper.LIKE,
-                keyHelper.AND,
-                LESS_THAN
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                name: LIKE('%l'),
+                id: setOperator(LESS_THAN, 8)
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? LIKE ? AND ?? < ?');
     });
 
     it('should be return string equal to WHERE ?? < ? AND ?? LIKE ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.AND,
-                keyHelper.LIKE
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 8),
+                name: LIKE('%l')
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? LIKE ?');
     });
 
     it('should be return string equal to WHERE ?? < ? AND ?? IS NOT NULL', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.AND,
-                IS_NOT_NULL
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 8),
+                name: IS_NOT_NULL
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? IS NOT NULL');
     });
 
     it('should be return string equal to WHERE ?? IS NOT NULL AND ?? < ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                IS_NOT_NULL,
-                keyHelper.AND,
-                LESS_THAN
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                name: IS_NOT_NULL,
+                id: setOperator(LESS_THAN, 8)
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? IS NOT NULL AND ?? < ?');
     });
 
     it('should be return string equal to WHERE ?? < ? AND ?? LIKE ? AND ?? IN (?)', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.AND,
-                keyHelper.LIKE,
-                keyHelper.AND,
-                keyHelper.IN
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5),
+                name: LIKE('%pub'),
+                type: IN([1, 5])
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? LIKE ? AND ?? IN (?)');
     });
 
     it('should be return string equal to WHERE ?? < ? ORDER BY ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.ORDER_BY
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5)
+            },
+            option: {
+                order: 'id'
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ?');
     });
 
     it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.ORDER_BY,
-                keyHelper.DESC
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5)
+            },
+            option: {
+                order: 'id',
+                name: keyHelper.DESC
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC');
     });
 
     it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC LIMIT ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.ORDER_BY,
-                keyHelper.DESC,
-                keyHelper.LIMIT
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5)
+            },
+            option: {
+                order: 'id',
+                name: keyHelper.DESC,
+                limit: 2
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC LIMIT ?');
     });
 
     it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC , ? ASC LIMIT ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.ORDER_BY,
-                keyHelper.DESC,
-                keyHelper.ASC,
-                keyHelper.LIMIT
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5)
+            },
+            option: {
+                order: 'id',
+                name: keyHelper.DESC,
+                id: keyHelper.ASC,
+                limit: 5
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC , ? ASC LIMIT ?');
     });
 
+
     it('should be return string equal to WHERE ?? < ? ORDER BY ? DESC , ? ASC', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.ORDER_BY,
-                keyHelper.DESC,
-                keyHelper.ASC
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5)
+            },
+            option: {
+                order: [['id'], keyHelper.DESC],
+                id: keyHelper.ASC
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? ORDER BY ? DESC , ? ASC');
     });
 
     it('should be return string equal to WHERE ?? < ? LIMIT ? OFFSET ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.LIMIT,
-                keyHelper.OFFSET
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5)
+            },
+            option: {
+                limit: 5,
+                offset: 5
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? LIMIT ? OFFSET ?');
     });
 
     it('should be return string equal to WHERE ?? < ? LIMIT ? , ? OFFSET ?', async () => {
-        getOptionKeywordSqlQuery({
-            where: true,
-            limit: true,
-            optKey: [
-                LESS_THAN,
-                keyHelper.LIMIT,
-                keyHelper.OFFSET
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5)
+            },
+            option: {
+                limit: [1, 8],
+                offset: 5
+            }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? LIMIT ? , ? OFFSET ?');
     });
 
     it('should be return string equal to LIMIT ? , ? OFFSET ?', async () => {
-        getOptionKeywordSqlQuery({
-            limit: true,
-            optKey: [
-                keyHelper.LIMIT,
-                keyHelper.OFFSET
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            option: {
+                limit: [10, 60],
+                offset: 1
+            }
         });
         expect(util.sqlQuery).toBe('LIMIT ? , ? OFFSET ?');
     });
 
     it('should be return string equal to LIMIT ? , ?', async () => {
-        getOptionKeywordSqlQuery({
-            limit: true,
-            optKey: [
-                keyHelper.LIMIT
-            ]
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            option: {
+                limit: [1, 2]
+            }
         });
         expect(util.sqlQuery).toBe('LIMIT ? , ?');
     });
 
-    it('should be return string equal to ORDER BY ? , ?', async () => {
-        getOptionKeywordSqlQuery({
-            limit: true,
-            optKey: [
-                ORDER(['id', 'name'])
-            ]
-        });
-        expect(util.sqlQuery).toBe('ORDER BY ? , ?');
-    });
-
-    it('should be return string equal to ORDER BY ? , ? LIMIT ?', async () => {
-        getOptionKeywordSqlQuery({
-            optKey: [
-                ORDER(['id', 'name']),
-                keyHelper.LIMIT
-            ]
-        });
-        expect(util.sqlQuery).toBe('ORDER BY ? , ? LIMIT ?');
-    });
-
     it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
-        getOptionKeywordSqlQuery({
-            optKey: [
+        getFindSqlQuery({
+            get: [
                 keyHelper.UNION
             ]
         });
@@ -1069,8 +1086,8 @@ describe('getOptionKeywordSqlQuery', () => {
     });
 
     it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
-        getOptionKeywordSqlQuery({
-            optKey: [
+        getFindSqlQuery({
+            get: [
                 keyHelper.STAR, keyHelper.UNION
             ]
         });
@@ -1078,8 +1095,8 @@ describe('getOptionKeywordSqlQuery', () => {
     });
 
     it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
-        getOptionKeywordSqlQuery({
-            optKey: [
+        getFindSqlQuery({
+            get: [
                 keyHelper.STAR, keyHelper.UNION, keyHelper.STAR
             ]
         });
@@ -1091,6 +1108,11 @@ describe('getOptionKeywordSqlQuery', () => {
 
 
 describe('removeFieldDataInSelect', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
 
     it('should be return * char', async () => {
         validateIdentifiers(
@@ -1129,7 +1151,7 @@ describe('removeFieldDataInSelect', () => {
 
     it("should be return string equal to 'name' AS Source", async () => {
         validateIdentifiers(
-             SOURCE('name')
+            SOURCE('name')
         );
         expect(getIdentifier()).toBe("'name' AS Source");
     });

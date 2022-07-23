@@ -102,8 +102,8 @@ module.exports = {
             throw new Error('Invalid data type');
 
         if (op !== undefined)
-            return `${op.toLowerCase()} ${operator} SPACE ${value}`;
-        return `${operator} SPACE ${value}`;
+            return `${op.toLowerCase()} ${operator} POINTER_FOR_SPACE ${value}`;
+        return `${operator} POINTER_FOR_SPACE ${value}`;
     },
 
 
@@ -119,34 +119,22 @@ module.exports = {
 
     IN(arr, op) {
         if (op !== undefined)
-            return `${op.toLowerCase()} in ${arr}`;
-        return `in ${arr}`;
+            return `${op.toLowerCase()} POINTER_FOR_IN ${arr}`;
+        return `POINTER_FOR_IN ${arr}`;
     },
 
 
     BETWEEN(first, second, op) {
         if (op !== undefined)
-            return `${op.toLowerCase()} between ${first} and ${second}`;
-        return `between ${first} and ${second}`;
+            return `${op.toLowerCase()} POINTER_FOR_BETWEEN ${first} POINTER_FOR_AND ${second}`;
+        return `POINTER_FOR_BETWEEN ${first} POINTER_FOR_AND ${second}`;
     },
 
 
     LIKE(str, op) {
         if (op !== undefined)
-            return `${op.toLowerCase()} like ${str}`;
-        return `like ${str}`;
-    },
-
-
-    ORDER(data) {
-        let isArray = Array.isArray(data);
-
-        if (isArray)
-            return {
-                placeHolder: getDoubleQuestionMarkAndCommaForOrderBy(data)
-            };
-
-        return '';
+            return `${op.toLowerCase()} POINTER_FOR_LIKE ${str}`;
+        return `POINTER_FOR_LIKE ${str}`;
     },
 
 
@@ -172,6 +160,13 @@ module.exports = {
 
     SOURCE(name, typeName) {
         return (typeName !== undefined) ? `POINTER_FOR_SOURCE '` + name + `' AS ${typeName}` : `POINTER_FOR_SOURCE '` + name + `' AS Source`;
+    },
+
+
+    ATTACH(array, op) {
+        if (op !== undefined)
+            return `${op.toLowerCase()} POINTER_FOR_ATTACH ${array.join(' ').replace(',', ' ').trim()}`;
+        return `POINTER_FOR_ATTACH ${array.join(' ').replace(',', ' ').trim()}`;
     }
 
 
