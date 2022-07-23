@@ -246,6 +246,19 @@ function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
     return str;
 }
 
+function countRepeatedWords(sentence) {
+    let words = sentence.split(' '),
+        count = 0;
+
+    words.forEach((item, index) => {
+        let isDoubleQuestionMark = words[index] === '??';
+
+        if (isDoubleQuestionMark)
+            count++;
+    });
+
+    return count;
+}
 
 function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     let index = 0,
@@ -308,6 +321,10 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
                 isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator && !isUsedSetOperatorFuncForField && !isOpDefined,
                 operator = getOperatorInSpaceString(value),
                 initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
+
+
+
+
 
 
             if (isUsedSetOperatorFuncForField && !isFirstIndex) {

@@ -223,14 +223,14 @@ describe('generateUpdateSqlQueryWithData', () => {
         expect(util.stringOfDataForForSet).toBe('?? = ? , ?? = ?');
     });
 
-    it("should be return array equal to ['users', 'status','1']", async () => {
+    it("should be return array equal to ['users', 'status', '1']", async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
             edit: {
                 status: 1
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'status', '1']
         );
     });
@@ -243,7 +243,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'treegex'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'status', '1', 'username', 'treegex']
         );
     });
@@ -255,7 +255,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 id: 12
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', 12]
         );
     });
@@ -268,7 +268,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', 12, 'username', 'root']
         );
     });
@@ -281,7 +281,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', '12', 'username', 'root']
         );
     });
@@ -294,7 +294,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', '12', 'username', 'root']
         );
     });
@@ -307,7 +307,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', ['10', '15'], 'username', 'root']
         );
     });
@@ -320,7 +320,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', ['10', '15'], 'username', 'root']
         );
     });
@@ -333,7 +333,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', '10', '15', 'username', 'root']
         );
     });
@@ -346,7 +346,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', '10', '15', 'username', 'root']
         );
     });
@@ -359,7 +359,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', '10', 'username', 'root']
         );
     });
@@ -372,7 +372,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 username: 'root'
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', '10', 'username', 'root']
         );
     });
@@ -392,7 +392,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 ]
             }
         });
-        expect(util.arrayOfDataForSqlInjection).toEqual(
+        expect(util.arrayOfDataForUpdateOrDeleteQuery).toEqual(
             ['users', 'id', '10', 'username', 'root', 'id', '1', 'status', 'true']
         );
     });
@@ -602,13 +602,10 @@ describe('generateUpdateSqlQueryWithData', () => {
 
     it('should be return empty array', async () => {
         generateUpdateSqlQueryWithData({
-            where: {
-                username: 'root',
-                id: LIKE(50, keyHelper.OR),
-            }
+
         });
         removeArrayOfDataForUpdateOrDeleteQuery();
-        expect(util.arrayOfDataForSqlInjection).toEqual([]);
+        expect(util.arrayOfDataForSqlInjection).toEqual('');
     });
 
     it('should be return string equal to WHERE ?? = ? ORDER BY ?', async () => {
