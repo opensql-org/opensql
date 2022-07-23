@@ -1,4 +1,5 @@
 let openSql = require('../index'),
+    exe = require('../src/execute/run'),
     {
         INT,
         ENUM,
@@ -39,7 +40,7 @@ describe('create table', () => {
             },
             primaryKey: 'id'
         });
-        expect(openSql.getSqlQuery()).toBe("USE test_open_Sql_database;  CREATE TABLE IF NOT EXISTS `users`(id int NOT NULL AUTO_INCREMENT, email varchar(255) NOT NULL, phone varchar(20) , PRIMARY KEY (id))");
+        expect(exe.getSqlQuery()).toBe("USE test_open_Sql_database;  CREATE TABLE IF NOT EXISTS `users`(id int NOT NULL AUTO_INCREMENT, email varchar(255) NOT NULL, phone varchar(20) , PRIMARY KEY (id))");
     });
 
     it('should be return create table sql query', async () => {
@@ -52,7 +53,7 @@ describe('create table', () => {
                 user_id: INT()
             }
         });
-        expect(openSql.getSqlQuery()).toBe("USE test_open_Sql_database;  CREATE TABLE IF NOT EXISTS `SavedMessages`(type enum('Image', 'Location'), isReply boolean, location point, user_id int)");
+        expect(exe.getSqlQuery()).toBe("USE test_open_Sql_database;  CREATE TABLE IF NOT EXISTS `SavedMessages`(type enum('Image', 'Location'), isReply boolean, location point, user_id int)");
     });
 
 
@@ -67,7 +68,7 @@ describe('create table', () => {
             onUpdate: CASCADE
         });
 
-        expect(openSql.getSqlQuery()).toBe("USE test_open_Sql_database;  ALTER TABLE `SavedMessages` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+        expect(exe.getSqlQuery()).toBe("USE test_open_Sql_database;  ALTER TABLE `SavedMessages` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
     });
 
 
@@ -78,12 +79,12 @@ describe('Drop Table', () => {
 
     it('should be return drop table sql query', async () => {
         openSql.dropTable('users');
-        expect(openSql.getSqlQuery()).toBe("USE test_open_Sql_database; DROP TABLE IF EXISTS users");
+        expect(exe.getSqlQuery()).toBe("USE test_open_Sql_database; DROP TABLE IF EXISTS users");
     });
 
     it('should be return sql query for drop two tables', async () => {
         openSql.dropTable(['users', 'SavedMessages']);
-        expect(openSql.getSqlQuery()).toBe("USE test_open_Sql_database; DROP TABLE IF EXISTS users , SavedMessages");
+        expect(exe.getSqlQuery()).toBe("USE test_open_Sql_database; DROP TABLE IF EXISTS users , SavedMessages");
     });
 
 });

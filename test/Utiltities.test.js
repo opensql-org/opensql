@@ -1,18 +1,13 @@
 const {
         getIdentifier,
-        removeSqlQuery,
         getFindSqlQuery,
+        setNullValueInRam,
         getGeneratedColumns,
         validateIdentifiers,
         getCreateTableSqlQuery,
         generateValueWithComma,
         getStringOfColumnWithComma,
-        removeDataForInsertSqlQuery,
-        removeStringOfDataForForSet,
-        removeStringOfValueWithComma,
-        generateUpdateSqlQueryWithData,
-        removeArrayOfDataForSqlInjection,
-        removeArrayOfEqualAndQuestionMarks
+        generateUpdateSqlQueryWithData
     } = require('../src/util/Utilites'),
     {
         AUTO_INCREMENT
@@ -48,6 +43,10 @@ const {
 
 
 describe('getCreateTableSqlQuery', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
 
     it('should be return string equal to id int AUTO_INCREMENT', async () => {
         getCreateTableSqlQuery({
@@ -175,7 +174,7 @@ describe('getCreateTableSqlQuery', () => {
                 name: DECIMAL([9, 5])
             }
         });
-        removeSqlQuery();
+        setNullValueInRam();
         expect(util.sqlQuery).toBe('');
     });
 
@@ -184,6 +183,11 @@ describe('getCreateTableSqlQuery', () => {
 
 describe('generateValueWithComma', () => {
 
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
+
     it('should be return string equal to users', async () => {
         generateValueWithComma('users');
         expect(util.stringOfValueWithComma).toBe('users');
@@ -191,7 +195,7 @@ describe('generateValueWithComma', () => {
 
     it('should be return empty string', async () => {
         generateValueWithComma('users');
-        removeStringOfValueWithComma();
+        setNullValueInRam();
         expect(util.stringOfValueWithComma).toBe('');
     });
 
@@ -204,6 +208,11 @@ describe('generateValueWithComma', () => {
 
 
 describe('generateUpdateSqlQueryWithData', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
 
     it('should be return string equal to ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
@@ -586,7 +595,7 @@ describe('generateUpdateSqlQueryWithData', () => {
                 id: LIKE(50, keyHelper.OR),
             }
         });
-        removeSqlQuery();
+        setNullValueInRam();
         expect(util.sqlQuery).toBe('');
     });
 
@@ -597,16 +606,12 @@ describe('generateUpdateSqlQueryWithData', () => {
                 id: LIKE(50, keyHelper.OR),
             }
         });
-        removeStringOfDataForForSet();
         expect(util.stringOfDataForForSet).toBe('');
     });
 
     it('should be return empty array', async () => {
-        generateUpdateSqlQueryWithData({
-
-        });
-        removeArrayOfDataForSqlInjection();
-        expect(util.arrayOfDataForSqlInjection).toEqual('');
+        generateUpdateSqlQueryWithData({});
+        expect(util.arrayOfDataForSqlInjection).toEqual([]);
     });
 
     it('should be return string equal to WHERE ?? = ? ORDER BY ?', async () => {
@@ -754,6 +759,11 @@ describe('generateUpdateSqlQueryWithData', () => {
 
 describe('generateDoubleQuestionMarkAndComma', () => {
 
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
+
     it("should be return array of arrays wrapped in an array", async () => {
         getGeneratedColumns({
             data: [
@@ -783,7 +793,7 @@ describe('generateDoubleQuestionMarkAndComma', () => {
             ],
             column: ['name', 'author']
         });
-        removeDataForInsertSqlQuery();
+        setNullValueInRam();
         expect(util.dataForInsertSqlQuery).toEqual([]);
     });
 
@@ -791,6 +801,11 @@ describe('generateDoubleQuestionMarkAndComma', () => {
 
 
 describe('getStringOfColumnWithComma', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
 
     it('should be return string equal to username,status', async () => {
         expect(getStringOfColumnWithComma(['username', 'status'])).toBe('username,status');
@@ -800,6 +815,10 @@ describe('getStringOfColumnWithComma', () => {
 
 
 describe('getOptionKeywordSqlQuery', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
 
     it('should be return empty string', async () => {
         getFindSqlQuery({});
@@ -1081,9 +1100,6 @@ describe('getOptionKeywordSqlQuery', () => {
                 keyHelper.STAR, keyHelper.UNION, keyHelper.STAR
             ]
         });
-        removeSqlQuery();
-        removeArrayOfEqualAndQuestionMarks();
-        removeArrayOfDataForSqlInjection();
         expect(util.sqlQuery).toBe('UNION SELECT * FROM ??');
     });
 
@@ -1092,6 +1108,11 @@ describe('getOptionKeywordSqlQuery', () => {
 
 
 describe('removeFieldDataInSelect', () => {
+
+    beforeEach(async () => {
+        setNullValueInRam();
+    });
+
 
     it('should be return * char', async () => {
         validateIdentifiers(
