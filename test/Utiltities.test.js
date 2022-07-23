@@ -33,6 +33,7 @@ const {
         LIKE,
         CAST,
         COUNT,
+        ATTACH,
         SOURCE,
         BETWEEN,
         NOT_NULL,
@@ -843,6 +844,17 @@ describe('getOptionKeywordSqlQuery', () => {
             where: {
                 id: BETWEEN(1, 10),
                 password: setOperator(LESS_THAN, 8)
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? < ?');
+    });
+
+    it('should be return string equal to WHERE ?? BETWEEN ? AND ? AND ?? < ?', async () => {
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: ATTACH([BETWEEN(1, 10), setOperator(LESS_THAN, 8)])
             }
         });
         expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? < ?');
