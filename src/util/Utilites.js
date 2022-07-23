@@ -136,10 +136,6 @@ function removeOrOperatorInString(str) {
     return str.replace('or ', '').trim();
 }
 
-function removeAttachPointerFromString(str) {
-    return str.replace('POINTER_FOR_ATTACH ', '').trim();
-}
-
 function isAndOperator(str) {
     return str.search('and') === 0;
 }
@@ -172,12 +168,6 @@ function isBetweenOperatorInString(str) {
 function isLikeOperatorInString(str) {
     if (typeof str === 'string')
         return /POINTER_FOR_LIKE/.test(str);
-    return false;
-}
-
-function isAttachFunc(str) {
-    if (typeof str === 'string')
-        return /POINTER_FOR_ATTACH/.test(str);
     return false;
 }
 
@@ -246,22 +236,8 @@ function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
     return str;
 }
 
-function countRepeatedWords(sentence) {
-    let words = sentence.split(' '),
-        count = 0;
 
-    words.forEach((item, index) => {
-        let isDoubleQuestionMark = words[index] === '??';
-
-        if (isDoubleQuestionMark)
-            count++;
-    });
-
-    return count;
-}
-
-
-function valueValidationForWhereJsonObject(key, value) {
+function valueValidationForWhereJsonObject(key, value, optionData) {
     let isFirstIndex = (indexForWhereJsonObject === 0),
         isBetweenOperator = isBetweenOperatorInString(value),
         isOpDefined = Array.isArray(value) && key === 'op',
@@ -272,7 +248,11 @@ function valueValidationForWhereJsonObject(key, value) {
         isUsedIsNotNullWord = value === IS_NOT_NULL,
         isUsedSetOperatorFuncForField = isSpaceWordInString(value),
         getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
-        isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator && !isUsedSetOperatorFuncForField && !isOpDefined,
+        getJsonObjectInWhereCondition = (optionData !== undefined) ?
+            optionData['isJsonObjectInWhereCondition'] : false,
+        isJsonObjectInWhereCondition = getJsonObjectInWhereCondition === true,
+        isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator
+            && !isUsedSetOperatorFuncForField && !isOpDefined && !isJsonObjectInWhereCondition,
         operator = getOperatorInSpaceString(value),
         initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
@@ -377,6 +357,13 @@ function valueValidationForWhereJsonObject(key, value) {
 
 }
 
+function isJsonObject(data) {
+    if (data === undefined)
+        return false;
+    if (data.constructor === ({}).constructor)
+        return true;
+}
+
 function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     let where = jsonObject?.where,
         option = jsonObject?.option,
@@ -420,7 +407,6 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
         for (let key in where) {
             let value = where[key],
                 arrayOfOperatorAndValue2d = where?.op,
-                isUsedAttachFunc = isAttachFunc(value),
                 isFirstIndex = (indexForWhereJsonObject === 0),
                 isOpDefined = Array.isArray(value) && key === 'op',
                 arrayOfSpecialQueryUtilitiesOperator = [],
@@ -428,7 +414,22 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
                 operator = getOperatorInSpaceString(value),
                 initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
-            valueValidationForWhereJsonObject(key, value);
+            if (isJsonObject(value) && !isFirstIndex) {
+                arrayOfEqualAndQuestionMarks.push(getOp(value['op']));
+            }
+
+            if (isJsonObject(value)) {
+                value['data'].forEach(item => {
+                    valueValidationForWhereJsonObject(key, item, {
+                        isJsonObjectInWhereCondition: true
+                    });
+                });
+                indexForWhereJsonObject++;
+            }
+
+
+            if (!isJsonObject(value))
+                valueValidationForWhereJsonObject(key, value);
 
             if (!isOpDefined)
                 continue;
@@ -792,7 +793,6 @@ module.exports = {
         module.exports.arrayOfDataForSqlInjection = [];
         module.exports.stringOfDoubleQuestionMarkAndComma = '';
     },
-
 
 
     getIdentifier() {

@@ -165,8 +165,14 @@ module.exports = {
 
     ATTACH(array, op) {
         if (op !== undefined)
-            return `${op.toLowerCase()} POINTER_FOR_ATTACH ${array.join(' ').replace(',', ' ').trim()}`;
-        return `POINTER_FOR_ATTACH ${array.join(' ').replace(',', ' ').trim()}`;
+            return {
+                op: op.toLowerCase(),
+                data: array
+            };
+
+        return {
+            data: array
+        };
     }
 
 
