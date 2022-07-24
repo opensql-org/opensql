@@ -1088,33 +1088,6 @@ describe('getOptionKeywordSqlQuery', () => {
         expect(util.sqlQuery).toBe('LIMIT ? , ?');
     });
 
-    it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
-        getFindSqlQuery({
-            get: [
-                keyHelper.UNION
-            ]
-        });
-        expect(util.sqlQuery).toBe('UNION SELECT ?? FROM ??');
-    });
-
-    it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
-        getFindSqlQuery({
-            get: [
-                keyHelper.STAR, keyHelper.UNION
-            ]
-        });
-        expect(util.sqlQuery).toBe('UNION SELECT ?? FROM ??');
-    });
-
-    it('should be return string equal to UNION SELECT ?? FROM ??', async () => {
-        getFindSqlQuery({
-            get: [
-                keyHelper.STAR, keyHelper.UNION, keyHelper.STAR
-            ]
-        });
-        expect(util.sqlQuery).toBe('UNION SELECT * FROM ??');
-    });
-
 
 });
 

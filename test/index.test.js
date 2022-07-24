@@ -8,12 +8,16 @@ let openSql = require('../index'),
         VARCHAR
     } = openSql.dataType,
     {
+        STAR,
         CASCADE,
         AUTO_INCREMENT
     } = openSql.keywordHelper,
     {
-        NOT_NULL
+        UNION,
+        NOT_NULL,
+        UNION_ALL
     } = openSql.queryHelper;
+
 
 beforeAll(() => {
 
@@ -71,6 +75,68 @@ describe('create table', () => {
         expect(exe.getSqlQuery()).toBe("USE test_open_Sql_database;  ALTER TABLE `SavedMessages` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
     });
 
+
+});
+
+
+describe('Union Sql Query', () => {
+
+    it('should be return string equal to USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT ?? FROM ??', async () => {
+        openSql.find({
+            get: 'id',
+            from: 'users',
+            union: [
+                UNION({
+                    get: STAR,
+                    from: 'book'
+                })
+            ]
+        });
+        expect(exe.getSqlQuery()).toBe('USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT * FROM ??');
+    });
+
+
+    it('should be return string equal to USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT ?? FROM ?? WHERE ?? = ?', async () => {
+        openSql.find({
+            get: 'id',
+            from: 'users',
+            union: [
+                UNION({
+                    get: STAR,
+                    from: 'book',
+                    where: {
+                        id: 65
+                    }
+                })
+            ]
+        });
+        expect(exe.getSqlQuery()).toBe('USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT * FROM ?? WHERE ?? = ?');
+    });
+
+
+    it('should be return string equal to USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT ?? FROM ?? WHERE ?? = ? UNION ALL SELECT * FROM ?? WHERE ?? = ?', async () => {
+        openSql.find({
+            get: 'id',
+            from: 'users',
+            union: [
+                UNION({
+                    get: STAR,
+                    from: 'book',
+                    where: {
+                        id: 65
+                    }
+                }),
+                UNION_ALL({
+                    get: STAR,
+                    from: 'book',
+                    where: {
+                        id: 65
+                    }
+                })
+            ]
+        });
+        expect(exe.getSqlQuery()).toBe('USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT * FROM ?? WHERE ?? = ? UNION ALL SELECT * FROM ?? WHERE ?? = ?');
+    });
 
 });
 

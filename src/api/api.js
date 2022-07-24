@@ -6,6 +6,7 @@ let {
     {
         getIdentifier,
         getFindSqlQuery,
+        validateUnionQuery,
         validateIdentifiers,
         getGeneratedColumns,
         generateValueWithComma,
@@ -137,6 +138,7 @@ module.exports = {
         getFindSqlQuery(jsonObject);
 
         validateIdentifiers((jsonObject.get !== undefined) ? jsonObject.get : null);
+        validateUnionQuery((jsonObject.union !== undefined) ? jsonObject.union : null);
 
         run(getUseDatabaseName() + ' SELECT ' + getIdentifier() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery
