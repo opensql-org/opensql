@@ -9,11 +9,9 @@ const {
         COMMA,
         LIMIT,
         COUNT,
-        UNION,
         OFFSET,
         BETWEEN,
         ORDER_BY,
-        UNION_ALL,
         QUESTION_MARK,
         AUTO_INCREMENT,
         DOUBLE_QUESTION_MARK,
@@ -364,6 +362,12 @@ function isJsonObject(data) {
         return true;
 }
 
+
+function InitializationIndexWhenExistMultiSqlQuery() {
+    return indexForWhereJsonObject = 0;
+}
+
+
 function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     let where = jsonObject?.where,
         option = jsonObject?.option,
@@ -375,26 +379,9 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
         isUndefinedOptionKeyword = option === undefined;
 
 
-    if (isUndefinedWhereCondition && isUndefinedOptionKeyword && !isDefinedFrom && !isDefinedGet)
+    if (isUndefinedWhereCondition && isUndefinedOptionKeyword && !isDefinedFrom && !isDefinedGet) {
+        InitializationIndexWhenExistMultiSqlQuery();
         return module.exports.sqlQuery = '';
-
-
-    if (isDefinedGet) {
-
-        arrayOfKeyAndValueDataForQuery.push(get);
-
-        get.forEach((item, index, arrayOfKeyword) => {
-
-            let isUsedUnionAll = item === UNION_ALL,
-                nextKeyword = arrayOfKeyword[index + 1],
-                isUsedUnion = item === UNION;
-
-            if (isUsedUnion || isUsedUnionAll) {
-                module.exports.validateIdentifiers(nextKeyword);
-                arrayOfEqualAndQuestionMarks.push(` ${item} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} `);
-            }
-
-        });
     }
 
 
@@ -548,10 +535,13 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     }
 
 
-    if (!isUndefinedWhereCondition)
+    if (!isUndefinedWhereCondition) {
+        InitializationIndexWhenExistMultiSqlQuery();
         return `WHERE ${DOUBLE_QUESTION_MARK} ` +
             `${arrayOfEqualAndQuestionMarks.join(' ').trim()}`;
+    }
 
+    InitializationIndexWhenExistMultiSqlQuery();
     return arrayOfEqualAndQuestionMarks.join(' ').trim();
 
 }
@@ -598,6 +588,33 @@ module.exports = {
     stringOfDoubleQuestionMarkAndComma: '',
 
 
+    validateUnionQuery(array) {
+        if (array === null)
+            return;
+
+        let str = '';
+
+        array.forEach(item => {
+
+            let itemForgetObjectIntoArray = item.data.get;
+            let where = item.data?.where,
+                isUndefinedWhereCondition = where === undefined;
+
+            module.exports.validateIdentifiers(itemForgetObjectIntoArray);
+
+            if (isUndefinedWhereCondition)
+                arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK}`);
+
+            if (!isUndefinedWhereCondition) {
+                arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} WHERE ??`);
+                getQueryAndCheckOtherConditionInJsonObject(item.data);
+            }
+
+        });
+        module.exports.sqlQuery = arrayOfEqualAndQuestionMarks.join(' ').trim();
+    },
+
+
     addDataTypeForFieldInFirstItemOfArray(type, data) {
 
         if (data === undefined)
@@ -610,12 +627,12 @@ module.exports = {
             isDefinedValueInIndexTwoOfArray = false;
 
 
-        let isDecimal = type === 'decimal';
-        let isDouble = type === 'double';
-        let isFloat = type === 'float';
-        let isReal = type === 'real';
-        let isEnum = type === 'enum';
-        let isSet = type === 'set';
+        let isDecimal = type === 'decimal',
+            isDouble = type === 'double',
+            isFloat = type === 'float',
+            isReal = type === 'real',
+            isEnum = type === 'enum',
+            isSet = type === 'set';
 
 
         let arrayOfValidType = [
@@ -802,7 +819,7 @@ module.exports = {
 
     validateIdentifiers(index) {
         if (index === null)
-            return;
+            return identifier = STAR;
 
         let isArray = Array.isArray(index);
         if (isArray) {

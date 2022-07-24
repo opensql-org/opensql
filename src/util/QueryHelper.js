@@ -1,9 +1,9 @@
 const {
     OR,
     AND,
-    COMMA,
     COUNT,
-    QUESTION_MARK
+    UNION,
+    UNION_ALL
 } = require('../util/KeywordHelper');
 
 const
@@ -39,23 +39,6 @@ function getKeyAndValue(jsonObject, type) {
     return `${type} ` + data['key'] + ' ' + data['value'];
 }
 
-function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
-    let str = '';
-    arr.forEach((item, index, arr) => {
-
-        let lastIndex = arr.lastIndexOf(item);
-
-        if (lastIndex) {
-            str += ` ${COMMA} ${QUESTION_MARK}`;
-        }
-
-        if (!lastIndex) {
-            str += `${QUESTION_MARK}`;
-        }
-
-    });
-    return str;
-}
 
 function validateOperator(jsonObject, operator, type) {
     let arrayOfKeyAndValue = getKeyAndValue(jsonObject, type).split(' ');
@@ -173,7 +156,21 @@ module.exports = {
         return {
             data: array
         };
-    }
+    },
+
+    UNION(jsonObject) {
+        return {
+            type: UNION,
+            data: jsonObject
+        };
+    },
+
+    UNION_ALL(jsonObject) {
+        return {
+            type: UNION_ALL,
+            data: jsonObject
+        };
+    },
 
 
 }
