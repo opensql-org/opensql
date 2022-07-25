@@ -132,7 +132,10 @@ module.exports = {
 
 
     COUNT(column) {
-        return (column === undefined) ? `${COUNT} AS size` : `COUNT(${column})`;
+        if (!Array.isArray(column))
+            return (column === undefined) ? `${COUNT} AS size` : `COUNT(${column})`;
+
+        return `COUNT(DISTINCT ${column})`;
     },
 
 
@@ -164,6 +167,14 @@ module.exports = {
             data: jsonObject
         };
     },
+
+
+    NOT(str, op) {
+        if (op !== undefined)
+            return `${op.toLowerCase()} POINTER_FOR_NOT ${str}`;
+        return `POINTER_FOR_NOT ${str}`;
+    },
+
 
     UNION_ALL(jsonObject) {
         return {

@@ -630,6 +630,7 @@ describe('generateUpdateSqlQueryWithData', () => {
         expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ?');
     });
 
+
     it('should be return string equal to WHERE ?? = ? ORDER BY ? , ?', async () => {
         generateUpdateSqlQueryWithData({
             table: 'users',
@@ -1166,9 +1167,7 @@ describe('removeFieldDataInSelect', () => {
 
     it('should be return string equal to ??', async () => {
         validateIdentifiers(
-            [
-                'id'
-            ]
+            'id'
         );
         expect(getIdentifier()).toBe('??');
     });
@@ -1184,14 +1183,14 @@ describe('removeFieldDataInSelect', () => {
 
     it('should be return string equal to DISTINCT  ??', async () => {
         validateIdentifiers(
-              [DISTINCT, 'id']
+            [DISTINCT, 'id']
         );
         expect(getIdentifier()).toBe('DISTINCT  ??');
     });
 
-    it('should be return string equal to DISTINCT  ??', async () => {
+    it('should be return string equal to DISTINCT ?? , ??', async () => {
         validateIdentifiers(
-              [DISTINCT, 'id','name']
+            [DISTINCT, 'id', 'name']
         );
         expect(getIdentifier()).toBe('DISTINCT  ?? , ??');
     });

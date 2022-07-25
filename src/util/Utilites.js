@@ -21,7 +21,12 @@ const {
         NULL,
         EQUAL_TO,
         NOT_NULL,
-        IS_NOT_NULL
+        LESS_THAN,
+        IS_NOT_NULL,
+        GREATER_THAN,
+        NOT_EQUAL_TO,
+        LESS_THAN_OR_EQUAL_TO,
+        GREATER_THAN_OR_EQUAL_TO
     } = require('../util/QueryHelper');
 
 
@@ -31,6 +36,14 @@ let stringOfQuestionMarkAndEqual,
     arrayOfKeyAndValueDataForQuery = [],
     identifier;
 
+let arrayOfOperator = [
+    EQUAL_TO,
+    LESS_THAN,
+    GREATER_THAN,
+    NOT_EQUAL_TO,
+    LESS_THAN_OR_EQUAL_TO,
+    GREATER_THAN_OR_EQUAL_TO
+];
 
 function generateDoubleQuestionMarksEqualQuestionMark(sizeOfKey) {
     let mergeQuestionMarksWithEqual = '';
@@ -84,8 +97,16 @@ function getValueInSpaceString(str) {
 }
 
 function getOperatorInSpaceString(str) {
-    let operator = splitOperatorInString(str);
-    if (isSpaceWordInString(str) && operator !== undefined)
+    let newStr = str;
+    let isNotOperator = isNotInString(newStr);
+    if (isNotOperator)
+        newStr = spiltValueInStringNot(newStr);
+
+    if (arrayOfOperator.includes(newStr))
+        return newStr;
+
+    let operator = splitOperatorInString(newStr);
+    if (isSpaceWordInString(newStr) && operator !== undefined)
         return operator;
 
     return EQUAL_TO;
@@ -96,6 +117,22 @@ function splitOperatorAndOrInSpaceWord(str) {
     if (isSpaceWordInString(str) && (isOrOperator(str) || isAndOperator(str)))
         return str.split(' ')[0];
     return AND;
+}
+
+
+function spiltValueInStringNot(str) {
+    let finalStr = '';
+    try {
+        let newStr = str.split(' ');
+        if (newStr[1] === 'POINTER_FOR_NOT')
+            finalStr = newStr[2];
+        if (newStr[0] === 'POINTER_FOR_NOT')
+            finalStr = newStr[1];
+        if (newStr[0] === 'and' || newStr[0] === 'or')
+            newStr.shift();
+        return finalStr;
+    } catch (e) {
+    }
 }
 
 
@@ -163,6 +200,12 @@ function isBetweenOperatorInString(str) {
     return false;
 }
 
+
+function isNotInString(str) {
+    if (typeof str === 'string')
+        return /POINTER_FOR_NOT/.test(str);
+    return false;
+}
 
 function isLikeOperatorInString(str) {
     if (typeof str === 'string')
@@ -241,25 +284,29 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
         isBetweenOperator = isBetweenOperatorInString(value),
         isOpDefined = Array.isArray(value) && key === 'op',
         isLikeOperator = isLikeOperatorInString(value),
+        isNotWord = isNotInString(value),
+        validationAndGetNotOperator = () => {
+            return (isNotWord) ? ' NOT ' : ' ';
+        },
         newValue = getValueInSpaceString(value),
         isInOperator = isInOperatorInString(value),
         isAccessToCheckOtherCondition = false,
         isUsedIsNotNullWord = value === IS_NOT_NULL,
         isUsedSetOperatorFuncForField = isSpaceWordInString(value),
-        getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
         getJsonObjectInWhereCondition = (optionData !== undefined) ?
             optionData['isJsonObjectInWhereCondition'] : false,
         isJsonObjectInWhereCondition = getJsonObjectInWhereCondition === true,
-        isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator
+        isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator && !isNotWord
             && !isUsedSetOperatorFuncForField && !isOpDefined && !isJsonObjectInWhereCondition,
         operator = getOperatorInSpaceString(value),
+        getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
         initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
 
     if (isUsedSetOperatorFuncForField && !isFirstIndex) {
         arrayOfKeyAndValueDataForQuery.push(key);
         arrayOfKeyAndValueDataForQuery.push(newValue);
-        arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator} ${initPlaceHolder}`);
+        arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator}${validationAndGetNotOperator()}${initPlaceHolder}`);
         indexForWhereJsonObject++;
     }
 
@@ -282,7 +329,7 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
     if (!isAccessToCheckOtherCondition && !isFirstIndex && isNotOperator) {
         arrayOfKeyAndValueDataForQuery.push(key);
         arrayOfKeyAndValueDataForQuery.push(value);
-        arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator} ${initPlaceHolder}`);
+        arrayOfEqualAndQuestionMarks.push(`${getOperatorForSetOperator}${validationAndGetNotOperator()}${initPlaceHolder}`);
         indexForWhereJsonObject++;
     }
 
@@ -296,7 +343,7 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
 
     if (isInOperator && !isFirstIndex) {
         arrayOfKeyAndValueDataForQuery.push(key);
-        arrayOfEqualAndQuestionMarks.push(getOp(value))
+        arrayOfEqualAndQuestionMarks.push(getOp(value));
         arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IN}`);
         arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
         indexForWhereJsonObject++;
@@ -370,7 +417,15 @@ function InitializationIndexWhenExistMultiSqlQuery() {
 
 
 function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
-    let where = jsonObject?.where,
+    let validateWhere = () => {
+            return (jsonObject?.where !== undefined) ? jsonObject?.where :
+                (jsonObject?.whereNot !== undefined) ? jsonObject?.whereNot : jsonObject?.where
+        },
+        getWhereKey = () => {
+            return (jsonObject?.where !== undefined) ? 'WHERE' :
+                (jsonObject?.whereNot !== undefined) ? 'WHERE NOT' : 'WHERE'
+        },
+        where = validateWhere(),
         option = jsonObject?.option,
         get = jsonObject?.get,
         from = jsonObject?.from,
@@ -402,9 +457,9 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
                 operator = getOperatorInSpaceString(value),
                 initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
-            if (isJsonObject(value) && !isFirstIndex) {
+            if (isJsonObject(value) && !isFirstIndex)
                 arrayOfEqualAndQuestionMarks.push(getOp(value['op']));
-            }
+
 
             if (isJsonObject(value)) {
                 value['data'].forEach(item => {
@@ -538,7 +593,7 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
 
     if (!isUndefinedWhereCondition) {
         InitializationIndexWhenExistMultiSqlQuery();
-        return `WHERE ${DOUBLE_QUESTION_MARK} ` +
+        return `${getWhereKey()} ${DOUBLE_QUESTION_MARK} ` +
             `${arrayOfEqualAndQuestionMarks.join(' ').trim()}`;
     }
 
@@ -593,12 +648,18 @@ module.exports = {
         if (array === null)
             return;
 
-        let str = '';
-
         array.forEach(item => {
 
             let itemForgetObjectIntoArray = item.data.get;
-            let where = item.data?.where,
+            let validateWhere = () => {
+                    return (item.data?.where !== undefined) ? item.data?.where :
+                        (item.data?.whereNot !== undefined) ? item.data?.whereNot : item.data?.where
+                },
+                getWhereKey = () => {
+                    return (item.data?.where !== undefined) ? 'WHERE' :
+                        (item.data?.whereNot !== undefined) ? 'WHERE NOT' : 'WHERE'
+                },
+                where = validateWhere(),
                 isUndefinedWhereCondition = where === undefined;
 
             module.exports.validateIdentifiers(itemForgetObjectIntoArray);
@@ -607,7 +668,7 @@ module.exports = {
                 arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK}`);
 
             if (!isUndefinedWhereCondition) {
-                arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} WHERE ??`);
+                arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} ${getWhereKey()} ??`);
                 getQueryAndCheckOtherConditionInJsonObject(item.data);
             }
 
@@ -877,7 +938,7 @@ module.exports = {
         }
 
 
-        if (index !== STAR && COUNT && !isAs(index) && !isPointField(index) && !isCast(index) && !isCount(index) && !isSource(index)){
+        if (index !== STAR && COUNT && !isAs(index) && !isPointField(index) && !isCast(index) && !isCount(index) && !isSource(index)) {
             arrayOfData.push(index);
             identifier = DOUBLE_QUESTION_MARK;
         }
