@@ -1182,4 +1182,18 @@ describe('removeFieldDataInSelect', () => {
         expect(getIdentifier()).toBe('??');
     });
 
+    it('should be return string equal to DISTINCT  ??', async () => {
+        validateIdentifiers(
+              [DISTINCT, 'id']
+        );
+        expect(getIdentifier()).toBe('DISTINCT  ??');
+    });
+
+    it('should be return string equal to DISTINCT  ??', async () => {
+        validateIdentifiers(
+              [DISTINCT, 'id','name']
+        );
+        expect(getIdentifier()).toBe('DISTINCT  ?? , ??');
+    });
+
 });
