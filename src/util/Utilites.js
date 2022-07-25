@@ -9,16 +9,19 @@ const {
         COMMA,
         LIMIT,
         COUNT,
+        NOT_IN,
         OFFSET,
         BETWEEN,
         ORDER_BY,
         DISTINCT,
+        NOT_BETWEEN,
         QUESTION_MARK,
         AUTO_INCREMENT,
         DOUBLE_QUESTION_MARK,
     } = require('../util/KeywordHelper'),
     {
         NULL,
+        IS_NULL,
         EQUAL_TO,
         NOT_NULL,
         LESS_THAN,
@@ -164,7 +167,11 @@ function stringToArrayForInOperator(str) {
     return str.replace('POINTER_FOR_IN', '').trim().split(',');
 }
 
-function removeAndOperatorInString(str) {
+function stringToArrayForNotInOperator(str) {
+    return str.replace('POINTER_FOR_NOT_IN', '').trim().split(',');
+}
+
+function removeAndOperatorInWordInString(str) {
     return str.replace('POINTER_FOR_IN', '').trim();
 }
 
@@ -184,7 +191,7 @@ function getValidValue(str) {
     if (isOrOperator(str))
         return removeOrOperatorInString(str);
     if (isAndOperator(str))
-        return removeAndOperatorInString(str);
+        return removeAndOperatorInWordInString(str);
     return str;
 }
 
@@ -194,9 +201,21 @@ function isInOperatorInString(str) {
     return false;
 }
 
+function isNotInOperatorInString(str) {
+    if (typeof str === 'string')
+        return /POINTER_FOR_NOT_IN/.test(str);
+    return false;
+}
+
 function isBetweenOperatorInString(str) {
     if (typeof str === 'string')
         return /POINTER_FOR_BETWEEN/.test(str);
+    return false;
+}
+
+function isNotBetweenOperatorInString(str) {
+    if (typeof str === 'string')
+        return /POINTER_FOR_NOT_BETWEEN/.test(str);
     return false;
 }
 
@@ -282,6 +301,7 @@ function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
 function valueValidationForWhereJsonObject(key, value, optionData) {
     let isFirstIndex = (indexForWhereJsonObject === 0),
         isBetweenOperator = isBetweenOperatorInString(value),
+        isNotBetweenOperator = isNotBetweenOperatorInString(value),
         isOpDefined = Array.isArray(value) && key === 'op',
         isLikeOperator = isLikeOperatorInString(value),
         isNotWord = isNotInString(value),
@@ -290,14 +310,33 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
         },
         newValue = getValueInSpaceString(value),
         isInOperator = isInOperatorInString(value),
+        isNotInOperator = isNotInOperatorInString(value),
+        getInOperator = () => {
+            if (isInOperator)
+                return IN;
+            return NOT_IN;
+        },
+        getValueForInOperator = () => {
+            if (isInOperator)
+                return stringToArrayForInOperator(getValidValue(value));
+
+            return stringToArrayForNotInOperator(getValidValue(value));
+        },
+        getBetweenOperator = () => {
+            if (isBetweenOperator)
+                return BETWEEN;
+            return NOT_BETWEEN;
+        },
         isAccessToCheckOtherCondition = false,
         isUsedIsNotNullWord = value === IS_NOT_NULL,
+        isUsedIsNullWord = value === IS_NULL,
         isUsedSetOperatorFuncForField = isSpaceWordInString(value),
         getJsonObjectInWhereCondition = (optionData !== undefined) ?
             optionData['isJsonObjectInWhereCondition'] : false,
         isJsonObjectInWhereCondition = getJsonObjectInWhereCondition === true,
-        isNotOperator = !isInOperator && !isBetweenOperator && !isUsedIsNotNullWord && !isLikeOperator && !isNotWord
-            && !isUsedSetOperatorFuncForField && !isOpDefined && !isJsonObjectInWhereCondition,
+        isNotOperator = !isInOperator && !isNotInOperator && !isBetweenOperator && !isNotBetweenOperator &&
+            !isUsedIsNotNullWord && !isUsedIsNullWord && !isLikeOperator && !isNotWord &&
+            !isUsedSetOperatorFuncForField && !isOpDefined && !isJsonObjectInWhereCondition,
         operator = getOperatorInSpaceString(value),
         getOperatorForSetOperator = splitOperatorAndOrInSpaceWord(value).toUpperCase(),
         initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
@@ -333,38 +372,38 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
         indexForWhereJsonObject++;
     }
 
-    if (isInOperator && isFirstIndex) {
+    if ((isInOperator || isNotInOperator) && isFirstIndex) {
         arrayOfKeyAndValueDataForQuery.push(key);
-        arrayOfEqualAndQuestionMarks.push(`${IN}`);
-        arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
+        arrayOfEqualAndQuestionMarks.push(getInOperator());
+        arrayOfKeyAndValueDataForQuery.push(getValueForInOperator());
         indexForWhereJsonObject++;
     }
 
 
-    if (isInOperator && !isFirstIndex) {
+    if ((isInOperator || isNotInOperator) && !isFirstIndex) {
         arrayOfKeyAndValueDataForQuery.push(key);
         arrayOfEqualAndQuestionMarks.push(getOp(value));
-        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IN}`);
-        arrayOfKeyAndValueDataForQuery.push(stringToArrayForInOperator(getValidValue(value)));
+        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${getInOperator()}`);
+        arrayOfKeyAndValueDataForQuery.push(getValueForInOperator());
         indexForWhereJsonObject++;
     }
 
 
-    if (isBetweenOperator && !isFirstIndex) {
+    if ((isBetweenOperator || isNotBetweenOperator) && !isFirstIndex) {
         arrayOfEqualAndQuestionMarks.push(getOp(value));
         arrayOfKeyAndValueDataForQuery.push(key);
-        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
+        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${getBetweenOperator()} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
         indexForWhereJsonObject++;
     }
 
-    if (isBetweenOperator && isFirstIndex) {
+    if ((isBetweenOperator || isNotBetweenOperator) && isFirstIndex) {
         arrayOfKeyAndValueDataForQuery.push(key);
-        arrayOfEqualAndQuestionMarks.push(`${BETWEEN} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
+        arrayOfEqualAndQuestionMarks.push(`${getBetweenOperator()} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
         indexForWhereJsonObject++;
     }
 
 
-    if (isBetweenOperator) {
+    if (isBetweenOperator || isNotBetweenOperator) {
         arrayOfKeyAndValueDataForQuery = arrayOfKeyAndValueDataForQuery.concat(splitStringToArrayOfCharactersForBetweenOperator(value));
         indexForWhereJsonObject++;
     }
@@ -387,17 +426,17 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
     }
 
 
-    if (isUsedIsNotNullWord && !isFirstIndex) {
+    if ((isUsedIsNotNullWord || isUsedIsNullWord) && !isFirstIndex) {
         arrayOfEqualAndQuestionMarks.push(getOp(value));
         arrayOfKeyAndValueDataForQuery.push(key);
-        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${IS_NOT_NULL}`);
+        arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${value}`);
         indexForWhereJsonObject++;
     }
 
 
-    if (isUsedIsNotNullWord && isFirstIndex) {
+    if ((isUsedIsNotNullWord || isUsedIsNullWord) && isFirstIndex) {
         arrayOfKeyAndValueDataForQuery.push(key);
-        arrayOfEqualAndQuestionMarks.push(`${IS_NOT_NULL}`);
+        arrayOfEqualAndQuestionMarks.push(`${value}`);
         indexForWhereJsonObject++;
     }
 
@@ -618,6 +657,22 @@ function isPointField(data) {
 
 function isCast(data) {
     return /CAST\(/.test(data);
+}
+
+function isMIN(data) {
+    return /MIN\(/.test(data);
+}
+
+function isMAX(data) {
+    return /MAX\(/.test(data);
+}
+
+function isAVG(data) {
+    return /AVG\(/.test(data);
+}
+
+function isSUM(data) {
+    return /SUM\(/.test(data);
 }
 
 function isAs(data) {
@@ -902,13 +957,14 @@ module.exports = {
                 let isLastIndex = index.length === indexOfArr + 1;
 
 
-                if (item !== STAR && COUNT && !isPointField(item) && !isCast(item) && !isAs(item) && !isSource(item) && item !== DISTINCT) {
+                if (item !== STAR && COUNT && !isPointField(item) && !isCast(item) && !isAs(item) &&
+                    !isSource(item) && item !== DISTINCT && !isMAX(item) && !isMIN(item) && !isSUM(item) && !isAVG(item)) {
                     arrayOfData.push(item);
                     newArr.push(DOUBLE_QUESTION_MARK);
                 }
 
 
-                if (isCast(item) || isCount(item))
+                if (isCast(item) || isCount(item) || isMAX(item) || isMIN(item) || isSUM(item) || isAVG(item))
                     newArr.push(item);
 
 
@@ -938,7 +994,8 @@ module.exports = {
         }
 
 
-        if (index !== STAR && COUNT && !isAs(index) && !isPointField(index) && !isCast(index) && !isCount(index) && !isSource(index)) {
+        if (index !== STAR && COUNT && !isAs(index) && !isPointField(index) && !isCast(index)
+            && !isCount(index) && !isSource(index) && !isMAX(index) && !isMIN(index) && !isSUM(index) && !isAVG(index)) {
             arrayOfData.push(index);
             identifier = DOUBLE_QUESTION_MARK;
         }
@@ -952,12 +1009,13 @@ module.exports = {
             identifier = STAR;
 
 
-        if (isCast(index) || isCount(index))
+        if (isCast(index) || isCount(index) || isMAX(index) || isMIN(index) || isSUM(index) || isAVG(index))
             identifier = index;
 
 
-        if (isAs(index) && !isPointField(index) && !isCast(index) && !isCount(index) && !isSource(index))
+        if (isAs(index)) {
             identifier = index.replace('POINTER_FOR_AS ', '');
+        }
 
 
         if (isSource(index))
