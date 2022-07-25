@@ -12,6 +12,7 @@ const
     LESS_THAN = '<',
     GREATER_THAN = '>',
     NOT_EQUAL_TO = '<>',
+    IS_NULL = 'IS NULL',
     NOT_NULL = 'NOT NULL',
     IS_NOT_NULL = 'IS NOT NULL',
     LESS_THAN_OR_EQUAL_TO = '<=',
@@ -68,6 +69,7 @@ module.exports = {
 
 
     NULL: NULL,
+    IS_NULL: IS_NULL,
     NOT_NULL: NOT_NULL,
     EQUAL_TO: EQUAL_TO,
     LESS_THAN: LESS_THAN,
@@ -107,10 +109,24 @@ module.exports = {
     },
 
 
+    NOT_IN(arr, op) {
+        if (op !== undefined)
+            return `${op.toLowerCase()} POINTER_FOR_NOT_IN ${arr}`;
+        return `POINTER_FOR_NOT_IN ${arr}`;
+    },
+
+
     BETWEEN(first, second, op) {
         if (op !== undefined)
             return `${op.toLowerCase()} POINTER_FOR_BETWEEN ${first} POINTER_FOR_AND ${second}`;
         return `POINTER_FOR_BETWEEN ${first} POINTER_FOR_AND ${second}`;
+    },
+
+
+    NOT_BETWEEN(first, second, op) {
+        if (op !== undefined)
+            return `${op.toLowerCase()} POINTER_FOR_NOT_BETWEEN ${first} POINTER_FOR_AND ${second}`;
+        return `POINTER_FOR_NOT_BETWEEN ${first} POINTER_FOR_AND ${second}`;
     },
 
 
@@ -132,7 +148,10 @@ module.exports = {
 
 
     COUNT(column) {
-        return (column === undefined) ? `${COUNT} AS size` : `COUNT(${column})`;
+        if (!Array.isArray(column))
+            return (column === undefined) ? `${COUNT} AS size` : `COUNT(${column})`;
+
+        return `COUNT(DISTINCT ${column})`;
     },
 
 
@@ -165,12 +184,36 @@ module.exports = {
         };
     },
 
+
+    NOT(str, op) {
+        if (op !== undefined)
+            return `${op.toLowerCase()} POINTER_FOR_NOT ${str}`;
+        return `POINTER_FOR_NOT ${str}`;
+    },
+
+
     UNION_ALL(jsonObject) {
         return {
             type: UNION_ALL,
             data: jsonObject
         };
     },
+
+    MIN(column) {
+        return `MIN(${column})`;
+    },
+
+    MAX(column) {
+        return `MAX(${column})`;
+    },
+
+    SUM(column) {
+        return `SUM(${column})`;
+    },
+
+    AVG(column) {
+        return `AVG(${column})`;
+    }
 
 
 }

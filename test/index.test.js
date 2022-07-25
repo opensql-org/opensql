@@ -8,14 +8,18 @@ let openSql = require('../index'),
         VARCHAR
     } = openSql.dataType,
     {
+        OR,
         STAR,
         CASCADE,
         AUTO_INCREMENT
     } = openSql.keywordHelper,
     {
+        NOT,
         UNION,
         NOT_NULL,
-        UNION_ALL
+        LESS_THAN,
+        UNION_ALL,
+        setOperator
     } = openSql.queryHelper;
 
 
@@ -136,6 +140,56 @@ describe('Union Sql Query', () => {
             ]
         });
         expect(exe.getSqlQuery()).toBe('USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT * FROM ?? WHERE ?? = ? UNION ALL SELECT * FROM ?? WHERE ?? = ?');
+    });
+
+    it('should be return string equal to USE test_open_Sql_database;  SELECT ?? FROM ?? UNION SELECT ?? FROM ?? WHERE NOT ?? = ?', async () => {
+        openSql.find({
+            get: 'id',
+            from: 'users',
+            union: [
+                UNION({
+                    table: 'users',
+                    whereNot: {
+                        username: 'root'
+                    }
+                })
+            ]
+        });
+        expect(exe.getSqlQuery()).toBe('USE test_open_Sql_database;  SELECT ?? FROM ?? UNION SELECT ?? FROM ?? WHERE NOT ?? = ?');
+    });
+
+    it('should be return string equal to USE test_open_Sql_database;  SELECT ?? FROM ?? UNION SELECT ?? FROM ?? WHERE NOT ?? = ? AND NOT ?? < ?', async () => {
+        openSql.find({
+            get: 'id',
+            from: 'users',
+            union: [
+                UNION({
+                    table: 'users',
+                    whereNot: {
+                        username: 'root',
+                        id: NOT(setOperator(LESS_THAN, 5))
+                    }
+                })
+            ]
+        });
+        expect(exe.getSqlQuery()).toBe('USE test_open_Sql_database;  SELECT ?? FROM ?? UNION SELECT ?? FROM ?? WHERE NOT ?? = ? AND NOT ?? < ?');
+    });
+
+    it('should be return string equal to USE test_open_Sql_database;  SELECT ?? FROM ?? UNION SELECT ?? FROM ?? WHERE NOT ?? = ? OR NOT ?? < ?', async () => {
+        openSql.find({
+            get: 'id',
+            from: 'users',
+            union: [
+                UNION({
+                    table: 'users',
+                    whereNot: {
+                        username: 'root',
+                        id: NOT(setOperator(LESS_THAN, 5), OR)
+                    }
+                })
+            ]
+        });
+        expect(exe.getSqlQuery()).toBe('USE test_open_Sql_database;  SELECT ?? FROM ?? UNION SELECT ?? FROM ?? WHERE NOT ?? = ? OR NOT ?? < ?');
     });
 
 });

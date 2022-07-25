@@ -10,13 +10,15 @@ const {
         generateUpdateSqlQueryWithData
     } = require('../src/util/Utilites'),
     {
+        DISTINCT,
         AUTO_INCREMENT
     } = require('../src/util/KeywordHelper'),
     util = require('../src/util/Utilites'),
     keyHelper = require('../src/util/KeywordHelper'),
     variableDataType = require('../src/util/VariableDataType'),
     {
-        DEFAULT
+        DEFAULT,
+        fieldPoint
     } = require('../src/util/FieldHelper'),
     {
         INT,
@@ -30,15 +32,22 @@ const {
         IN,
         AS,
         AND,
+        MIN,
+        MAX,
+        SUM,
+        AVG,
         LIKE,
         CAST,
         COUNT,
         ATTACH,
+        NOT_IN,
         SOURCE,
         BETWEEN,
+        IS_NULL,
         NOT_NULL,
         LESS_THAN,
         setOperator,
+        NOT_BETWEEN,
         IS_NOT_NULL
     } = require('../src/util/QueryHelper');
 
@@ -478,6 +487,16 @@ describe('generateUpdateSqlQueryWithData', () => {
         expect(util.sqlQuery).toBe('WHERE ?? = ? AND ?? IN (?)');
     });
 
+    it('should be return string equal to WHERE ?? = ? AND ?? NOT IN (?)', async () => {
+        generateUpdateSqlQueryWithData({
+            where: {
+                username: 'root',
+                id: NOT_IN([0, 15]),
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? = ? AND ?? NOT IN (?)');
+    });
+
     it('should be return string equal to WHERE ?? IN (?) AND ?? = ?', async () => {
         generateUpdateSqlQueryWithData({
             where: {
@@ -516,6 +535,34 @@ describe('generateUpdateSqlQueryWithData', () => {
             }
         });
         expect(util.sqlQuery).toBe('WHERE ?? = ? OR ?? BETWEEN ? AND ?');
+    });
+
+    it('should be return string equal to WHERE ?? = ? OR ?? NOT BETWEEN ? AND ?', async () => {
+        generateUpdateSqlQueryWithData({
+            where: {
+                username: 'root',
+                id: NOT_BETWEEN(0, 15, keyHelper.OR),
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? = ? OR ?? NOT BETWEEN ? AND ?');
+    });
+
+    it('should be return array', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root',
+                id: NOT_BETWEEN(0, 15, keyHelper.OR),
+            }
+        });
+        expect(util.arrayOfDataForSqlInjection).toEqual([
+            'users',
+            'username',
+            'root',
+            'id',
+            '0',
+            '15',
+        ]);
     });
 
     it('should be return string equal to WHERE ?? = ? AND ?? BETWEEN ? AND ?', async () => {
@@ -627,6 +674,7 @@ describe('generateUpdateSqlQueryWithData', () => {
         });
         expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ?');
     });
+
 
     it('should be return string equal to WHERE ?? = ? ORDER BY ? , ?', async () => {
         generateUpdateSqlQueryWithData({
@@ -932,6 +980,18 @@ describe('getOptionKeywordSqlQuery', () => {
         expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? IS NOT NULL');
     });
 
+    it('should be return string equal to WHERE ?? < ? AND ?? IS NULL', async () => {
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 8),
+                name: IS_NULL
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? IS NULL');
+    });
+
     it('should be return string equal to WHERE ?? IS NOT NULL AND ?? < ?', async () => {
         getFindSqlQuery({
             get: ['id'],
@@ -1113,6 +1173,34 @@ describe('removeFieldDataInSelect', () => {
         expect(getIdentifier()).toBe('COUNT(*) AS size');
     });
 
+    it('should be return string equal to MIN(price)', async () => {
+        validateIdentifiers(
+            MIN('price')
+        );
+        expect(getIdentifier()).toBe('MIN(price)');
+    });
+
+    it('should be return string equal to MAX(price)', async () => {
+        validateIdentifiers(
+            MAX('price')
+        );
+        expect(getIdentifier()).toBe('MAX(price)');
+    });
+
+    it('should be return string equal to AVG(price)', async () => {
+        validateIdentifiers(
+            AVG('price')
+        );
+        expect(getIdentifier()).toBe('AVG(price)');
+    });
+
+    it('should be return string equal to SUM(price)', async () => {
+        validateIdentifiers(
+            SUM('price')
+        );
+        expect(getIdentifier()).toBe('SUM(price)');
+    });
+
     it('should be return string equal to i AS id', async () => {
         validateIdentifiers(
             AS('i', 'id')
@@ -1157,18 +1245,39 @@ describe('removeFieldDataInSelect', () => {
 
     it('should be return string equal to X(location) AS Lat , Y(location) AS Lon', async () => {
         validateIdentifiers(
-            'X(location) AS Lat , Y(location) AS Lon'
+            fieldPoint('location')
         );
         expect(getIdentifier()).toBe('X(location) AS Lat , Y(location) AS Lon');
     });
 
     it('should be return string equal to ??', async () => {
-        validateIdentifiers({
-            optKey: [
-                'users'
-            ]
-        });
+        validateIdentifiers(
+            'id'
+        );
         expect(getIdentifier()).toBe('??');
+    });
+
+    it('should be return string equal to ??', async () => {
+        validateIdentifiers(
+            [
+                'id'
+            ]
+        );
+        expect(getIdentifier()).toBe('??');
+    });
+
+    it('should be return string equal to DISTINCT  ??', async () => {
+        validateIdentifiers(
+            [DISTINCT, 'id']
+        );
+        expect(getIdentifier()).toBe('DISTINCT  ??');
+    });
+
+    it('should be return string equal to DISTINCT ?? , ??', async () => {
+        validateIdentifiers(
+            [DISTINCT, 'id', 'name']
+        );
+        expect(getIdentifier()).toBe('DISTINCT  ?? , ??');
     });
 
 });

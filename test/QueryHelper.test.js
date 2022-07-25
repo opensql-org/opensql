@@ -4,6 +4,7 @@ let {
         AND,
         LIKE,
         NULL,
+        COUNT,
         BETWEEN,
         LESS_THAN,
         setOperator
@@ -71,6 +72,18 @@ describe('Query Helper Module', () => {
 
     it('should be return string equal and POINTER_FOR_LIKE %a', async () => {
         expect(LIKE('%a', keyHelper.AND)).toBe('and POINTER_FOR_LIKE %a');
+    });
+
+    it('should be return string equal COUNT(DISTINCT id)', async () => {
+        expect(COUNT(['id'])).toBe('COUNT(DISTINCT id)');
+    });
+
+    it('should be return string equal COUNT(id)', async () => {
+        expect(COUNT('id')).toBe('COUNT(id)');
+    });
+
+    it('should be return string equal COUNT(*) AS size', async () => {
+        expect(COUNT()).toBe('COUNT(*) AS size');
     });
 
 });
