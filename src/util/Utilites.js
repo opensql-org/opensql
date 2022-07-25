@@ -683,6 +683,10 @@ function isCount(data) {
     return /COUNT\(/.test(data);
 }
 
+function isConcatWs(data) {
+    return /CONCAT_WS\(/.test(data);
+}
+
 function isSource(data) {
     return /POINTER_FOR_SOURCE /.test(data);
 }
@@ -958,13 +962,15 @@ module.exports = {
 
 
                 if (item !== STAR && COUNT && !isPointField(item) && !isCast(item) && !isAs(item) &&
-                    !isSource(item) && item !== DISTINCT && !isMAX(item) && !isMIN(item) && !isSUM(item) && !isAVG(item)) {
+                    !isSource(item) && item !== DISTINCT && !isMAX(item) && !isMIN(item) && !isSUM(item) &&
+                    !isAVG(item) && !isConcatWs(item)) {
                     arrayOfData.push(item);
                     newArr.push(DOUBLE_QUESTION_MARK);
                 }
 
 
-                if (isCast(item) || isCount(item) || isMAX(item) || isMIN(item) || isSUM(item) || isAVG(item))
+                if (isCast(item) || isCount(item) || isMAX(item) || isMIN(item) ||
+                    isSUM(item) || isAVG(item) || isConcatWs(item))
                     newArr.push(item);
 
 
@@ -995,7 +1001,8 @@ module.exports = {
 
 
         if (index !== STAR && COUNT && !isAs(index) && !isPointField(index) && !isCast(index)
-            && !isCount(index) && !isSource(index) && !isMAX(index) && !isMIN(index) && !isSUM(index) && !isAVG(index)) {
+            && !isCount(index) && !isSource(index) && !isMAX(index) && !isMIN(index) && !isSUM(index)
+            && !isAVG(index) && !isConcatWs(index)) {
             arrayOfData.push(index);
             identifier = DOUBLE_QUESTION_MARK;
         }
@@ -1009,7 +1016,8 @@ module.exports = {
             identifier = STAR;
 
 
-        if (isCast(index) || isCount(index) || isMAX(index) || isMIN(index) || isSUM(index) || isAVG(index))
+        if (isCast(index) || isCount(index) || isMAX(index) || isMIN(index) ||
+            isSUM(index) || isAVG(index) || isConcatWs(index))
             identifier = index;
 
 

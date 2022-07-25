@@ -6,6 +6,7 @@ let {
         NULL,
         COUNT,
         BETWEEN,
+        CONCAT_WS,
         LESS_THAN,
         setOperator
     } = require('../src/util/QueryHelper'),
@@ -84,6 +85,10 @@ describe('Query Helper Module', () => {
 
     it('should be return string equal COUNT(*) AS size', async () => {
         expect(COUNT()).toBe('COUNT(*) AS size');
+    });
+
+    it('should be return string equal COUNT(*) AS size', async () => {
+        expect(CONCAT_WS(' ', ['id', 'name'], 'like')).toBe('CONCAT_WS(" ", id,name) AS like');
     });
 
 });

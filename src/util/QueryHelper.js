@@ -213,7 +213,10 @@ module.exports = {
 
     AVG(column) {
         return `AVG(${column})`;
-    }
+    },
 
+    CONCAT_WS(str, array, column) {
+        return `CONCAT_WS("${str}", ${array.toString()}) AS ${column}`;
+    }
 
 }

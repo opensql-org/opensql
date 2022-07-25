@@ -48,7 +48,7 @@ const {
         LESS_THAN,
         setOperator,
         NOT_BETWEEN,
-        IS_NOT_NULL
+        IS_NOT_NULL, CONCAT_WS
     } = require('../src/util/QueryHelper');
 
 
@@ -1185,6 +1185,13 @@ describe('removeFieldDataInSelect', () => {
             MAX('price')
         );
         expect(getIdentifier()).toBe('MAX(price)');
+    });
+
+    it('should be return string equal to CONCAT_WS(" ", id,name) AS like', async () => {
+        validateIdentifiers(
+            CONCAT_WS(' ', ['id', 'name'], 'like')
+        );
+        expect(getIdentifier()).toBe('CONCAT_WS(" ", id,name) AS like');
     });
 
     it('should be return string equal to AVG(price)', async () => {
