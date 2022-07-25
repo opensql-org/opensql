@@ -10,13 +10,15 @@ const {
         generateUpdateSqlQueryWithData
     } = require('../src/util/Utilites'),
     {
+        DISTINCT,
         AUTO_INCREMENT
     } = require('../src/util/KeywordHelper'),
     util = require('../src/util/Utilites'),
     keyHelper = require('../src/util/KeywordHelper'),
     variableDataType = require('../src/util/VariableDataType'),
     {
-        DEFAULT
+        DEFAULT,
+        fieldPoint
     } = require('../src/util/FieldHelper'),
     {
         INT,
@@ -1157,17 +1159,26 @@ describe('removeFieldDataInSelect', () => {
 
     it('should be return string equal to X(location) AS Lat , Y(location) AS Lon', async () => {
         validateIdentifiers(
-            'X(location) AS Lat , Y(location) AS Lon'
+            fieldPoint('location')
         );
         expect(getIdentifier()).toBe('X(location) AS Lat , Y(location) AS Lon');
     });
 
     it('should be return string equal to ??', async () => {
-        validateIdentifiers({
-            optKey: [
-                'users'
+        validateIdentifiers(
+            [
+                'id'
             ]
-        });
+        );
+        expect(getIdentifier()).toBe('??');
+    });
+
+    it('should be return string equal to ??', async () => {
+        validateIdentifiers(
+            [
+                'id'
+            ]
+        );
         expect(getIdentifier()).toBe('??');
     });
 

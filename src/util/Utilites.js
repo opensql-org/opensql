@@ -12,6 +12,7 @@ const {
         OFFSET,
         BETWEEN,
         ORDER_BY,
+        DISTINCT,
         QUESTION_MARK,
         AUTO_INCREMENT,
         DOUBLE_QUESTION_MARK,
@@ -822,6 +823,16 @@ module.exports = {
             return identifier = STAR;
 
         let isArray = Array.isArray(index);
+        let arrayOfData = [];
+        let isLengthOfArrayMoreThanOne = () => {
+            return arrayOfData.length > 1;
+        }
+        let getData = () => {
+            if (isLengthOfArrayMoreThanOne())
+                return arrayOfData;
+
+            return arrayOfData[0];
+        }
         if (isArray) {
 
             let newArr = [];
@@ -830,62 +841,69 @@ module.exports = {
                 let isLastIndex = index.length === indexOfArr + 1;
 
 
-                if (item !== STAR && COUNT && !isPointField(item) && !isCast(item) && !isAs(item) && !isSource(item)) {
+                if (item !== STAR && COUNT && !isPointField(item) && !isCast(item) && !isAs(item) && !isSource(item) && item !== DISTINCT) {
+                    arrayOfData.push(item);
                     newArr.push(DOUBLE_QUESTION_MARK);
                 }
 
-                if (item !== STAR && COUNT && isPointField(item) && !isCast(item) && !isAs(item) && !isSource(item)) {
-                    newArr.push(item);
-                }
 
-                if (isCast(item) || isCount(item)) {
+                if (isCast(item) || isCount(item))
                     newArr.push(item);
-                }
 
-                if (index === STAR) {
+
+                if (item === STAR)
                     newArr.push(STAR);
-                }
 
-                if (isAs(item)) {
+
+                if (item === DISTINCT)
+                    newArr.push(DISTINCT);
+
+
+                if (isAs(item))
                     newArr.push(item.replace('POINTER_FOR_AS ', ''));
-                }
 
-                if (isSource(item)) {
+
+                if (isSource(item))
                     newArr.push(item.replace('POINTER_FOR_SOURCE ', ''));
-                }
 
-                if (!isLastIndex)
+
+                if (!isLastIndex && item !== DISTINCT)
                     newArr.push(COMMA);
 
             });
 
+            arrayOfKeyAndValueDataForQuery.push(getData());
             return identifier = newArr.join(' ');
         }
 
 
-        if (index !== STAR && COUNT && !isPointField(index)) {
+        if (index !== STAR && COUNT && !isAs(index) && !isPointField(index) && !isCast(index) && !isCount(index) && !isSource(index)){
+            arrayOfData.push(index);
             identifier = DOUBLE_QUESTION_MARK;
         }
 
-        if (index !== STAR && COUNT && isPointField(index)) {
-            identifier = index;
-        }
 
-        if (index === STAR) {
+        if (index !== STAR && COUNT && isPointField(index))
+            identifier = index;
+
+
+        if (index === STAR)
             identifier = STAR;
-        }
 
-        if (isCast(index) || isCount(index)) {
+
+        if (isCast(index) || isCount(index))
             identifier = index;
-        }
 
-        if (isAs(index) && !isPointField(index) && !isCast(index) && !isCount(index) && !isSource(index)) {
+
+        if (isAs(index) && !isPointField(index) && !isCast(index) && !isCount(index) && !isSource(index))
             identifier = index.replace('POINTER_FOR_AS ', '');
-        }
 
-        if (isSource(index)) {
+
+        if (isSource(index))
             identifier = index.replace('POINTER_FOR_SOURCE ', '');
-        }
+
+
+        arrayOfKeyAndValueDataForQuery.push(getData());
 
     }
 
