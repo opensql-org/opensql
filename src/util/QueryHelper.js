@@ -3,6 +3,7 @@ const {
     AND,
     COUNT,
     UNION,
+    GROUP_BY,
     UNION_ALL
 } = require('../util/KeywordHelper');
 
@@ -217,6 +218,12 @@ module.exports = {
 
     CONCAT_WS(str, array, column) {
         return `CONCAT_WS("${str}", ${array.toString()}) AS ${column}`;
+    },
+
+    GROUP(data) {
+        if (Array.isArray(data))
+            return GROUP_BY + ' ' + data.toString();
+        return GROUP_BY + ' ' + data;
     }
 
 }

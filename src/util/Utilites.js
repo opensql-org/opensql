@@ -568,6 +568,7 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     for (let key in option) {
         let value = option[key],
             isUsedOrderByWord = key === 'order',
+            isUsedGroupByWord = key === 'group',
             getIndexOneFromOrderBy = value[1],
             isArrayIndexZeroFromOrderBy = Array.isArray(value[0]),
             isValueOfOrderByWordArray = Array.isArray(value),
@@ -576,6 +577,16 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
             isUsedDescWord = value === DESC,
             isUsedOffsetWord = key === OFFSET.toLowerCase(),
             isUsedLimitWord = key === LIMIT.toLowerCase();
+
+
+        if (isUsedGroupByWord) {
+            if (Array.isArray(value))
+                return value.forEach(item => {
+                    arrayOfEqualAndQuestionMarks.push(item);
+                });
+            arrayOfEqualAndQuestionMarks.push(value);
+        }
+
 
         if ((isUsedAscWord && isPreviousWordEqualDesc) || (isUsedDescWord && isPreviousWordEqualAsc)) {
             arrayOfEqualAndQuestionMarks.push(`${COMMA} ${QUESTION_MARK}`);

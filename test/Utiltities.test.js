@@ -39,6 +39,7 @@ const {
         LIKE,
         CAST,
         COUNT,
+        GROUP,
         ATTACH,
         NOT_IN,
         SOURCE,
@@ -673,6 +674,32 @@ describe('generateUpdateSqlQueryWithData', () => {
             }
         });
         expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ?');
+    });
+
+    it('should be return string equal to WHERE ?? = ? GROUP BY id', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                group: GROUP('id')
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? = ? GROUP BY id');
+    });
+
+    it('should be return string equal to WHERE ?? = ? GROUP BY id,name', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                group: GROUP(['id','name'])
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? = ? GROUP BY id,name');
     });
 
 
