@@ -10,6 +10,7 @@ const {
         generateUpdateSqlQueryWithData
     } = require('../src/util/Utilites'),
     {
+        STAR,
         DISTINCT,
         AUTO_INCREMENT
     } = require('../src/util/KeywordHelper'),
@@ -39,6 +40,7 @@ const {
         LIKE,
         CAST,
         COUNT,
+        GROUP,
         ATTACH,
         NOT_IN,
         SOURCE,
@@ -46,9 +48,10 @@ const {
         IS_NULL,
         NOT_NULL,
         LESS_THAN,
+        CONCAT_WS,
         setOperator,
         NOT_BETWEEN,
-        IS_NOT_NULL, CONCAT_WS
+        IS_NOT_NULL
     } = require('../src/util/QueryHelper');
 
 
@@ -675,6 +678,32 @@ describe('generateUpdateSqlQueryWithData', () => {
         expect(util.sqlQuery).toBe('WHERE ?? = ? ORDER BY ?');
     });
 
+    it('should be return string equal to WHERE ?? = ? GROUP BY id', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                group: GROUP('id')
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? = ? GROUP BY id');
+    });
+
+    it('should be return string equal to WHERE ?? = ? GROUP BY id,name', async () => {
+        generateUpdateSqlQueryWithData({
+            table: 'users',
+            where: {
+                username: 'root'
+            },
+            option: {
+                group: GROUP(['id', 'name'])
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? = ? GROUP BY id,name');
+    });
+
 
     it('should be return string equal to WHERE ?? = ? ORDER BY ? , ?', async () => {
         generateUpdateSqlQueryWithData({
@@ -897,6 +926,18 @@ describe('getOptionKeywordSqlQuery', () => {
         expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? < ?');
     });
 
+    it('should be return string equal to WHERE ?? < ? OR ?? BETWEEN ? AND ?', async () => {
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                password: setOperator(LESS_THAN, 8),
+                id: BETWEEN(1, 10, keyHelper.OR)
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? OR ?? BETWEEN ? AND ?');
+    });
+
     it('should be return string equal to WHERE ?? BETWEEN ? AND ? AND ?? < ?', async () => {
         getFindSqlQuery({
             get: ['id'],
@@ -906,6 +947,18 @@ describe('getOptionKeywordSqlQuery', () => {
             }
         });
         expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? < ?');
+    });
+
+    it('should be return string equal to WHERE ?? BETWEEN ? AND ? AND ?? < ? OR ?? BETWEEN ? AND ?', async () => {
+        getFindSqlQuery({
+            get: 'id',
+            from: 'users',
+            where: {
+                id: ATTACH([BETWEEN(1, 10), setOperator(LESS_THAN, 8)]),
+                name: ATTACH([BETWEEN(1, 10)],keyHelper.OR),
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? BETWEEN ? AND ? AND ?? < ? OR ?? BETWEEN ? AND ?');
     });
 
     it('should be return string equal to WHERE ?? < ? AND ?? BETWEEN ? AND ?', async () => {
@@ -954,6 +1007,18 @@ describe('getOptionKeywordSqlQuery', () => {
             }
         });
         expect(util.sqlQuery).toBe('WHERE ?? LIKE ? AND ?? < ?');
+    });
+
+    it('should be return string equal to WHERE ?? < ? OR ?? LIKE ?', async () => {
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 8),
+                name: LIKE('%l', keyHelper.OR)
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? OR ?? LIKE ?');
     });
 
     it('should be return string equal to WHERE ?? < ? AND ?? LIKE ?', async () => {
@@ -1015,6 +1080,18 @@ describe('getOptionKeywordSqlQuery', () => {
             }
         });
         expect(util.sqlQuery).toBe('WHERE ?? < ? AND ?? LIKE ? AND ?? IN (?)');
+    });
+
+    it('should be return string equal to WHERE ?? < ? OR ?? IN (?)', async () => {
+        getFindSqlQuery({
+            get: ['id'],
+            from: 'users',
+            where: {
+                id: setOperator(LESS_THAN, 5),
+                type: IN([1, 5], keyHelper.OR)
+            }
+        });
+        expect(util.sqlQuery).toBe('WHERE ?? < ? OR ?? IN (?)');
     });
 
     it('should be return string equal to WHERE ?? < ? ORDER BY ?', async () => {
@@ -1171,6 +1248,20 @@ describe('removeFieldDataInSelect', () => {
             COUNT()
         );
         expect(getIdentifier()).toBe('COUNT(*) AS size');
+    });
+
+    it('should be return string equal to COUNT(*)', async () => {
+        validateIdentifiers(
+            keyHelper.COUNT
+        );
+        expect(getIdentifier()).toBe('COUNT(*)');
+    });
+
+    it('should be return string equal to *', async () => {
+        validateIdentifiers(
+            STAR
+        );
+        expect(getIdentifier()).toBe('*');
     });
 
     it('should be return string equal to MIN(price)', async () => {

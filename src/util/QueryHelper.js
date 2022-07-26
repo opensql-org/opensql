@@ -3,6 +3,7 @@ const {
     AND,
     COUNT,
     UNION,
+    GROUP_BY,
     UNION_ALL
 } = require('../util/KeywordHelper');
 
@@ -148,10 +149,12 @@ module.exports = {
 
 
     COUNT(column) {
-        if (!Array.isArray(column))
-            return (column === undefined) ? `${COUNT} AS size` : `COUNT(${column})`;
 
-        return `COUNT(DISTINCT ${column})`;
+        if (Array.isArray(column))
+            return `COUNT(DISTINCT ${column})`;
+
+        return (column === undefined) ? `${COUNT} AS size`
+            : `COUNT(${column})`;
     },
 
 
@@ -168,7 +171,7 @@ module.exports = {
     ATTACH(array, op) {
         if (op !== undefined)
             return {
-                op: op.toLowerCase(),
+                op: op,
                 data: array
             };
 
@@ -217,6 +220,12 @@ module.exports = {
 
     CONCAT_WS(str, array, column) {
         return `CONCAT_WS("${str}", ${array.toString()}) AS ${column}`;
+    },
+
+    GROUP(data) {
+        if (Array.isArray(data))
+            return GROUP_BY + ' ' + data.toString();
+        return GROUP_BY + ' ' + data;
     }
 
 }
