@@ -149,10 +149,12 @@ module.exports = {
 
 
     COUNT(column) {
-        if (!Array.isArray(column))
-            return (column === undefined) ? `${COUNT} AS size` : `COUNT(${column})`;
 
-        return `COUNT(DISTINCT ${column})`;
+        if (Array.isArray(column))
+            return `COUNT(DISTINCT ${column})`;
+
+        return (column === undefined) ? `${COUNT} AS size`
+            : `COUNT(${column})`;
     },
 
 

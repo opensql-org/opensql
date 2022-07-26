@@ -702,6 +702,30 @@ function isSource(data) {
     return /POINTER_FOR_SOURCE /.test(data);
 }
 
+function isColumn(item) {
+    return item !== STAR && item !== COUNT && !isPointField(item) && !isCast(item) && !isAs(item) &&
+        !isSource(item) && item !== DISTINCT && !isMAX(item) && !isMIN(item) && !isSUM(item) &&
+        !isAVG(item) && !isConcatWs(item);
+}
+
+
+function isSqlFunction(item) {
+    return (isCast(item) || isCount(item) || isMAX(item) || isMIN(item) ||
+        isSUM(item) || isAVG(item) || isConcatWs(item));
+}
+
+
+function verifyIdentifiers(item) {
+    if (isSqlFunction(item) || item === STAR || item === DISTINCT || isPointField(item))
+        return item;
+
+    if (isAs(item))
+        return item.replace('POINTER_FOR_AS ', '');
+
+
+    if (isSource(item))
+        return item.replace('POINTER_FOR_SOURCE ', '');
+}
 
 module.exports = {
 
@@ -972,37 +996,18 @@ module.exports = {
                 let isLastIndex = index.length === indexOfArr + 1;
 
 
-                if (item !== STAR && COUNT && !isPointField(item) && !isCast(item) && !isAs(item) &&
-                    !isSource(item) && item !== DISTINCT && !isMAX(item) && !isMIN(item) && !isSUM(item) &&
-                    !isAVG(item) && !isConcatWs(item)) {
+                if (isColumn(item)) {
                     arrayOfData.push(item);
                     newArr.push(DOUBLE_QUESTION_MARK);
                 }
 
-
-                if (isCast(item) || isCount(item) || isMAX(item) || isMIN(item) ||
-                    isSUM(item) || isAVG(item) || isConcatWs(item))
-                    newArr.push(item);
-
-
-                if (item === STAR)
-                    newArr.push(STAR);
-
-
-                if (item === DISTINCT)
-                    newArr.push(DISTINCT);
-
-
-                if (isAs(item))
-                    newArr.push(item.replace('POINTER_FOR_AS ', ''));
-
-
-                if (isSource(item))
-                    newArr.push(item.replace('POINTER_FOR_SOURCE ', ''));
+                if (!isColumn(item))
+                    newArr.push(verifyIdentifiers(item));
 
 
                 if (!isLastIndex && item !== DISTINCT)
                     newArr.push(COMMA);
+
 
             });
 
@@ -1011,34 +1016,14 @@ module.exports = {
         }
 
 
-        if (index !== STAR && COUNT && !isAs(index) && !isPointField(index) && !isCast(index)
-            && !isCount(index) && !isSource(index) && !isMAX(index) && !isMIN(index) && !isSUM(index)
-            && !isAVG(index) && !isConcatWs(index)) {
+        if (isColumn(index) && !isSqlFunction(index)) {
             arrayOfData.push(index);
             identifier = DOUBLE_QUESTION_MARK;
         }
 
 
-        if (index !== STAR && COUNT && isPointField(index))
-            identifier = index;
-
-
-        if (index === STAR)
-            identifier = STAR;
-
-
-        if (isCast(index) || isCount(index) || isMAX(index) || isMIN(index) ||
-            isSUM(index) || isAVG(index) || isConcatWs(index))
-            identifier = index;
-
-
-        if (isAs(index)) {
-            identifier = index.replace('POINTER_FOR_AS ', '');
-        }
-
-
-        if (isSource(index))
-            identifier = index.replace('POINTER_FOR_SOURCE ', '');
+        if (!isColumn(index) || isSqlFunction(index))
+            identifier = verifyIdentifiers(index);
 
 
         arrayOfKeyAndValueDataForQuery.push(getData());

@@ -10,6 +10,7 @@ const {
         generateUpdateSqlQueryWithData
     } = require('../src/util/Utilites'),
     {
+        STAR,
         DISTINCT,
         AUTO_INCREMENT
     } = require('../src/util/KeywordHelper'),
@@ -47,9 +48,10 @@ const {
         IS_NULL,
         NOT_NULL,
         LESS_THAN,
+        CONCAT_WS,
         setOperator,
         NOT_BETWEEN,
-        IS_NOT_NULL, CONCAT_WS
+        IS_NOT_NULL
     } = require('../src/util/QueryHelper');
 
 
@@ -1198,6 +1200,20 @@ describe('removeFieldDataInSelect', () => {
             COUNT()
         );
         expect(getIdentifier()).toBe('COUNT(*) AS size');
+    });
+
+    it('should be return string equal to COUNT(*)', async () => {
+        validateIdentifiers(
+            keyHelper.COUNT
+        );
+        expect(getIdentifier()).toBe('COUNT(*)');
+    });
+
+    it('should be return string equal to *', async () => {
+        validateIdentifiers(
+            STAR
+        );
+        expect(getIdentifier()).toBe('*');
     });
 
     it('should be return string equal to MIN(price)', async () => {
