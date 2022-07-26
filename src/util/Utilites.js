@@ -180,11 +180,15 @@ function removeOrOperatorInString(str) {
 }
 
 function isAndOperator(str) {
-    return str.search('and') === 0;
+    if (str !== undefined)
+        return str.search('and') === 0;
+    return false;
 }
 
 function isOrOperator(str) {
-    return str.search('or') === 0;
+    if (str !== undefined)
+        return str.search('or') === 0;
+    return false;
 }
 
 function getValidValue(str) {
@@ -237,6 +241,9 @@ function getValueOfLikeOperator(str) {
 }
 
 function getOp(str) {
+    let lastIndex = arrayOfEqualAndQuestionMarks[arrayOfEqualAndQuestionMarks.length - 1];
+    if (lastIndex === 'OR' || lastIndex === 'AND')
+        return '';
     let operator;
     if (isAndOperator(str) || isOrOperator(str)) {
         operator = str.split(' ')[0];
@@ -295,6 +302,10 @@ function getDoubleQuestionMarkAndCommaForOrderBy(arr) {
 
     });
     return str;
+}
+
+function isEmptyOpChar(value) {
+    return getOp(value) === '';
 }
 
 
@@ -382,7 +393,8 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
 
     if ((isInOperator || isNotInOperator) && !isFirstIndex) {
         arrayOfKeyAndValueDataForQuery.push(key);
-        arrayOfEqualAndQuestionMarks.push(getOp(value));
+        if (!isEmptyOpChar(value))
+            arrayOfEqualAndQuestionMarks.push(getOp(value));
         arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${getInOperator()}`);
         arrayOfKeyAndValueDataForQuery.push(getValueForInOperator());
         indexForWhereJsonObject++;
@@ -390,7 +402,8 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
 
 
     if ((isBetweenOperator || isNotBetweenOperator) && !isFirstIndex) {
-        arrayOfEqualAndQuestionMarks.push(getOp(value));
+        if (!isEmptyOpChar(value))
+            arrayOfEqualAndQuestionMarks.push(getOp(value));
         arrayOfKeyAndValueDataForQuery.push(key);
         arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${getBetweenOperator()} ${QUESTION_MARK} ${AND} ${QUESTION_MARK}`);
         indexForWhereJsonObject++;
@@ -410,7 +423,8 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
 
 
     if (isLikeOperator && !isFirstIndex) {
-        arrayOfEqualAndQuestionMarks.push(getOp(value));
+        if (!isEmptyOpChar(value))
+            arrayOfEqualAndQuestionMarks.push(getOp(value));
         arrayOfKeyAndValueDataForQuery.push(key);
         arrayOfKeyAndValueDataForQuery.push(getValueOfLikeOperator(getValidValue(value)));
         arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${LIKE} ${QUESTION_MARK}`);
@@ -427,7 +441,8 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
 
 
     if ((isUsedIsNotNullWord || isUsedIsNullWord) && !isFirstIndex) {
-        arrayOfEqualAndQuestionMarks.push(getOp(value));
+        if (!isEmptyOpChar(value))
+            arrayOfEqualAndQuestionMarks.push(getOp(value));
         arrayOfKeyAndValueDataForQuery.push(key);
         arrayOfEqualAndQuestionMarks.push(`${DOUBLE_QUESTION_MARK} ${value}`);
         indexForWhereJsonObject++;
@@ -442,7 +457,7 @@ function valueValidationForWhereJsonObject(key, value, optionData) {
 
 }
 
-function isJsonObject(data) {
+function isJsonObjectOfAttachMultiConditions(data) {
     if (data === undefined)
         return false;
     if (data.constructor === ({}).constructor)
@@ -493,14 +508,24 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
                 isOpDefined = Array.isArray(value) && key === 'op',
                 arrayOfSpecialQueryUtilitiesOperator = [],
                 newArrayForOperatorAndValue2d = [],
+                getAttachOpType = () => {
+                    try {
+                        let type = value['op'];
+                        if (type !== undefined)
+                            return type;
+                        return AND;
+                    } catch (e) {
+                    }
+                },
                 operator = getOperatorInSpaceString(value),
                 initPlaceHolder = `${DOUBLE_QUESTION_MARK} ${operator} ${QUESTION_MARK}`;
 
-            if (isJsonObject(value) && !isFirstIndex)
-                arrayOfEqualAndQuestionMarks.push(getOp(value['op']));
 
+            if (isJsonObjectOfAttachMultiConditions(value) && !isFirstIndex) {
+                arrayOfEqualAndQuestionMarks.push(getAttachOpType());
+            }
 
-            if (isJsonObject(value)) {
+            if (isJsonObjectOfAttachMultiConditions(value)) {
                 value['data'].forEach(item => {
                     valueValidationForWhereJsonObject(key, item, {
                         isJsonObjectInWhereCondition: true
@@ -510,7 +535,7 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
             }
 
 
-            if (!isJsonObject(value))
+            if (!isJsonObjectOfAttachMultiConditions(value))
                 valueValidationForWhereJsonObject(key, value);
 
             if (!isOpDefined)

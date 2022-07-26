@@ -171,7 +171,7 @@ module.exports = {
     ATTACH(array, op) {
         if (op !== undefined)
             return {
-                op: op.toLowerCase(),
+                op: op,
                 data: array
             };
 
