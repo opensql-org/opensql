@@ -494,6 +494,8 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
         return module.exports.sqlQuery = '';
     }
 
+    if (isDefinedGet)
+        module.exports.validateIdentifiers(get);
 
     if (isDefinedFrom)
         arrayOfKeyAndValueDataForQuery.push(from);
@@ -769,7 +771,6 @@ module.exports = {
 
         array.forEach(item => {
 
-            let itemForgetObjectIntoArray = item.data.get;
             let validateWhere = () => {
                     return (item.data?.where !== undefined) ? item.data?.where :
                         (item.data?.whereNot !== undefined) ? item.data?.whereNot : item.data?.where
@@ -781,16 +782,14 @@ module.exports = {
                 where = validateWhere(),
                 isUndefinedWhereCondition = where === undefined;
 
-            module.exports.validateIdentifiers(itemForgetObjectIntoArray);
-
             if (isUndefinedWhereCondition)
                 arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK}`);
 
-            if (!isUndefinedWhereCondition) {
+            if (!isUndefinedWhereCondition)
                 arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} ${getWhereKey()} ??`);
-                getQueryAndCheckOtherConditionInJsonObject(item.data);
-            }
 
+
+            getQueryAndCheckOtherConditionInJsonObject(item.data);
         });
         module.exports.sqlQuery = arrayOfEqualAndQuestionMarks.join(' ').trim();
     },
@@ -920,6 +919,7 @@ module.exports = {
     getFindSqlQuery(jsonObject) {
 
         module.exports.sqlQuery = getQueryAndCheckOtherConditionInJsonObject(jsonObject);
+        module.exports.arrayOfDataForSqlInjection = arrayOfKeyAndValueDataForQuery;
 
     },
 
