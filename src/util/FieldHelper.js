@@ -9,7 +9,7 @@ module.exports = {
 
 
     POINT(Lat, Lon) {
-        return `POINT(${Lat} ${Lon})`;
+        return `POINT(${Lat}, ${Lon})`;
     },
 
     fieldPoint(field) {

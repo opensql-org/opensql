@@ -1,5 +1,6 @@
 let openSql = require('../index'),
     exe = require('../src/execute/run'),
+    util = require('../src/util/Utilites'),
     {
         INT,
         ENUM,
@@ -85,7 +86,7 @@ describe('create table', () => {
 
 describe('Union Sql Query', () => {
 
-    it('should be return string equal to USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT ?? FROM ??', async () => {
+    it('should be return string equal to USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT * FROM ??', async () => {
         openSql.find({
             get: 'id',
             from: 'users',
@@ -100,7 +101,7 @@ describe('Union Sql Query', () => {
     });
 
 
-    it('should be return string equal to USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT ?? FROM ?? WHERE ?? = ?', async () => {
+    it('should be return string equal to USE test_open_Sql_database;  SELECT * FROM ?? UNION SELECT * FROM ?? WHERE ?? = ?', async () => {
         openSql.find({
             get: 'id',
             from: 'users',
@@ -148,7 +149,7 @@ describe('Union Sql Query', () => {
             from: 'users',
             union: [
                 UNION({
-                    table: 'users',
+                    from: 'users',
                     whereNot: {
                         username: 'root'
                     }
@@ -158,13 +159,27 @@ describe('Union Sql Query', () => {
         expect(exe.getSqlQuery()).toBe('USE test_open_Sql_database;  SELECT ?? FROM ?? UNION SELECT ?? FROM ?? WHERE NOT ?? = ?');
     });
 
+    it('should be return empty array', async () => {
+        openSql.find({
+            get: 'id',
+            from: 'users',
+            union: [
+                UNION({
+                    get: 'id',
+                    from: 'book'
+                })
+            ]
+        });
+        expect(util.arrayOfDataForSqlInjection).toEqual([]);
+    });
+
     it('should be return string equal to USE test_open_Sql_database;  SELECT ?? FROM ?? UNION SELECT ?? FROM ?? WHERE NOT ?? = ? AND NOT ?? < ?', async () => {
         openSql.find({
             get: 'id',
             from: 'users',
             union: [
                 UNION({
-                    table: 'users',
+                    from: 'users',
                     whereNot: {
                         username: 'root',
                         id: NOT(setOperator(LESS_THAN, 5))
@@ -181,7 +196,7 @@ describe('Union Sql Query', () => {
             from: 'users',
             union: [
                 UNION({
-                    table: 'users',
+                    from: 'users',
                     whereNot: {
                         username: 'root',
                         id: NOT(setOperator(LESS_THAN, 5), OR)
