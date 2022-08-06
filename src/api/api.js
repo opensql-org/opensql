@@ -110,8 +110,6 @@ module.exports = {
     addWithFind(jsonObject) {
         getFindSqlQuery(jsonObject);
 
-        validateIdentifiers((jsonObject.get !== undefined) ? jsonObject.get : null);
-
         let selectSqlQuery = ' SELECT ' + getIdentifier() +
             ' FROM ' + DOUBLE_QUESTION_MARK + ' ' + util.sqlQuery;
 
@@ -137,7 +135,6 @@ module.exports = {
     find(jsonObject) {
         getFindSqlQuery(jsonObject);
 
-        validateIdentifiers((jsonObject.get !== undefined) ? jsonObject.get : null);
         validateUnionQuery((jsonObject.union !== undefined) ? jsonObject.union : null);
 
         run(getUseDatabaseName() + ' SELECT ' + getIdentifier() +
