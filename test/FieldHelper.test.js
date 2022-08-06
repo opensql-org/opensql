@@ -4,7 +4,7 @@ let FieldHelper = require('../src/util/FieldHelper');
 describe('FieldHelper Module', () => {
 
     it('should be return string equal to POINT(4.5 8.6)', async () => {
-        expect(FieldHelper.POINT(4.5, 8.6)).toBe('POINT(4.5 8.6)');
+        expect(FieldHelper.POINT(4.5, 8.6)).toBe('POINT(4.5, 8.6)');
     });
 
     it('should be return string equal to X(location) AS Lat , Y(location) AS Lon', async () => {

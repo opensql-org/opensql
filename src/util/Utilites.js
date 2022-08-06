@@ -470,7 +470,7 @@ function InitializationIndexWhenExistMultiSqlQuery() {
 }
 
 
-function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
+function getQueryAndCheckOtherConditionInJsonObject(jsonObject, isUnion, unionType) {
     let validateWhere = () => {
             return (jsonObject?.where !== undefined) ? jsonObject?.where :
                 (jsonObject?.whereNot !== undefined) ? jsonObject?.whereNot : jsonObject?.where
@@ -500,6 +500,16 @@ function getQueryAndCheckOtherConditionInJsonObject(jsonObject) {
     if (isDefinedFrom)
         arrayOfKeyAndValueDataForQuery.push(from);
 
+    if (isUnion === true) {
+
+        if (isUndefinedWhereCondition)
+            arrayOfEqualAndQuestionMarks.push(`${unionType} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK}`);
+
+
+        if (!isUndefinedWhereCondition)
+            arrayOfEqualAndQuestionMarks.push(`${unionType} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} ${getWhereKey()} ${DOUBLE_QUESTION_MARK}`);
+
+    }
 
     if (!isUndefinedWhereCondition)
 
@@ -769,27 +779,12 @@ module.exports = {
         if (array === null)
             return;
 
+        let isUnion = true;
+
         array.forEach(item => {
 
-            let validateWhere = () => {
-                    return (item.data?.where !== undefined) ? item.data?.where :
-                        (item.data?.whereNot !== undefined) ? item.data?.whereNot : item.data?.where
-                },
-                getWhereKey = () => {
-                    return (item.data?.where !== undefined) ? 'WHERE' :
-                        (item.data?.whereNot !== undefined) ? 'WHERE NOT' : 'WHERE'
-                },
-                where = validateWhere(),
-                isUndefinedWhereCondition = where === undefined;
+            getQueryAndCheckOtherConditionInJsonObject(item.data, isUnion, item.type);
 
-            if (isUndefinedWhereCondition)
-                arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK}`);
-
-            if (!isUndefinedWhereCondition)
-                arrayOfEqualAndQuestionMarks.push(`${item.type} ` + `SELECT ${module.exports.getIdentifier()} ` + `FROM ${DOUBLE_QUESTION_MARK} ${getWhereKey()} ??`);
-
-
-            getQueryAndCheckOtherConditionInJsonObject(item.data);
         });
         module.exports.sqlQuery = arrayOfEqualAndQuestionMarks.join(' ').trim();
     },
