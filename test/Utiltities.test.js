@@ -8,26 +8,26 @@ const {
         generateValueWithComma,
         getStringOfColumnWithComma,
         generateUpdateSqlQueryWithData
-    } = require('../util/Utilites'),
+    } = require('../src/util/Utilites'),
     {
         STAR,
         DISTINCT,
         AUTO_INCREMENT
-    } = require('../util/KeywordHelper'),
-    util = require('../util/Utilites'),
-    keyHelper = require('../util/KeywordHelper'),
-    variableDataType = require('../util/VariableDataType'),
+    } = require('../src/util/KeywordHelper'),
+    util = require('../src/util/Utilites'),
+    keyHelper = require('../src/util/KeywordHelper'),
+    variableDataType = require('../src/util/VariableDataType'),
     {
         DEFAULT,
         fieldPoint
-    } = require('../util/FieldHelper'),
+    } = require('../src/util/FieldHelper'),
     {
         INT,
         SET,
         ENUM,
         DECIMAL,
         VARCHAR
-    } = require('../util/DataType'),
+    } = require('../src/util/DataType'),
     {
         OR,
         IN,
@@ -52,7 +52,7 @@ const {
         setOperator,
         NOT_BETWEEN,
         IS_NOT_NULL
-    } = require('../util/QueryHelper');
+    } = require('../src/util/QueryHelper');
 
 
 describe('getCreateTableSqlQuery', () => {

@@ -9,8 +9,8 @@ let {
         CONCAT_WS,
         LESS_THAN,
         setOperator
-    } = require('../util/QueryHelper'),
-    keyHelper = require('../util/KeywordHelper');
+    } = require('../src/util/QueryHelper'),
+    keyHelper = require('../src/util/KeywordHelper');
 
 
 describe('Query Helper Module', () => {
