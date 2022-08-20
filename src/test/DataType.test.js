@@ -1,10 +1,10 @@
-let DataType = require('../src/util/DataType'),
+let DataType = require('../util/DataType'),
     {
         NOT_NULL
-    } = require('../src/util/QueryHelper'),
+    } = require('../util/QueryHelper'),
     {
         AUTO_INCREMENT
-    } = require('../src/util/KeywordHelper');
+    } = require('../util/KeywordHelper');
 
 
 describe('Options Contain', () => {
