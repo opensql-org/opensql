@@ -1,12 +1,12 @@
-let api = require('./src/api/api'),
-    DataType = require('./src/util/DataType'),
-    KeywordHelper = require('./src/util/KeywordHelper'),
-    FieldHelper = require('./src/util/FieldHelper'),
-    VariableDataType = require('./src/util/VariableDataType'),
-    QueryHelper = require('./src/util/QueryHelper'),
+let api = require('./api/api'),
+    DataType = require('./util/DataType'),
+    KeywordHelper = require('./util/KeywordHelper'),
+    FieldHelper = require('./util/FieldHelper'),
+    VariableDataType = require('./util/VariableDataType'),
+    QueryHelper = require('./util/QueryHelper'),
     {
         sqlQueryResult
-    } = require('./src/DatabaseConnection');
+    } = require('./DatabaseConnection');
 
 module.exports = {
 

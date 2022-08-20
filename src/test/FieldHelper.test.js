@@ -1,4 +1,4 @@
-let FieldHelper = require('../src/util/FieldHelper');
+let FieldHelper = require('../util/FieldHelper');
 
 
 describe('FieldHelper Module', () => {

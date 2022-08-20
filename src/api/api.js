@@ -7,7 +7,6 @@ let {
         getIdentifier,
         getFindSqlQuery,
         validateUnionQuery,
-        validateIdentifiers,
         getGeneratedColumns,
         generateValueWithComma,
         getCreateTableSqlQuery,
