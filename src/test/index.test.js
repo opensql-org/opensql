@@ -1,6 +1,6 @@
 let openSql = require('../index'),
-    exe = require('../src/execute/run'),
-    util = require('../src/util/Utilites'),
+    exe = require('../execute/run'),
+    util = require('../util/Utilites'),
     {
         INT,
         ENUM,
