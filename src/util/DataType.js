@@ -56,10 +56,6 @@ module.exports = {
         return addDataTypeForFieldInFirstItemOfArray(date, data);
     },
 
-    TIME(data) {
-        return addDataTypeForFieldInFirstItemOfArray(time, data);
-    },
-
     DATETIME(data) {
         return addDataTypeForFieldInFirstItemOfArray(datetime, data);
     },
