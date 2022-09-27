@@ -2,7 +2,7 @@
   "name": "opensql",
   "version": "1.2.47",
   "description": "OpenSql is a promise-based Node.js ORM tool for MySql",
-  "main": "dist/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "prestart": "tsc index.ts --outDir .dist",
     "start": "node .dist/index.js",
@@ -34,7 +34,6 @@
     "jest": "^28.1.1",
     "mssql": "^9.0.1",
     "mysql2": "^2.3.3",
-    "nodemon": "^2.0.16",
     "pg": "^8.8.0"
   },
   "author": "Ali Azmoodeh <treeroot.ir@gmail.com>",
