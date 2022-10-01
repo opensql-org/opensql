@@ -1,4 +1,4 @@
-export type CRUD = {
+type CRUD = {
 
     /**
      * @type string | string[]
@@ -44,7 +44,7 @@ export type CRUD = {
 
 }
 
-export type Option = {
+type Option = {
 
     /**
      * @type string | string[]
@@ -94,7 +94,7 @@ type Where = {
 
 }
 
-export type CreateTable = {
+type CreateTable = {
 
     /**
      * @type string
@@ -112,7 +112,7 @@ export type CreateTable = {
      * @type object[]
      * List of field reference.
      */
-    ref?: object[]
+    ref?: Ref[]
 
     /**
      * @type string[]
@@ -122,4 +122,60 @@ export type CreateTable = {
 
     primaryKey?: string
 
+}
+
+type Ref = {
+
+    /**
+     * @type string
+     * Field name that you want to reference in other tables.
+     */
+    get: string
+
+    /**
+     * @type string
+     * Table name that you want to reference in other tables.
+     */
+    from: string
+
+    /**
+     * @type string
+     * Target table name.
+     */
+    to: string
+
+    /**
+     * @type string
+     * Field of target table.
+     */
+    field: string
+
+    /**
+     * @type RefState
+     * @default RESTRICT
+     */
+    onDelete?: RefState
+
+    /**
+     * @type RefState
+     * @default RESTRICT
+     */
+    onUpdate?: RefState
+
+}
+
+
+enum RefState {
+    RESTRICT = 'RESTRICT',
+    NO_ACTION = 'NO ACTION',
+    CASCADE = 'CASCADE',
+    SET_NULL = 'SET NULL'
+}
+
+
+export {
+    CreateTable,
+    Option,
+    CRUD,
+    Ref
 }
