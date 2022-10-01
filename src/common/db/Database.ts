@@ -1,6 +1,7 @@
-import {CRUD, Option} from '../../../package/type/db/Query';
+import {CRUD, Option, Ref} from '../../../package/type/db/Query';
+import Connection from './Connection';
 
-export default abstract class Database {
+export default abstract class Database extends Connection {
 
     abstract find(crud?: CRUD, option?: Option): Promise<any>;
 
@@ -28,5 +29,15 @@ export default abstract class Database {
     abstract addOne(crud?: CRUD): Promise<any>;
 
     abstract addMany(crud?: CRUD): Promise<any>;
+
+
+    abstract dropDatabase(name: string | string[]): Promise<any>;
+
+    abstract dropTable(tableName: string | string[], databaseName?: string | string[]): Promise<any>;
+
+
+    abstract foreignKey(ref: Ref): Promise<any>;
+
+    abstract query(sql: string, injection?: any): Promise<any>;
 
 }
