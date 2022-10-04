@@ -1,7 +1,7 @@
 export default abstract class Connection {
 
-    abstract connect(url: string, option?: object): Promise<any>;
+    abstract connect(url: string, option?: object): void;
 
-    abstract disconnect(): Promise<any>;
+    abstract disconnect(): void;
 
 }
