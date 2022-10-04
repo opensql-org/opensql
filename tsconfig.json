@@ -6,15 +6,25 @@
     "types": [
       "node"
     ],
-    "module": "es2020",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "outDir": "./dist",
     "sourceMap": true,
-    "stripInternal": true,
-    "strict": true,
-    "target": "es6"
+    "target": "es6",
+    "module": "commonjs",
+    "allowJs": true,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "pretty": true,
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": true,
+    "noImplicitReturns": false,
+    "noImplicitUseStrict": false,
+    "baseUrl": "src/",
+    "listFiles": false,
+    "noEmitHelpers": true,
   },
   "include": [
     "src/**/*.ts"
