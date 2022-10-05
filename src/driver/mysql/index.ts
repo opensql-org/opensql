@@ -4,41 +4,41 @@ import {CRUD, Ref, Option} from '../../../package/type/db/Query';
 export default class Mysql extends Database {
 
 
-    async find(crud?: CRUD, option?: Option): Promise<any> {
+    async find(query?: CRUD | Option, option?: Option): Promise<any> {
         return Promise.resolve(undefined);
     }
 
-    async findOne(crud?: CRUD, option?: Option): Promise<any> {
+    async findOne(query?: CRUD | Option, option?: Option): Promise<any> {
         return Promise.resolve(undefined);
     }
 
-    async findMany(crud?: CRUD, option?: Option): Promise<any> {
-        return Promise.resolve(undefined);
-    }
-
-
-    async update(crud?: CRUD, option?: Option): Promise<any> {
-        return Promise.resolve(undefined);
-    }
-
-    async updateOne(crud?: CRUD, option?: Option): Promise<any> {
-        return Promise.resolve(undefined);
-    }
-
-    async updateMany(crud?: CRUD, option?: Option): Promise<any> {
+    async findMany(query?: CRUD | Option, option?: Option): Promise<any> {
         return Promise.resolve(undefined);
     }
 
 
-    async remove(crud?: CRUD, option?: Option): Promise<any> {
+    async update(query?: CRUD | Option, option?: Option): Promise<any> {
         return Promise.resolve(undefined);
     }
 
-    async removeOne(crud?: CRUD, option?: Option): Promise<any> {
+    async updateOne(query?: CRUD | Option, option?: Option): Promise<any> {
         return Promise.resolve(undefined);
     }
 
-    async removeMany(crud?: CRUD, option?: Option): Promise<any> {
+    async updateMany(query?: CRUD | Option, option?: Option): Promise<any> {
+        return Promise.resolve(undefined);
+    }
+
+
+    async remove(query?: CRUD | Option, option?: Option): Promise<any> {
+        return Promise.resolve(undefined);
+    }
+
+    async removeOne(query?: CRUD | Option, option?: Option): Promise<any> {
+        return Promise.resolve(undefined);
+    }
+
+    async removeMany(query?: CRUD | Option, option?: Option): Promise<any> {
         return Promise.resolve(undefined);
     }
 
@@ -74,7 +74,7 @@ export default class Mysql extends Database {
     }
 
 
-    protected async connect(url: string, option?: object): Promise<any> {
+    async connect(url: string, option?: object): Promise<any> {
         return Promise.resolve(undefined);
     }
 
