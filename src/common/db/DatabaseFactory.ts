@@ -95,7 +95,7 @@ export default class DatabaseFactory extends DriverFactory {
     }
 
 
-    async connect(url: string, option?: object) {
+    protected async connect(url: string, option?: object) {
         this.driver.connect(url, option);
     }
 
