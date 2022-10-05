@@ -1,27 +1,28 @@
 import {CRUD, Option, Ref} from '../../../package/type/db/Query';
-import Connection from './Connection';
+import DismissConnection from './DismissConnection';
+import Connectable from './Connectable';
 
-export default abstract class Database extends Connection {
+export default abstract class Database implements DismissConnection,Connectable {
 
-    abstract find(crud?: CRUD, option?: Option): Promise<any>;
+    abstract find(query?: CRUD | Option, option?: Option): Promise<any>;
 
-    abstract findOne(crud?: CRUD, option?: Option): Promise<any>;
+    abstract findOne(query?: CRUD | Option, option?: Option): Promise<any>;
 
-    abstract findMany(crud?: CRUD, option?: Option): Promise<any>;
-
-
-    abstract update(crud?: CRUD, option?: Option): Promise<any>;
-
-    abstract updateOne(crud?: CRUD, option?: Option): Promise<any>;
-
-    abstract updateMany(crud?: CRUD, option?: Option): Promise<any>;
+    abstract findMany(query?: CRUD | Option, option?: Option): Promise<any>;
 
 
-    abstract remove(crud?: CRUD, option?: Option): Promise<any>;
+    abstract update(query?: CRUD | Option, option?: Option): Promise<any>;
 
-    abstract removeOne(crud?: CRUD, option?: Option): Promise<any>;
+    abstract updateOne(query?: CRUD | Option, option?: Option): Promise<any>;
 
-    abstract removeMany(crud?: CRUD, option?: Option): Promise<any>;
+    abstract updateMany(query?: CRUD | Option, option?: Option): Promise<any>;
+
+
+    abstract remove(query?: CRUD | Option, option?: Option): Promise<any>;
+
+    abstract removeOne(query?: CRUD | Option, option?: Option): Promise<any>;
+
+    abstract removeMany(query?: CRUD | Option, option?: Option): Promise<any>;
 
 
     abstract add(crud?: CRUD): Promise<any>;
@@ -39,5 +40,10 @@ export default abstract class Database extends Connection {
     abstract foreignKey(ref: Ref): Promise<any>;
 
     abstract query(sql: string, injection?: any): Promise<any>;
+
+
+    abstract connect(url: string, option?: object): void;
+
+    abstract disconnect(): void;
 
 }
