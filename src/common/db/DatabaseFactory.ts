@@ -25,42 +25,42 @@ export default class DatabaseFactory extends DriverFactory {
         this.connect(url, option);
     }
 
-    async find(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.find(crud, option);
+    async find(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.find(query, option);
     }
 
-    async findOne(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.findOne(crud, option);
+    async findOne(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.findOne(query, option);
     }
 
-    async findMany(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.findMany(crud, option);
-    }
-
-
-    async update(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.update(crud, option);
-    }
-
-    async updateOne(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.updateOne(crud, option);
-    }
-
-    async updateMany(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.updateMany(crud, option);
+    async findMany(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.findMany(query, option);
     }
 
 
-    async remove(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.remove(crud, option);
+    async update(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.update(query, option);
     }
 
-    async removeOne(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.removeOne(crud, option);
+    async updateOne(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.updateOne(query, option);
     }
 
-    async removeMany(crud?: CRUD, option?: Option): Promise<any> {
-        return this.driver.removeMany(crud, option);
+    async updateMany(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.updateMany(query, option);
+    }
+
+
+    async remove(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.remove(query, option);
+    }
+
+    async removeOne(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.removeOne(query, option);
+    }
+
+    async removeMany(query?: CRUD | Option, option?: Option): Promise<any> {
+        return this.driver.removeMany(query, option);
     }
 
 
