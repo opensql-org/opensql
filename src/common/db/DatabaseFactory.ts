@@ -1,8 +1,9 @@
-import Database from './Database';
 import {CRUD, Ref, Option} from '../../../package/type/db/Query';
-import DriverFactory from './DriverFactory';
 import Mysql from '../../driver/mysql';
 import Util from '../../util/Util';
+import DismissConnection from './DismissConnection';
+import Database from './Database';
+import DriverConnection from "./DriverConnection";
 
 const Utilities = Util.getInstance(),
     instanceClass = {
@@ -10,9 +11,9 @@ const Utilities = Util.getInstance(),
     };
 
 
-export default class DatabaseFactory extends DriverFactory {
+export default class DatabaseFactory implements DismissConnection, Database {
 
-    private driver: Database;
+    private driver: DriverConnection;
 
     protected factory(str: string) {
         // @ts-ignore
@@ -20,7 +21,6 @@ export default class DatabaseFactory extends DriverFactory {
     }
 
     constructor(url: string, option?: object) {
-        super();
         this.factory(url);
         this.connect(url, option);
     }
@@ -99,7 +99,7 @@ export default class DatabaseFactory extends DriverFactory {
         this.driver.connect(url, option);
     }
 
-    disconnect() {
+    async disconnect() {
         this.driver.disconnect();
     }
 
