@@ -1,7 +1,7 @@
-import Database from '../../common/db/Database';
 import {CRUD, Ref, Option} from '../../../package/type/db/Query';
+import DriverConnection from '../../common/db/DriverConnection';
 
-export default class Mysql extends Database {
+export default class Mysql implements DriverConnection {
 
 
     async find(query?: CRUD | Option, option?: Option): Promise<any> {
