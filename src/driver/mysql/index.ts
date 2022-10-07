@@ -8,9 +8,13 @@ let Utils = Util.getInstance();
 
 export default class Mysql implements DriverConnection {
 
+
     private connection: DB.Connection;
 
+
     private queryBuilder = new Builder();
+
+
 
     async find(query?: CRUD | Option, option?: Option): Promise<any> {
         return this.connection.query(this.queryBuilder.sql(query, option), this.queryBuilder.injection());
@@ -64,8 +68,12 @@ export default class Mysql implements DriverConnection {
     }
 
 
-    async dropDatabase(name: string | string[]): Promise<any> {
-        return Promise.resolve(undefined);
+    async createDatabase(name: string, set?: string, collate?: string): Promise<any> {
+        return this.connection.query(this.queryBuilder.createDatabase(name, set, collate));
+    }
+
+    async dropDatabase(name: string): Promise<any> {
+        return this.connection.query(this.queryBuilder.dropDatabase(name));
     }
 
     async dropTable(tableName: string | string[], databaseName?: string | string[]): Promise<any> {
