@@ -1,3 +1,6 @@
+// import keyword from '../../package/sql/keyword';
+
+
 export default class Util {
 
     private constructor() {
@@ -63,6 +66,82 @@ export default class Util {
         }
 
         return finalObject;
+    }
+
+    addDataTypeForFieldInFirstItemOfArray(type: string, data?: number | any[]): string {
+        // if (!data)
+        //     return type;
+        //
+        // let isArray = Array.isArray(data),
+        //     isValueOfIndexIsNumber = false,
+        //     newArrayForOptionsContains: any[] = [],
+        //     newArrayOfValue: any[] = [],
+        //     isDefinedValueInIndexTwoOfArray = false;
+        //
+        //
+        // let isDecimal = type === 'DECIMAL',
+        //     isDouble = type === 'DOUBLE',
+        //     isFloat = type === 'FLOAT',
+        //     isReal = type === 'REAL',
+        //     isEnum = type === 'ENUM',
+        //     isSet = type === 'SET';
+        //
+        //
+        // let arrayOfValidType = [
+        //     keyword.AUTO_INCREMENT,
+        //     keyword.NOT + keyword.NULL,
+        //     keyword.NULL
+        // ];
+        //
+        //
+        // if (!isArray || typeof data === 'number')
+        //     return (`${type}(${data})`).trim();
+        //
+        //
+        // data.forEach((item, index, arr) => {
+        //
+        //     let isValidType = arrayOfValidType.includes(item);
+        //     let nextItem = arr[index + 1];
+        //     let isNextItemIsNumber = Number.isInteger(nextItem);
+        //     let isItemIsString = typeof item === 'string';
+        //     let isItemIsNumber = Number.isInteger(item);
+        //     let isDefaultType = isDefinedDefaultWordInFirstOfString(item);
+        //
+        //
+        //     if (isValidType || isDefaultType) {
+        //         newArrayForOptionsContains.push(item);
+        //         return;
+        //     }
+        //
+        //
+        //     if ((!isNextItemIsNumber && isItemIsNumber) || isItemIsString) {
+        //         isValueOfIndexIsNumber = true;
+        //         newArrayOfValue.push(item);
+        //     }
+        //
+        //     if (isNextItemIsNumber && isItemIsNumber) {
+        //         isDefinedValueInIndexTwoOfArray = true;
+        //         newArrayOfValue.push(item);
+        //     }
+        //
+        //
+        // });
+        //
+        //
+        // let stringOfOptionContains = getArrayToString(newArrayForOptionsContains);
+        // let validateStringOfOptionContains = (stringOfOptionContains === undefined) ? ' ' : stringOfOptionContains;
+        //
+        // if (isEnum || isSet)
+        //     return (`${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+        //
+        // if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet))
+        //     return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+        //
+        // if ((isDecimal || isFloat || isReal || isDouble))
+        //     return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+        //
+        // return (type + ' ' + validateStringOfOptionContains).trim();
+        return '';
     }
 
 }
