@@ -30,7 +30,9 @@ export default interface Database {
     addMany(crud?: CRUD): Promise<any>;
 
 
-    dropDatabase(name: string | string[]): Promise<any>;
+    createDatabase(name: string, set?: string, collate?: string): Promise<any>;
+
+    dropDatabase(name: string): Promise<any>;
 
     dropTable(tableName: string | string[], databaseName?: string | string[]): Promise<any>;
 
