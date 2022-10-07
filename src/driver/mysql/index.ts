@@ -1,8 +1,13 @@
 import {CRUD, Ref, Option} from '../../../package/type/db/Query';
 import DriverConnection from '../../common/db/DriverConnection';
+import Util from '../../util/Util';
+import DB from 'mysql2';
+
+let Utils = Util.getInstance();
 
 export default class Mysql implements DriverConnection {
 
+    private connection: DB.Connection;
 
     async find(query?: CRUD | Option, option?: Option): Promise<any> {
         return Promise.resolve(undefined);
@@ -75,11 +80,11 @@ export default class Mysql implements DriverConnection {
 
 
     async connect(url: string, option?: object): Promise<any> {
-        return Promise.resolve(undefined);
+        return this.connection = DB.createConnection(Utils.urlHandler(url, option));
     }
 
     async disconnect(): Promise<any> {
-        return Promise.resolve(undefined);
+        return this.connection.end();
     }
 
 
