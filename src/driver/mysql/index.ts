@@ -3,17 +3,17 @@ import DriverConnection from '../../common/db/DriverConnection';
 import Util from '../../util/Util';
 import DB from 'mysql2';
 import Builder from '../../common/query/Builder';
+import DatabaseConfig from '../../common/db/DatabaseConfig';
 
 let Utils = Util.getInstance();
 
-export default class Mysql implements DriverConnection {
+export default class Mysql extends DatabaseConfig implements DriverConnection {
 
 
     private connection: DB.Connection;
 
 
     private queryBuilder = new Builder();
-
 
 
     async find(query?: CRUD | Option, option?: Option): Promise<any> {
@@ -69,6 +69,7 @@ export default class Mysql implements DriverConnection {
 
 
     async createDatabase(name: string, set?: string, collate?: string): Promise<any> {
+        this.setName(name);
         return this.connection.query(this.queryBuilder.createDatabase(name, set, collate));
     }
 
@@ -76,8 +77,9 @@ export default class Mysql implements DriverConnection {
         return this.connection.query(this.queryBuilder.dropDatabase(name));
     }
 
-    async dropTable(tableName: string | string[], databaseName?: string | string[]): Promise<any> {
-        return Promise.resolve(undefined);
+    async dropTable(tableName: string | string[], databaseName?: string): Promise<any> {
+        return this.connection.query(this.queryBuilder.dropTable(tableName,
+            !databaseName ? this.getName() : databaseName));
     }
 
 
@@ -91,7 +93,14 @@ export default class Mysql implements DriverConnection {
 
 
     async connect(url: string, option?: object): Promise<any> {
-        return this.connection = DB.createConnection(Utils.urlHandler(url, option));
+        const connectionObject = Utils.urlHandler(url, option);
+        // @ts-ignore
+        let isExistDatabase = connectionObject?.database;
+
+        if (isExistDatabase)
+            this.setName(isExistDatabase);
+
+        return this.connection = DB.createConnection(connectionObject);
     }
 
     async disconnect(): Promise<any> {
