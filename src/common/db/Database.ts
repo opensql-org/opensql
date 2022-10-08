@@ -34,7 +34,8 @@ export default interface Database {
 
     dropDatabase(name: string): Promise<any>;
 
-    dropTable(tableName: string | string[], databaseName?: string | string[]): Promise<any>;
+
+    dropTable(tableName: string | string[], databaseName?: string): Promise<any>;
 
 
     foreignKey(ref: Ref): Promise<any>;
