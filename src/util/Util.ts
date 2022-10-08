@@ -38,7 +38,7 @@ export default class Util {
             hostWithPort: any = url.split('/')[2],
             dbNameWithUserAndPass: any = url.split('/')[3],
             isSetPort = hostWithPort.search(':') !== -1,
-            isSetDatabase = dbNameWithUserAndPass.search('\\?') !== -1;
+            isSetDatabase = /\/[a-z-A-Z-0-9]/.test(dbNameWithUserAndPass);
 
         if (isSetPort) {
             hostWithPort = hostWithPort.split(':');
@@ -48,22 +48,22 @@ export default class Util {
             };
         }
 
-        if (isSetDatabase) {
-            dbNameWithUserAndPass = dbNameWithUserAndPass.split('?');
-            userWithPass = dbNameWithUserAndPass[1].split('=');
-            username = userWithPass[1].split('&')[0];
-            database = dbNameWithUserAndPass[0]
-            password = userWithPass[2];
+        dbNameWithUserAndPass = dbNameWithUserAndPass.split('?');
+        userWithPass = dbNameWithUserAndPass[1].split('=');
+        username = userWithPass[1].split('&')[0];
+        database = dbNameWithUserAndPass[0]
+        password = userWithPass[2];
 
-            dbNameWithUserAndPass = {
-                database: database,
-                user: username,
-                password: password
-            }
-
-            Object.assign(finalObject, dbNameWithUserAndPass);
-
+        dbNameWithUserAndPass = {
+            user: username,
+            password: password
         }
+
+        Object.assign(finalObject, dbNameWithUserAndPass);
+
+        if (isSetDatabase)
+            Object.assign(finalObject, {database: database})
+
 
         return finalObject;
     }

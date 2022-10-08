@@ -44,4 +44,14 @@ export default class Builder {
         ].join(' ');
     }
 
+
+    dropTable(tableName: string | string[], databaseName?: string): string {
+        return [
+            keyword.USE,
+            databaseName,
+            keyword.IF_EXISTS,
+            tableName
+        ].join(' ');
+    }
+
 }
