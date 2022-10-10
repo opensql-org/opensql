@@ -120,7 +120,31 @@ type CreateTable = {
      */
     index?: string[]
 
+    unique?: string[]
+
     primaryKey?: string
+
+    foreignKey?: ForeignKey
+
+    constraint?: CONSTRAINT
+
+}
+
+type CONSTRAINT = {
+
+    index?: string[]
+
+    unique?: string[]
+
+    primaryKey?: string
+
+    foreignKey?: ForeignKey
+
+}
+
+type ForeignKey = {
+
+    [key: string]: ForeignKeyObject
 
 }
 
@@ -164,6 +188,33 @@ type Ref = {
 
 }
 
+type ForeignKeyObject = {
+
+    /**
+     * @type string
+     * Target table name.
+     */
+    to: string
+
+    /**
+     * @type string
+     * Field of target table.
+     */
+    field: string
+
+    /**
+     * @type RefState
+     * @default RESTRICT
+     */
+    onDelete?: RefState
+
+    /**
+     * @type RefState
+     * @default RESTRICT
+     */
+    onUpdate?: RefState
+
+}
 
 enum RefState {
     RESTRICT = 'RESTRICT',
