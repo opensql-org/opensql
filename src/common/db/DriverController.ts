@@ -1,4 +1,4 @@
-export default abstract class DatabaseConfig {
+export default abstract class DriverController {
 
     /**
      * Saving database name
@@ -6,12 +6,15 @@ export default abstract class DatabaseConfig {
      */
     private name: string = '';
 
-    setName(name: string): void {
+    protected setName(name: string): void {
         this.name = name;
     }
 
     getName(): string {
         return this.name;
     }
+
+
+  //  abstract alert(a: string): Promise<any>;
 
 }

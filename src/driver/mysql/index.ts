@@ -1,14 +1,13 @@
-import {CRUD, Ref, Option} from '../../../package/type/db/Query';
+import {CRUD, Ref, Option, CreateTable} from '../../../package/type/db/Query';
 import DriverConnection from '../../common/db/DriverConnection';
 import Util from '../../util/Util';
 import DB from 'mysql2';
 import Builder from '../../common/query/Builder';
-import DatabaseConfig from '../../common/db/DatabaseConfig';
+import DriverController from '../../common/db/DriverController';
 
 let Utils = Util.getInstance();
 
-export default class Mysql extends DatabaseConfig implements DriverConnection {
-
+export default class Mysql extends DriverController implements DriverConnection {
 
     private connection: DB.Connection;
 
@@ -75,6 +74,11 @@ export default class Mysql extends DatabaseConfig implements DriverConnection {
 
     async dropDatabase(name: string): Promise<any> {
         return this.connection.query(this.queryBuilder.dropDatabase(name));
+    }
+
+
+    async createTable(ct: CreateTable): Promise<any> {
+        return this.connection.query(this.queryBuilder.createTable(ct, this.getName()));
     }
 
     async dropTable(tableName: string | string[], databaseName?: string): Promise<any> {
