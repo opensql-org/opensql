@@ -1,4 +1,4 @@
-import {CRUD, Option} from '../../../package/type/db/Query';
+import {CreateTable, CRUD, Option} from '../../../package/type/db/Query';
 import keyword from '../../../package/sql/Keyword';
 
 export default class Builder {
@@ -44,6 +44,16 @@ export default class Builder {
         ].join(' ');
     }
 
+
+    /**
+     * @param ct
+     * @param dbName
+     * Used to handle different query for different database.
+     */
+    createTable(ct: CreateTable, dbName: string): string {
+
+        return '';
+    }
 
     dropTable(tableName: string | string[], databaseName?: string): string {
         return [
