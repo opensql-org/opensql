@@ -1,5 +1,11 @@
 import {CreateTable, CRUD, Option} from '../../../package/type/db/Query';
+import foreignKey from '../../../package/query/helper/primaryKey';
 import keyword from '../../../package/sql/Keyword';
+import symbol from '../../../package/sql/Symbol';
+import Util from '../../util/Util';
+
+
+let {jsonToString} = Util.getInstance();
 
 export default class Builder {
 
@@ -52,7 +58,43 @@ export default class Builder {
      */
     createTable(ct: CreateTable, dbName: string): string {
 
-        return '';
+        let hasPrimaryKey = ct?.primaryKey,
+            hasForeignKey = ct?.foreignKey,
+            tableName = ct?.table,
+            hasTrueConditions = hasPrimaryKey || hasForeignKey;
+
+
+        if (hasTrueConditions)
+            for (const key in ct?.column) {
+
+                let value = ct.column[key],
+                    hasMatchPrimaryKey = key === hasPrimaryKey,
+                    hasMatchForeignKey = hasForeignKey[key] !== undefined;
+
+                if (hasMatchPrimaryKey)
+                    ct.column[key] = `${value} ${keyword.PRIMARY_KEY}`;
+
+                if (hasMatchForeignKey) {
+                    let fkQuery = foreignKey[dbName]?.query([
+                        key, /** The name of the column in this table that should be linked to the external column **/
+                        hasForeignKey[key].to /** Target table **/,
+                        hasForeignKey[key].column /** Target column in target table **/
+                    ]);
+
+                    ct.column[key] = `${value} ${fkQuery}`;
+                }
+
+            }
+
+
+        return [
+            keyword.CREATE,
+            keyword.TABLE,
+            tableName,
+            symbol.OPEN_PARENTHESES,
+            jsonToString(ct.column),
+            symbol.CLOSE_PARENTHESES
+        ].join(' ');
     }
 
     dropTable(tableName: string | string[], databaseName?: string): string {

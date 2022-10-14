@@ -1,4 +1,39 @@
-// import keyword from '../../package/sql/keyword';
+import keyword from '../../package/sql/keyword';
+import symbol from '../../package/sql/Symbol';
+
+function isDefinedDefaultWordInFirstOfString(str: string) {
+    return str.search(keyword.DEFAULT) === 0;
+}
+
+function isDefinedCommentWordInFirstOfString(str: string) {
+    return str.search(keyword.COMMENT) === 0;
+}
+
+function isDefinedStorageWordInFirstOfString(str: string) {
+    return str.search(keyword.STORAGE) === 0;
+}
+
+function getArrayToString(arr: Array<string>) {
+    return arr.toString().replace(',', ' ').trim();
+}
+
+function getStringOfValueForEnumOrSetDataTypesWithComma(arr: Array<string>) {
+    let stringTypesWithComma = '';
+    arr.forEach((item, index, arr) => {
+
+        let lastIndex = arr.lastIndexOf(item);
+
+        if (lastIndex)
+            stringTypesWithComma += `${symbol.COMMA} '${item}'`;
+
+
+        if (!lastIndex)
+            stringTypesWithComma += `'${item}'`;
+
+
+    });
+    return stringTypesWithComma;
+}
 
 
 export default class Util {
@@ -62,86 +97,93 @@ export default class Util {
         Object.assign(finalObject, dbNameWithUserAndPass);
 
         if (isSetDatabase)
-            Object.assign(finalObject, {database: database})
+            Object.assign(finalObject, {database: database});
 
 
         return finalObject;
     }
 
-    addDataTypeForFieldInFirstItemOfArray(type: string, data?: number | any[]): string {
-        // if (!data)
-        //     return type;
-        //
-        // let isArray = Array.isArray(data),
-        //     isValueOfIndexIsNumber = false,
-        //     newArrayForOptionsContains: any[] = [],
-        //     newArrayOfValue: any[] = [],
-        //     isDefinedValueInIndexTwoOfArray = false;
-        //
-        //
-        // let isDecimal = type === 'DECIMAL',
-        //     isDouble = type === 'DOUBLE',
-        //     isFloat = type === 'FLOAT',
-        //     isReal = type === 'REAL',
-        //     isEnum = type === 'ENUM',
-        //     isSet = type === 'SET';
-        //
-        //
-        // let arrayOfValidType = [
-        //     keyword.AUTO_INCREMENT,
-        //     keyword.NOT + keyword.NULL,
-        //     keyword.NULL
-        // ];
-        //
-        //
-        // if (!isArray || typeof data === 'number')
-        //     return (`${type}(${data})`).trim();
-        //
-        //
-        // data.forEach((item, index, arr) => {
-        //
-        //     let isValidType = arrayOfValidType.includes(item);
-        //     let nextItem = arr[index + 1];
-        //     let isNextItemIsNumber = Number.isInteger(nextItem);
-        //     let isItemIsString = typeof item === 'string';
-        //     let isItemIsNumber = Number.isInteger(item);
-        //     let isDefaultType = isDefinedDefaultWordInFirstOfString(item);
-        //
-        //
-        //     if (isValidType || isDefaultType) {
-        //         newArrayForOptionsContains.push(item);
-        //         return;
-        //     }
-        //
-        //
-        //     if ((!isNextItemIsNumber && isItemIsNumber) || isItemIsString) {
-        //         isValueOfIndexIsNumber = true;
-        //         newArrayOfValue.push(item);
-        //     }
-        //
-        //     if (isNextItemIsNumber && isItemIsNumber) {
-        //         isDefinedValueInIndexTwoOfArray = true;
-        //         newArrayOfValue.push(item);
-        //     }
-        //
-        //
-        // });
-        //
-        //
-        // let stringOfOptionContains = getArrayToString(newArrayForOptionsContains);
-        // let validateStringOfOptionContains = (stringOfOptionContains === undefined) ? ' ' : stringOfOptionContains;
-        //
-        // if (isEnum || isSet)
-        //     return (`${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
-        //
-        // if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet))
-        //     return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
-        //
-        // if ((isDecimal || isFloat || isReal || isDouble))
-        //     return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
-        //
-        // return (type + ' ' + validateStringOfOptionContains).trim();
-        return '';
+    dataTypeHandler(type: string, data?: number | any[]): string {
+        if (!data)
+            return type;
+
+        let isArray = Array.isArray(data),
+            isValueOfIndexIsNumber = false,
+            newArrayForOptionsContains: string[] = [],
+            newArrayOfValue: string[] = [],
+            isDefinedValueInIndexTwoOfArray = false;
+
+
+        let isDecimal = type === 'DECIMAL',
+            isDouble = type === 'DOUBLE',
+            isFloat = type === 'FLOAT',
+            isReal = type === 'REAL',
+            isEnum = type === 'ENUM',
+            isSet = type === 'SET';
+
+
+        let arrayOfValidType = [
+            keyword.NULL,
+            keyword.NOT_NULL,
+            keyword.AUTO_INCREMENT
+        ];
+
+
+        if (!isArray || typeof data === 'number')
+            return (`${type}(${data})`).trim();
+
+
+        data.forEach((item, index, arr) => {
+
+            let isValidType = arrayOfValidType.includes(item),
+                nextItem = arr[index + 1],
+                isNextItemIsNumber = Number.isInteger(nextItem),
+                isItemIsString = typeof item === 'string',
+                isItemIsNumber = Number.isInteger(item),
+                isCommentFunction = isDefinedCommentWordInFirstOfString(item),
+                isStorageEnum = isDefinedStorageWordInFirstOfString(item),
+                isDefaultType = isDefinedDefaultWordInFirstOfString(item);
+
+
+            if (isValidType || isDefaultType || isCommentFunction || isStorageEnum) {
+                newArrayForOptionsContains.push(item);
+                return;
+            }
+
+            if ((!isNextItemIsNumber && isItemIsNumber) || isItemIsString) {
+                isValueOfIndexIsNumber = true;
+                newArrayOfValue.push(item);
+            }
+
+            if (isNextItemIsNumber && isItemIsNumber) {
+                isDefinedValueInIndexTwoOfArray = true;
+                newArrayOfValue.push(item);
+            }
+
+
+        });
+
+
+        let stringOfOptionContains = getArrayToString(newArrayForOptionsContains);
+        let validateStringOfOptionContains = !stringOfOptionContains ? ' ' : stringOfOptionContains;
+
+        if (isEnum || isSet)
+            return (`${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+
+        if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet))
+            return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+
+        if ((isDecimal || isFloat || isReal || isDouble))
+            return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+
+        return (type + ' ' + validateStringOfOptionContains).trim();
+    }
+
+    jsonToString(object: object, replaceValue: string = ', '): string {
+        return JSON.stringify(object)
+            .replace(/[{"}]/g, '')
+            .replace(/:/g, ' ')
+            .replace(/,/g, replaceValue);
     }
 
 }
