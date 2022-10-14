@@ -1,4 +1,4 @@
-import {CRUD, Ref, Option} from '../../../package/type/db/Query';
+import {CreateTable, CRUD, Ref, Option} from '../../../package/type/db/Query';
 import Mysql from '../../driver/mysql';
 import Util from '../../util/Util';
 import DismissConnection from './DismissConnection';
@@ -85,7 +85,12 @@ export default class DatabaseFactory implements DismissConnection, Database {
         return this.driver.dropDatabase(name);
     }
 
-    async dropTable(tableName: string | string[], databaseName?: string | string[]): Promise<any> {
+
+    async createTable(ct: CreateTable): Promise<any> {
+        return this.driver.createTable(ct);
+    }
+
+    async dropTable(tableName: string | string[], databaseName?: string): Promise<any> {
         return this.driver.dropTable(tableName, databaseName);
     }
 

@@ -1,3 +1,7 @@
+import {RefState} from '../../enum/helper';
+import {JSONString} from '../../typing';
+
+
 type CRUD = {
 
     /**
@@ -104,19 +108,19 @@ type CreateTable = {
 
     /**
      * @type object
-     * Used to generate field for table.
+     * Used to generate column for table.
      */
-    field: object
+    column: JSONString
 
     /**
      * @type object[]
-     * List of field reference.
+     * List of column reference.
      */
     ref?: Ref[]
 
     /**
      * @type string[]
-     * Used to search fast in field.
+     * Used to search fast in column.
      */
     index?: string[]
 
@@ -131,6 +135,8 @@ type CreateTable = {
 }
 
 type CONSTRAINT = {
+
+    symbol?: string
 
     index?: string[]
 
@@ -152,7 +158,7 @@ type Ref = {
 
     /**
      * @type string
-     * Field name that you want to reference in other tables.
+     * Column name that you want to reference in other tables.
      */
     get: string
 
@@ -170,9 +176,9 @@ type Ref = {
 
     /**
      * @type string
-     * Field of target table.
+     * Column of target table.
      */
-    field: string
+    column: string
 
     /**
      * @type RefState
@@ -198,9 +204,9 @@ type ForeignKeyObject = {
 
     /**
      * @type string
-     * Field of target table.
+     * Column of target table.
      */
-    field: string
+    column: string
 
     /**
      * @type RefState
@@ -215,14 +221,6 @@ type ForeignKeyObject = {
     onUpdate?: RefState
 
 }
-
-enum RefState {
-    RESTRICT = 'RESTRICT',
-    NO_ACTION = 'NO ACTION',
-    CASCADE = 'CASCADE',
-    SET_NULL = 'SET NULL'
-}
-
 
 export {
     CreateTable,
