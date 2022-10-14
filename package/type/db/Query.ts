@@ -2,7 +2,7 @@ import {RefState} from '../../enum/helper';
 import {JSONString} from '../../typing';
 
 
-type CRUD = {
+type Query = {
 
     /**
      * @type string | string[]
@@ -225,6 +225,6 @@ type ForeignKeyObject = {
 export {
     CreateTable,
     Option,
-    CRUD,
+    Query,
     Ref
 }
