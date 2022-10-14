@@ -1,4 +1,4 @@
-import {CreateTable, CRUD, Option} from '../../../package/type/db/Query';
+import {CreateTable, Query, Option} from '../../../package/type/db/Query';
 import foreignKey from '../../../package/query/helper/primaryKey';
 import keyword from '../../../package/sql/Keyword';
 import symbol from '../../../package/sql/Symbol';
@@ -11,7 +11,7 @@ export default class Builder {
 
     private queryInjection: any[];
 
-    sql(query?: CRUD | Option, option?: Option): string {
+    sql(query?: Query | Option, option?: Option): string {
         return '';
     }
 
@@ -20,19 +20,38 @@ export default class Builder {
     }
 
 
-    findOne(query?: CRUD | Option, option?: Option): string {
+    findOne(query?: Query | Option, option?: Option): string {
         return '';
     }
 
-    updateOne(query?: CRUD | Option, option?: Option): string {
+    findMany(query?: Query | Option, option?: Option): string {
         return '';
     }
 
-    removeOne(query?: CRUD | Option, option?: Option): string {
+
+    updateOne(query?: Query | Option, option?: Option): string {
         return '';
     }
 
-    addOne(crud?: CRUD): string {
+    updateMany(query?: Query | Option, option?: Option): string {
+        return '';
+    }
+
+
+    removeOne(query?: Query | Option, option?: Option): string {
+        return '';
+    }
+
+    removeMany(query?: Query | Option, option?: Option): string {
+        return '';
+    }
+
+
+    addOne(query?: Query): string {
+        return '';
+    }
+
+    addMany(query?: Query): string {
         return '';
     }
 

@@ -1,33 +1,33 @@
-import {CreateTable, CRUD, Option, Ref} from '../../../package/type/db/Query';
+import {CreateTable, Query, Option, Ref} from '../../../package/type/db/Query';
 
 export default interface Database {
 
-    find(query?: CRUD | Option, option?: Option): Promise<any>;
+    find(query?: Query | Option, option?: Option): Promise<any>;
 
-    findOne(query?: CRUD | Option, option?: Option): Promise<any>;
+    findOne(query?: Query | Option, option?: Option): Promise<any>;
 
-    findMany(query?: CRUD | Option, option?: Option): Promise<any>;
-
-
-    update(query?: CRUD | Option, option?: Option): Promise<any>;
-
-    updateOne(query?: CRUD | Option, option?: Option): Promise<any>;
-
-    updateMany(query?: CRUD | Option, option?: Option): Promise<any>;
+    findMany(query?: Query | Option, option?: Option): Promise<any>;
 
 
-    remove(query?: CRUD | Option, option?: Option): Promise<any>;
+    update(query?: Query | Option, option?: Option): Promise<any>;
 
-    removeOne(query?: CRUD | Option, option?: Option): Promise<any>;
+    updateOne(query?: Query | Option, option?: Option): Promise<any>;
 
-    removeMany(query?: CRUD | Option, option?: Option): Promise<any>;
+    updateMany(query?: Query | Option, option?: Option): Promise<any>;
 
 
-    add(crud?: CRUD): Promise<any>;
+    remove(query?: Query | Option, option?: Option): Promise<any>;
 
-    addOne(crud?: CRUD): Promise<any>;
+    removeOne(query?: Query | Option, option?: Option): Promise<any>;
 
-    addMany(crud?: CRUD): Promise<any>;
+    removeMany(query?: Query | Option, option?: Option): Promise<any>;
+
+
+    add(query?: Query): Promise<any>;
+
+    addOne(query?: Query): Promise<any>;
+
+    addMany(query?: Query): Promise<any>;
 
 
     createDatabase(name: string, set?: string, collate?: string): Promise<any>;
