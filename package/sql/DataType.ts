@@ -6,131 +6,131 @@ let Utils = Util.getInstance();
 export default {
 
     VARCHAR(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.varchar, data);
+        return Utils.dataTypeHandler(types.varchar, data);
     },
 
     INT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.int, data);
+        return Utils.dataTypeHandler(types.int, data);
     },
 
     CHAR(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.char, data);
+        return Utils.dataTypeHandler(types.char, data);
     },
 
     DATE(data?: any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.date, data);
+        return Utils.dataTypeHandler(types.date, data);
     },
 
     DATETIME(data?: any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.datetime, data);
+        return Utils.dataTypeHandler(types.datetime, data);
     },
 
     ENUM(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.Enum, data);
+        return Utils.dataTypeHandler(types.Enum, data);
     },
 
     BOOLEAN(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.boolean, data);
+        return Utils.dataTypeHandler(types.boolean, data);
     },
 
     POINT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.point, data);
+        return Utils.dataTypeHandler(types.point, data);
     },
 
     TINYINT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.tinyint, data);
+        return Utils.dataTypeHandler(types.tinyint, data);
     },
 
     SMALLINT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.smallint, data);
+        return Utils.dataTypeHandler(types.smallint, data);
     },
 
     MEDIUMINT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.mediumint, data);
+        return Utils.dataTypeHandler(types.mediumint, data);
     },
 
     BIGINT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.bigint, data);
+        return Utils.dataTypeHandler(types.bigint, data);
     },
 
     DECIMAL(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.decimal, data);
+        return Utils.dataTypeHandler(types.decimal, data);
     },
 
     FLOAT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.float, data);
+        return Utils.dataTypeHandler(types.float, data);
     },
 
     DOUBLE(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.double, data);
+        return Utils.dataTypeHandler(types.double, data);
     },
 
     REAL(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.real, data);
+        return Utils.dataTypeHandler(types.real, data);
     },
 
     BIT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.bit, data);
+        return Utils.dataTypeHandler(types.bit, data);
     },
 
     SERIAL(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.serial, data);
+        return Utils.dataTypeHandler(types.serial, data);
     },
 
     TIMESTAMP(data?: any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.timestamp, data);
+        return Utils.dataTypeHandler(types.timestamp, data);
     },
 
     TIME(data?: any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.time, data);
+        return Utils.dataTypeHandler(types.time, data);
     },
 
     YEAR(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.year, data);
+        return Utils.dataTypeHandler(types.year, data);
     },
 
     TINYTEXT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.tinytext, data);
+        return Utils.dataTypeHandler(types.tinytext, data);
     },
 
     TEXT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.text, data);
+        return Utils.dataTypeHandler(types.text, data);
     },
 
     MEDIUMTEXT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.mediumtext, data);
+        return Utils.dataTypeHandler(types.mediumtext, data);
     },
 
     LONGTEXT(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.longtext, data);
+        return Utils.dataTypeHandler(types.longtext, data);
     },
 
     BINARY(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.binary, data);
+        return Utils.dataTypeHandler(types.binary, data);
     },
 
     VARBINARY(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.varbinary, data);
+        return Utils.dataTypeHandler(types.varbinary, data);
     },
 
     TINYBLOB(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.tinyblob, data);
+        return Utils.dataTypeHandler(types.tinyblob, data);
     },
 
     BLOB(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.blob, data);
+        return Utils.dataTypeHandler(types.blob, data);
     },
 
     MEDIUMBLOB(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.mediumblob, data);
+        return Utils.dataTypeHandler(types.mediumblob, data);
     },
 
     LONGBLOB(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.longblob, data);
+        return Utils.dataTypeHandler(types.longblob, data);
     },
 
     SET(data?: number | any[]): string {
-        return Utils.addDataTypeForFieldInFirstItemOfArray(types.set, data);
+        return Utils.dataTypeHandler(types.set, data);
     }
 
 }
