@@ -1,4 +1,4 @@
-import {CRUD, Ref, Option, CreateTable} from '../../../package/type/db/Query';
+import {Query, Ref, Option, CreateTable} from '../../../package/type/db/Query';
 import DriverConnection from '../../common/db/DriverConnection';
 import Util from '../../util/Util';
 import DB from 'mysql2';
@@ -15,55 +15,55 @@ export default class Mysql extends DriverController implements DriverConnection 
     private queryBuilder = new Builder();
 
 
-    async find(query?: CRUD | Option, option?: Option): Promise<any> {
+    async find(query?: Query | Option, option?: Option): Promise<any> {
         return this.connection.query(this.queryBuilder.sql(query, option), this.queryBuilder.injection());
     }
 
-    async findOne(query?: CRUD | Option, option?: Option): Promise<any> {
+    async findOne(query?: Query | Option, option?: Option): Promise<any> {
         return this.connection.query(this.queryBuilder.findOne(query, option), this.queryBuilder.injection());
     }
 
-    async findMany(query?: CRUD | Option, option?: Option): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(query), this.queryBuilder.injection());
+    async findMany(query?: Query | Option, option?: Option): Promise<any> {
+        return this.connection.query(this.queryBuilder.findMany(query), this.queryBuilder.injection());
     }
 
 
-    async update(query?: CRUD | Option, option?: Option): Promise<any> {
+    async update(query?: Query | Option, option?: Option): Promise<any> {
         return this.connection.query(this.queryBuilder.sql(query), this.queryBuilder.injection());
     }
 
-    async updateOne(query?: CRUD | Option, option?: Option): Promise<any> {
+    async updateOne(query?: Query | Option, option?: Option): Promise<any> {
         return this.connection.query(this.queryBuilder.updateOne(query, option), this.queryBuilder.injection());
     }
 
-    async updateMany(query?: CRUD | Option, option?: Option): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(query), this.queryBuilder.injection());
+    async updateMany(query?: Query | Option, option?: Option): Promise<any> {
+        return this.connection.query(this.queryBuilder.updateMany(query), this.queryBuilder.injection());
     }
 
 
-    async remove(query?: CRUD | Option, option?: Option): Promise<any> {
+    async remove(query?: Query | Option, option?: Option): Promise<any> {
         return this.connection.query(this.queryBuilder.sql(query), this.queryBuilder.injection());
     }
 
-    async removeOne(query?: CRUD | Option, option?: Option): Promise<any> {
+    async removeOne(query?: Query | Option, option?: Option): Promise<any> {
         return this.connection.query(this.queryBuilder.removeOne(query, option), this.queryBuilder.injection());
     }
 
-    async removeMany(query?: CRUD | Option, option?: Option): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(query), this.queryBuilder.injection());
+    async removeMany(query?: Query | Option, option?: Option): Promise<any> {
+        return this.connection.query(this.queryBuilder.removeMany(query), this.queryBuilder.injection());
     }
 
 
-    async add(crud?: CRUD): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(crud));
+    async add(query?: Query): Promise<any> {
+        return this.connection.query(this.queryBuilder.sql(query));
     }
 
-    async addOne(crud?: CRUD): Promise<any> {
-        return this.connection.query(this.queryBuilder.addOne(crud), this.queryBuilder.injection());
+    async addOne(query?: Query): Promise<any> {
+        return this.connection.query(this.queryBuilder.addOne(query), this.queryBuilder.injection());
     }
 
-    async addMany(crud?: CRUD): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(crud));
+    async addMany(query?: Query): Promise<any> {
+        return this.connection.query(this.queryBuilder.addMany(query));
     }
 
 
