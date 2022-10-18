@@ -26,7 +26,7 @@ export default {
     },
 
     ENUM(data?: number | any[]): string {
-        return Utils.dataTypeHandler(types.Enum, data);
+        return Utils.dataTypeHandler(types.enum, data);
     },
 
     BOOLEAN(data?: number | any[]): string {
@@ -131,6 +131,22 @@ export default {
 
     SET(data?: number | any[]): string {
         return Utils.dataTypeHandler(types.set, data);
+    },
+
+    MONEY(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.money, data);
+    },
+
+    SMALLMONEY(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.smallmoney, data);
+    },
+
+    SMALLDATETIME(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.smalldatetime, data);
+    },
+
+    DATETIME2(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.datetime2, data);
     }
 
 }

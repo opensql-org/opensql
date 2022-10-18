@@ -1,5 +1,6 @@
 import keyword from '../../package/sql/keyword';
 import symbol from '../../package/sql/Symbol';
+import types from '../../package/sql/Types';
 
 function isDefinedDefaultWordInFirstOfString(str: string) {
     return str.search(keyword.DEFAULT) === 0;
@@ -13,7 +14,7 @@ function isDefinedStorageWordInFirstOfString(str: string) {
     return str.search(keyword.STORAGE) === 0;
 }
 
-function getArrayToString(arr: Array<string>) {
+function arrayToString(arr: Array<string>) {
     return arr.toString().replace(',', ' ').trim();
 }
 
@@ -114,12 +115,12 @@ export default class Util {
             isDefinedValueInIndexTwoOfArray = false;
 
 
-        let isDecimal = type === 'DECIMAL',
-            isDouble = type === 'DOUBLE',
-            isFloat = type === 'FLOAT',
-            isReal = type === 'REAL',
-            isEnum = type === 'ENUM',
-            isSet = type === 'SET';
+        let isDecimal = type === types.decimal,
+            isDouble = type === types.double,
+            isFloat = type === types.float,
+            isReal = type === types.real,
+            isEnum = type === types.enum,
+            isSet = type === types.set;
 
 
         let arrayOfValidType = [
@@ -164,7 +165,7 @@ export default class Util {
         });
 
 
-        let stringOfOptionContains = getArrayToString(newArrayForOptionsContains);
+        let stringOfOptionContains = arrayToString(newArrayForOptionsContains);
         let validateStringOfOptionContains = !stringOfOptionContains ? ' ' : stringOfOptionContains;
 
         if (isEnum || isSet)
@@ -173,7 +174,7 @@ export default class Util {
         if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet))
             return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
 
-        if ((isDecimal || isFloat || isReal || isDouble))
+        if (isDecimal || isFloat || isReal || isDouble)
             return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
 
         return (type + ' ' + validateStringOfOptionContains).trim();
