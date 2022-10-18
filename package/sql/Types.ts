@@ -9,7 +9,7 @@ export default {
     bit: 'BIT',
     set: 'SET',
     text: 'TEXT',
-    Enum: 'ENUM',
+    enum: 'ENUM',
     real: 'REAL',
     year: 'YEAR',
     blob: 'BLOB',
@@ -18,6 +18,7 @@ export default {
     time: 'TIME',
     point: 'POINT',
     float: 'FLOAT',
+    money: 'MONEY',
     bigint: 'BIGINT',
     binary: 'BINARY',
     serial: 'SERIAL',
@@ -33,8 +34,12 @@ export default {
     smallint: 'SMALLINT',
     datetime: 'DATETIME',
     timestamp: 'TIMESTAMP',
+    datetime2: 'DATETIME2',
     mediumint: 'MEDIUMINT',
     varbinary: 'VARBINARY',
+    smallmoney: 'SMALLMONEY',
     mediumblob: 'MEDIUMBLOB',
-    mediumtext: 'MEDIUMTEXT'
+    mediumtext: 'MEDIUMTEXT',
+    datetimeoffset: 'DATETIMEOFFSET',
+    smalldatetime: 'SMALLDATETIME'
 }
