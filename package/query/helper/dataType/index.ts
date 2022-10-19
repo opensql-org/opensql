@@ -3,6 +3,7 @@ import {money} from './money';
 import {dateTime} from './dateTime';
 import {varcharMax} from './varcharMax';
 import {ntext} from './ntext';
+import {xml} from './xml';
 
 
 export default function (dbName: string, str: string): string {
@@ -55,7 +56,7 @@ export default function (dbName: string, str: string): string {
         return ntext[dbName]?.query(str, types.varbinarymax);
 
     if (isXml)
-        return ntext[dbName]?.query(str, types.xml);
+        return xml[dbName]?.query(str, types.xml);
 
     return str;
 }

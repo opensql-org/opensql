@@ -10,7 +10,7 @@ let list = {
     }
 }
 
-export let ntext: JSONObject = {
+export let xml: JSONObject = {
 
     mysql: {
         query: (str: string, type: string) => list['0'](str, type)
