@@ -17,6 +17,9 @@ export let xml: JSONObject = {
     },
     mssql: {
         query: (str: string, type: string) => list['1'](str)
+    },
+    postgresql: {
+        query: (str: string, type: string) => list['1'](str)
     }
 
 }

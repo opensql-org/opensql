@@ -175,6 +175,50 @@ export default {
 
     XML(data: number | any[]): string {
         return Utils.dataTypeHandler(types.xml, data);
+    },
+
+    SMALLSERIAL(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.smallserial, data);
+    },
+
+    CHARACTERVARYING(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.characterVarying, data);
+    },
+
+    BYTEA(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.bytea, data);
+    },
+
+    CIDR(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.cidr, data);
+    },
+
+    INET(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.inet, data);
+    },
+
+    MACADDR(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.macaddr, data);
+    },
+
+    MACADDR8(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.macaddr8, data);
+    },
+
+    TSVECTOR(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.tsvector, data);
+    },
+
+    TSQUERY(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.tsquery, data);
+    },
+
+    JSON(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.json, data);
+    },
+
+    UUID(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.uuid, data);
     }
 
 }
