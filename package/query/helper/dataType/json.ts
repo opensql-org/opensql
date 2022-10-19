@@ -10,16 +10,16 @@ let list = {
     }
 }
 
-export let ntext: JSONObject = {
+export let json: JSONObject = {
 
     mysql: {
-        query: (str: string, type: string) => list['0'](str, type)
-    },
-    mssql: {
         query: (str: string, type: string) => list['1'](str)
     },
-    postgresql: {
+    mssql: {
         query: (str: string, type: string) => list['0'](str, type)
+    },
+    postgresql: {
+        query: (str: string, type: string) => list['1'](str)
     }
 
 }
