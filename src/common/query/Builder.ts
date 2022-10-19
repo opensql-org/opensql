@@ -1,5 +1,6 @@
 import {CreateTable, Query, Option} from '../../../package/type/db/Query';
-import foreignKey from '../../../package/query/helper/primaryKey';
+import dataTypeHandler from '../../../package/query/helper/dataType';
+import {foreignKey} from '../../../package/query/helper/foreignKey';
 import keyword from '../../../package/sql/Keyword';
 import symbol from '../../../package/sql/Symbol';
 import Util from '../../util/Util';
@@ -89,6 +90,9 @@ export default class Builder {
                 let value = ct.column[key],
                     hasMatchPrimaryKey = key === hasPrimaryKey,
                     hasMatchForeignKey = hasForeignKey[key] !== undefined;
+
+
+                ct.column[key] = dataTypeHandler(dbName, value);
 
                 if (hasMatchPrimaryKey)
                     ct.column[key] = `${value} ${keyword.PRIMARY_KEY}`;
