@@ -147,6 +147,34 @@ export default {
 
     DATETIME2(data: number | any[]): string {
         return Utils.dataTypeHandler(types.datetime2, data);
+    },
+
+    VARCHARMAX(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.varcharMax, data);
+    },
+
+    NVARCHAR(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.nvarchar, data);
+    },
+
+    NVARCHARMAX(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.nvarcharmax, data);
+    },
+
+    NCHAR(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.nchar, data);
+    },
+
+    NTEXT(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.ntext, data);
+    },
+
+    VARBINARYMAX(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.varbinarymax, data);
+    },
+
+    XML(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.xml, data);
     }
 
 }

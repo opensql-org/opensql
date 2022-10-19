@@ -7,6 +7,7 @@
 export default {
     int: 'INT',
     bit: 'BIT',
+    xml: 'XML',
     set: 'SET',
     text: 'TEXT',
     enum: 'ENUM',
@@ -16,7 +17,9 @@ export default {
     char: 'CHAR',
     date: 'DATE',
     time: 'TIME',
+    ntext: 'NTEXT',
     point: 'POINT',
+    nchar: 'NCHAR',
     float: 'FLOAT',
     money: 'MONEY',
     bigint: 'BIGINT',
@@ -29,6 +32,7 @@ export default {
     tinyint: 'TINYINT',
     tinyblob: 'TINYBLOB',
     longblob: 'LONGBLOB',
+    nvarchar: 'NVARCHAR',
     longtext: 'LONGTEXT',
     tinytext: 'TINYTEXT',
     smallint: 'SMALLINT',
@@ -40,6 +44,9 @@ export default {
     smallmoney: 'SMALLMONEY',
     mediumblob: 'MEDIUMBLOB',
     mediumtext: 'MEDIUMTEXT',
-    datetimeoffset: 'DATETIMEOFFSET',
-    smalldatetime: 'SMALLDATETIME'
+    varcharMax: 'VARCHAR(MAX)',
+    nvarcharmax: 'NVARCHAR(MAX)',
+    varbinarymax: 'VARBINARY(MAX)',
+    smalldatetime: 'SMALLDATETIME',
+    datetimeoffset: 'DATETIMEOFFSET'
 }
