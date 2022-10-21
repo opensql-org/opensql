@@ -219,6 +219,14 @@ export default {
 
     UUID(data: number | any[]): string {
         return Utils.dataTypeHandler(types.uuid, data);
+    },
+
+    POLYGON(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.polygon, data);
+    },
+
+    GEOMETRY(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.geometry, data);
     }
 
 }

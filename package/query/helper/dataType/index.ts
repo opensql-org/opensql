@@ -7,6 +7,7 @@ import {textSearch} from './textSearch';
 import types from '../../../sql/Types';
 import {bigSerial} from './bigSerial';
 import {dateTime} from './dateTime';
+import {polygon} from './polygon';
 import {serial} from './serial';
 import {money} from './money';
 import {ntext} from './ntext';
@@ -31,6 +32,7 @@ export default function (dbName: string, str: string): string {
         isSerial = searchInString(types.serial),
         isMacaddr = searchInString(types.macaddr),
         isTsquery = searchInString(types.tsquery),
+        isPolygon = searchInString(types.polygon),
         isTsvector = searchInString(types.tsvector),
         isMacaddr8 = searchInString(types.macaddr8),
         isNVarchar = searchInString(types.nvarchar),
@@ -119,6 +121,10 @@ export default function (dbName: string, str: string): string {
 
     if (isUuid)
         return uuid[dbName]?.query(str, types.uuid);
+
+    if (isPolygon)
+        return polygon[dbName]?.query(str, types.polygon);
+    
 
     return str;
 }
