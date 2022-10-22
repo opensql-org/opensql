@@ -53,6 +53,8 @@ export default {
     mediumint: 'MEDIUMINT',
     varbinary: 'VARBINARY',
     bigserial: 'BIGSERIAL',
+    geography: 'GEOGRAPHY',
+    linestring: 'LINESTRING',
     smallmoney: 'SMALLMONEY',
     mediumblob: 'MEDIUMBLOB',
     mediumtext: 'MEDIUMTEXT',

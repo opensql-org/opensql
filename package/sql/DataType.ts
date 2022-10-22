@@ -227,6 +227,10 @@ export default {
 
     GEOMETRY(data: number | any[]): string {
         return Utils.dataTypeHandler(types.geometry, data);
+    },
+
+    LINESTRING(data: number | any[]): string {
+        return Utils.dataTypeHandler(types.linestring, data);
     }
 
 }
