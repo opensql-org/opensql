@@ -4,6 +4,7 @@ import {varbinaryMax} from './varbinaryMax';
 import {smallSerial} from './smallSerial';
 import {varcharMax} from './varcharMax';
 import {textSearch} from './textSearch';
+import {lineString} from './lineString';
 import types from '../../../sql/Types';
 import {bigSerial} from './bigSerial';
 import {dateTime} from './dateTime';
@@ -39,6 +40,7 @@ export default function (dbName: string, str: string): string {
         isBigSerial = searchInString(types.bigserial),
         isDateTime2 = searchInString(types.datetime2),
         isVarcharMax = searchInString(types.varcharMax),
+        isLineString = searchInString(types.linestring),
         isSmallMoney = searchInString(types.smallmoney),
         isSmallSerial = searchInString(types.smallserial),
         isNVarcharMax = searchInString(types.nvarcharmax),
@@ -124,6 +126,9 @@ export default function (dbName: string, str: string): string {
 
     if (isPolygon)
         return polygon[dbName]?.query(str, types.polygon);
+
+    if (isLineString)
+        return lineString[dbName]?.query(str, types.linestring);
     
 
     return str;
