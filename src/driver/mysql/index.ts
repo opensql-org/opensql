@@ -1,4 +1,4 @@
-import {Query, Ref, Option, CreateTable} from '../../../package/type/db/Query';
+import {Query, Option, CreateTable, Alter} from '../../../package/type/db/Query';
 import DriverConnection from '../../common/db/DriverConnection';
 import Util from '../../util/Util';
 import DB from 'mysql2';
@@ -16,7 +16,7 @@ export default class Mysql extends DriverController implements DriverConnection 
 
 
     async find(query?: Query | Option, option?: Option): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(query, option), this.queryBuilder.injection());
+        return this.connection.query(this.queryBuilder.find(query, option), this.queryBuilder.injection());
     }
 
     async findOne(query?: Query | Option, option?: Option): Promise<any> {
@@ -29,7 +29,7 @@ export default class Mysql extends DriverController implements DriverConnection 
 
 
     async update(query?: Query | Option, option?: Option): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(query), this.queryBuilder.injection());
+        return this.connection.query(this.queryBuilder.update(query), this.queryBuilder.injection());
     }
 
     async updateOne(query?: Query | Option, option?: Option): Promise<any> {
@@ -42,7 +42,7 @@ export default class Mysql extends DriverController implements DriverConnection 
 
 
     async remove(query?: Query | Option, option?: Option): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(query), this.queryBuilder.injection());
+        return this.connection.query(this.queryBuilder.remove(query), this.queryBuilder.injection());
     }
 
     async removeOne(query?: Query | Option, option?: Option): Promise<any> {
@@ -55,7 +55,7 @@ export default class Mysql extends DriverController implements DriverConnection 
 
 
     async add(query?: Query): Promise<any> {
-        return this.connection.query(this.queryBuilder.sql(query));
+        return this.connection.query(this.queryBuilder.add(query));
     }
 
     async addOne(query?: Query): Promise<any> {
@@ -87,9 +87,10 @@ export default class Mysql extends DriverController implements DriverConnection 
     }
 
 
-    async foreignKey(ref: Ref): Promise<any> {
-        return Promise.resolve(undefined);
+    async alter(alter: Alter): Promise<any> {
+        return this.connection.query(this.queryBuilder.alter(alter));
     }
+
 
     async query(sql: string, injection?: any): Promise<any> {
         return this.connection.query(sql, injection);

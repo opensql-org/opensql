@@ -222,9 +222,27 @@ type ForeignKeyObject = {
 
 }
 
+
+type FieldAlter = {
+    [key: string]: string
+}
+
+type Alter = {
+
+    add:  FieldAlter
+
+    drop: FieldAlter
+
+    modify: FieldAlter
+
+    from: string
+
+}
+
 export {
     CreateTable,
     Option,
     Query,
+    Alter,
     Ref
 }

@@ -1,4 +1,4 @@
-import {CreateTable, Query, Option} from '../../../package/type/db/Query';
+import {CreateTable, Query, Option, Alter} from '../../../package/type/db/Query';
 import dataTypeHandler from '../../../package/query/helper/dataType';
 import {foreignKey} from '../../../package/query/helper/foreignKey';
 import keyword from '../../../package/sql/Keyword';
@@ -10,16 +10,17 @@ let {jsonToString} = Util.getInstance();
 
 export default class Builder {
 
-    private queryInjection: any[];
+    private queryInjection: any[] = [];
 
-    sql(query?: Query | Option, option?: Option): string {
-        return '';
-    }
 
     injection(): Array<any> {
         return this.queryInjection;
     }
 
+
+    find(query?: Query | Option, option?: Option): string {
+        return '';
+    }
 
     findOne(query?: Query | Option, option?: Option): string {
         return '';
@@ -30,6 +31,10 @@ export default class Builder {
     }
 
 
+    update(query?: Query | Option, option?: Option): string {
+        return '';
+    }
+
     updateOne(query?: Query | Option, option?: Option): string {
         return '';
     }
@@ -39,6 +44,10 @@ export default class Builder {
     }
 
 
+    remove(query?: Query | Option, option?: Option): string {
+        return '';
+    }
+
     removeOne(query?: Query | Option, option?: Option): string {
         return '';
     }
@@ -47,6 +56,10 @@ export default class Builder {
         return '';
     }
 
+
+    add(query?: Query): string {
+        return '';
+    }
 
     addOne(query?: Query): string {
         return '';
@@ -89,7 +102,7 @@ export default class Builder {
 
                 let value = ct.column[key],
                     hasMatchPrimaryKey = key === hasPrimaryKey,
-                    hasMatchForeignKey = hasForeignKey[key] !== undefined;
+                    hasMatchForeignKey = hasForeignKey[key];
 
 
                 ct.column[key] = dataTypeHandler(dbName, value);
@@ -127,6 +140,13 @@ export default class Builder {
             keyword.IF_EXISTS,
             tableName
         ].join(' ');
+    }
+
+
+    alter(alter: Alter): string {
+
+        return ''
+
     }
 
 }
