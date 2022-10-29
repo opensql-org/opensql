@@ -15,6 +15,4 @@ export default abstract class DriverController {
     }
 
 
-  //  abstract alert(a: string): Promise<any>;
-
 }

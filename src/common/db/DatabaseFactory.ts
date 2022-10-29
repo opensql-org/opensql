@@ -1,4 +1,4 @@
-import {CreateTable, Query, Ref, Option} from '../../../package/type/db/Query';
+import {CreateTable, Query, Option} from '../../../package/type/db/Query';
 import Mysql from '../../driver/mysql';
 import Util from '../../util/Util';
 import DismissConnection from './DismissConnection';
@@ -94,10 +94,6 @@ export default class DatabaseFactory implements DismissConnection, Database {
         return this.driver.dropTable(tableName, databaseName);
     }
 
-
-    async foreignKey(ref: Ref): Promise<any> {
-        return this.driver.foreignKey(ref);
-    }
 
     async query(sql: string, injection?: any): Promise<any> {
         return this.driver.query(sql, injection);

@@ -1,4 +1,4 @@
-import {CreateTable, Query, Option, Ref} from '../../../package/type/db/Query';
+import {CreateTable, Query, Option, Alter} from '../../../package/type/db/Query';
 
 export default interface Database {
 
@@ -40,9 +40,7 @@ export default interface Database {
     dropTable(tableName: string | string[], databaseName?: string): Promise<any>;
 
 
-    foreignKey(ref: Ref): Promise<any>;
-
-    // alert(): Promise<any>;
+    alter(alter: Alter): Promise<any>;
 
 
     query(sql: string, injection?: any): Promise<any>;
