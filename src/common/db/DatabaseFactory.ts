@@ -1,4 +1,4 @@
-import {CreateTable, Query, Option} from '../../../package/type/db/Query';
+import {CreateTable, Query, Option,Alter} from '../../../package/type/db/Query';
 import Mysql from '../../driver/mysql';
 import Util from '../../util/Util';
 import DismissConnection from './DismissConnection';
@@ -106,6 +106,10 @@ export default class DatabaseFactory implements DismissConnection, Database {
 
     async disconnect() {
         this.driver.disconnect();
+    }
+
+    alter(alter: Alter): Promise<any> {
+        return this.driver.alter(alter);
     }
 
 }
