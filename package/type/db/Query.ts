@@ -1,5 +1,7 @@
 import {RefState} from '../../enum/helper';
-import {JSONString} from '../../typing';
+import {JSONString} from '../../typing'
+
+'';
 
 
 type Query = {
@@ -54,25 +56,25 @@ type Option = {
      * @type string | string[]
      * Groups rows that have the same values into summary rows.
      */
-    _group?: string | string[]
+    $group?: string | string[]
 
     /**
      * @type string | string[]
      * Used to sort the result-set in ascending or descending order.
      */
-    _order?: string | string[]
+    $order?: string | string[]
 
     /**
      * @type number | number[]
      * Limited number of records.
      */
-    _limit?: number | number[]
+    $limit?: number | number[]
 
     /**
      *  @type number
      *  Used with the ORDER BY clause with a value greater than or equal to zero.
      */
-    _offset?: number
+    $offset?: number
 
     /**
      * @type any
@@ -222,18 +224,13 @@ type ForeignKeyObject = {
 
 }
 
-
-type FieldAlter = {
-    [key: string]: string
-}
-
 type Alter = {
 
-    add:  FieldAlter
+    add?: JSONString
 
-    drop: FieldAlter
+    drop?: JSONString
 
-    modify: FieldAlter
+    modify?: JSONString
 
     from: string
 
