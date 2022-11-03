@@ -126,6 +126,7 @@ export default class Builder {
         return [
             keyword.CREATE,
             keyword.TABLE,
+            keyword.IF_NOT_EXISTS,
             tableName,
             symbol.OPEN_PARENTHESES,
             jsonToString(ct.column),

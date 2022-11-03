@@ -15,6 +15,10 @@ export default {
 
         return str.replace(replace, replaceWith[0] +
             symbol.OPEN_PARENTHESES + replaceWith[1] + symbol.CLOSE_PARENTHESES);
+    },
+
+    searchInString: (str: string, target: string): boolean => {
+        return str.search(target) !== -1;
     }
 
 }

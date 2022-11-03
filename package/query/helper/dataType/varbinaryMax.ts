@@ -5,7 +5,7 @@ const MAX_LENGTH = '(4096)';
 
 let list = {
     0: (str: string, type: string): string => {
-        return str.replace(type, types.varbinary);
+        return str.replace(type, types.varBinary);
     },
     1: (str: string): string => {
         return str;
