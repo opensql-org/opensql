@@ -51,7 +51,7 @@ export default function (dbName: string, str: string): string {
             smalldatetime: (): string => dateTime[dbName]?.query(str, types.smallDateTime),
             datetimeoffset: (): string => dateTime[dbName]?.query(str, types.dateTimeOffset),
             varbinarymax: (): string => varbinaryMax[dbName]?.query(str, types.varbinaryMax),
-            charactervarying: (): string => characterVarying[dbName]?.query(str, types.characterVarying),
+            charactervarying: (): string => characterVarying[dbName]?.query(str, types.characterVarying)
         };
 
 
