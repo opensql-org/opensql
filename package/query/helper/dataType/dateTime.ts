@@ -9,7 +9,7 @@ let list = {
     1: (str: string, type: string): string => {
         let withT: string = keyword.WITH;
 
-        if (type === types.smalldatetime)
+        if (type === types.smallDateTime)
             withT = keyword.WITHOUT;
 
         return str.replace(type,

@@ -110,7 +110,7 @@ export default {
     },
 
     VARBINARY(data?: number | any[]): string {
-        return Utils.dataTypeHandler(types.varbinary, data);
+        return Utils.dataTypeHandler(types.varBinary, data);
     },
 
     TINYBLOB(data?: number | any[]): string {
@@ -138,11 +138,11 @@ export default {
     },
 
     SMALLMONEY(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.smallmoney, data);
+        return Utils.dataTypeHandler(types.smallMoney, data);
     },
 
     SMALLDATETIME(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.smalldatetime, data);
+        return Utils.dataTypeHandler(types.smallDateTime, data);
     },
 
     DATETIME2(data: number | any[]): string {
@@ -158,19 +158,19 @@ export default {
     },
 
     NVARCHARMAX(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.nvarcharmax, data);
+        return Utils.dataTypeHandler(types.nVarcharMax, data);
     },
 
     NCHAR(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.nchar, data);
+        return Utils.dataTypeHandler(types.nChar, data);
     },
 
     NTEXT(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.ntext, data);
+        return Utils.dataTypeHandler(types.nText, data);
     },
 
     VARBINARYMAX(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.varbinarymax, data);
+        return Utils.dataTypeHandler(types.varbinaryMax, data);
     },
 
     XML(data: number | any[]): string {
@@ -178,7 +178,7 @@ export default {
     },
 
     SMALLSERIAL(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.smallserial, data);
+        return Utils.dataTypeHandler(types.smallSerial, data);
     },
 
     CHARACTERVARYING(data: number | any[]): string {
@@ -206,11 +206,11 @@ export default {
     },
 
     TSVECTOR(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.tsvector, data);
+        return Utils.dataTypeHandler(types.tsVector, data);
     },
 
     TSQUERY(data: number | any[]): string {
-        return Utils.dataTypeHandler(types.tsquery, data);
+        return Utils.dataTypeHandler(types.tsQuery, data);
     },
 
     JSON(data: number | any[]): string {
