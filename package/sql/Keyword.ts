@@ -38,7 +38,6 @@ export default {
     LIMIT: 'LIMIT',
     RIGHT: 'RIGHT',
     COUNT: 'COUNT',
-    ALTER: 'ALTER',
     ORDER: 'ORDER',
     UNION: 'UNION',
     INDEX: 'INDEX',

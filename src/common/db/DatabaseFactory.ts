@@ -1,9 +1,9 @@
-import {CreateTable, Query, Option,Alter} from '../../../package/type/db/Query';
+import {CreateTable, Query, Option} from '../../../package/type/db/Query';
+import DismissConnection from './DismissConnection';
+import DriverConnection from './DriverConnection';
 import Mysql from '../../driver/mysql';
 import Util from '../../util/Util';
-import DismissConnection from './DismissConnection';
 import Database from './Database';
-import DriverConnection from "./DriverConnection";
 
 const Utilities = Util.getInstance(),
     instanceClass = {
@@ -106,10 +106,6 @@ export default class DatabaseFactory implements DismissConnection, Database {
 
     async disconnect() {
         this.driver.disconnect();
-    }
-
-    alter(alter: Alter): Promise<any> {
-        return this.driver.alter(alter);
     }
 
 }

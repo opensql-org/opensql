@@ -1,7 +1,5 @@
 import {RefState} from '../../enum/helper';
-import {JSONString} from '../../typing'
-
-'';
+import {JSONString} from '../../typing';
 
 
 type Query = {
@@ -224,22 +222,9 @@ type ForeignKeyObject = {
 
 }
 
-type Alter = {
-
-    add?: JSONString
-
-    drop?: JSONString
-
-    modify?: JSONString
-
-    from: string
-
-}
-
 export {
     CreateTable,
     Option,
     Query,
-    Alter,
     Ref
 }
