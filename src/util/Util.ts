@@ -65,7 +65,7 @@ export default class Util {
         let finalObject = {};
 
         if (option)
-            Object.assign(finalObject, option);
+            finalObject = {...finalObject, ...option};
 
         let password = '',
             username = '',
@@ -95,12 +95,13 @@ export default class Util {
             password: password
         }
 
-        Object.assign(finalObject, dbNameWithUserAndPass);
-
+        finalObject = {
+            ...finalObject,
+            ...dbNameWithUserAndPass
+        }
 
         if (database)
-            Object.assign(finalObject, {database: database});
-
+            finalObject = {...finalObject, database: database};
 
         return finalObject;
     }

@@ -1,4 +1,4 @@
-import {CreateTable, Query, Option, Alter} from '../../../package/type/db/Query';
+import {CreateTable, Query, Option} from '../../../package/type/db/Query';
 import dataTypeHandler from '../../../package/query/helper/dataType';
 import {foreignKey} from '../../../package/query/helper/foreignKey';
 import keyword from '../../../package/sql/Keyword';
@@ -141,13 +141,6 @@ export default class Builder {
             keyword.IF_EXISTS,
             tableName
         ].join(' ');
-    }
-
-
-    alter(alter: Alter): string {
-
-        return ''
-
     }
 
 }
