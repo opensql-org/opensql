@@ -1,4 +1,4 @@
-import {Alter, CreateTable, Option, Query} from '../../package/type/db/Query';
+import {CreateTable, Option, Query} from '../../package/type/db/Query';
 import DriverController from './db/DriverController';
 import DriverConnection from './db/DriverConnection';
 import {JSONObject} from '../../package/typing';
@@ -86,11 +86,6 @@ export default abstract class DatabaseDriver extends DriverController implements
     async dropTable(tableName: string | string[], databaseName?: string): Promise<any> {
         return await this.execute(this.queryBuilder.dropTable(tableName,
             !databaseName ? this.getName() : databaseName));
-    }
-
-
-    async alter(alter: Alter): Promise<any> {
-        return await this.execute(this.queryBuilder.alter(alter));
     }
 
 
