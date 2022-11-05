@@ -12,6 +12,12 @@ export default class Builder {
 
     private queryInjection: any[] = [];
 
+    private driverName: string = '';
+
+    setDriverName(driverName: string) {
+        this.driverName = driverName;
+    }
+
 
     injection(): Array<any> {
         return this.queryInjection;

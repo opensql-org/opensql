@@ -7,7 +7,8 @@
     "prestart": "tsc index.ts --outDir .dist",
     "start": "node .dist/index.js",
     "build": "tsc --module CommonJS --outDir dist",
-    "test": "jest"
+    "test": "jest",
+    "sql-parser-run": "nodemon ./lib/sql-parser/index.js"
   },
   "jest": {
     "testMatch": [
@@ -27,13 +28,14 @@
     "opensql",
     "mysql-orm",
     "mysql",
-    "javascript",
-    "node.js"
+    "database",
+    "sql"
   ],
   "devDependencies": {
     "jest": "^28.1.1",
     "mssql": "^9.0.1",
     "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
     "pg": "^8.8.0"
   },
   "author": "Ali Azmoodeh <treeroot.ir@gmail.com>",

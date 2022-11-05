@@ -1,13 +1,15 @@
 import {CreateTable, Query, Option} from '../../../package/type/db/Query';
 import DismissConnection from './DismissConnection';
 import DriverConnection from './DriverConnection';
+import Postgresql from '../../driver/postgresql';
 import Mysql from '../../driver/mysql';
 import Util from '../../util/Util';
 import Database from './Database';
 
 const Utilities = Util.getInstance(),
     instanceClass = {
-        mysql: Mysql
+        mysql: Mysql,
+        postgresql: Postgresql
     };
 
 
