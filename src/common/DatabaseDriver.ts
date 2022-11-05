@@ -102,8 +102,18 @@ export default abstract class DatabaseDriver extends DriverController implements
         // @ts-ignore
         let isExistDatabase = connectionObject?.database;
 
+        /**
+         * Searching database name in config object.
+         */
         if (isExistDatabase)
             this.setName(isExistDatabase);
+
+        /**
+         *  Setting the
+         *  @member driverName variable in the
+         *  @class Builder class to handle sql and injections in different databases.
+         */
+        this.queryBuilder.setDriverName(Utils.getDriverNameFromString(url));
 
         return connectionObject;
     }
