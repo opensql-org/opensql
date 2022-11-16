@@ -6,7 +6,7 @@ export default class Mysql extends DatabaseDriver {
     protected connection: DB.Connection;
 
     async connect(url: string, option?: object): Promise<any> {
-        let config = super.connector(url, option);
+        let config = this.connector(url, option);
         return this.connection = DB.createConnection(config);
     }
 

@@ -6,7 +6,7 @@ export default class Postgresql extends DatabaseDriver {
     protected connection: any;
 
     async connect(url: string, option?: object): Promise<any> {
-        let config = super.connector(url, option);
+        let config = this.connector(url, option);
         return this.connection = new Client(config);
     }
 
