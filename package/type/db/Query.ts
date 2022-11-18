@@ -1,5 +1,5 @@
 import {RefState} from '../../enum/helper';
-import {JSONString} from '../../typing';
+import {JSONObject, JSONString} from '../../typing';
 
 
 type Query = {
@@ -38,7 +38,7 @@ type Query = {
      * @type object
      * Used to insert or update data.
      */
-    data?: any[]
+    data?: any[] | JSONObject
 
     /**
      * @type object[]
