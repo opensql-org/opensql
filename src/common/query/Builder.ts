@@ -149,4 +149,12 @@ export default class Builder {
         ].join(' ');
     }
 
+    truncateTable(tableName: string): string {
+        return [
+            keyword.TRUNCATE,
+            keyword.TABLE,
+            tableName
+        ].join(' ');
+    }
+
 }
