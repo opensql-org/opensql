@@ -1,5 +1,5 @@
 import keyword from '../sql/Keyword';
-
+import Buffer from '../fs/Buffer';
 
 function COMMENT(description: string): string {
     return keyword.COMMENT + ` '${description}'`;
@@ -51,7 +51,7 @@ function UPPER(string: string): string {
 }
 
 function ST_GeomFromText(string: string): string {
-    return `ST_GeomFromText(${string})`;
+    return `ST_GeomFromText('${string}')`;
 }
 
 function UUID(): string {
@@ -100,22 +100,85 @@ function AS(data: string, columnName?: string): string {
     return `${data} AS ${columnName}`;
 }
 
+function BINARY(data: number) {
+    return `0x${data}`;
+}
+
+function VARBINARY(data: number) {
+    return `0x${data}`;
+}
+
+
+/**
+ * @mixes 256 B
+ */
+function TINYBLOB(buf: Buffer): string {
+    return Buffer.toHex(buf);
+}
+
+/**
+ * @mixes 64 KB
+ */
+function BLOB(buf: Buffer): string {
+    return Buffer.toHex(buf);
+}
+
+/**
+ * @mixes 16 MIB
+ */
+function MEDIUMBLOB(buf: Buffer): string {
+    return Buffer.toHex(buf);
+}
+
+/**
+ * @mixes 40 MIB
+ */
+function LONGBLOB(buf: Buffer): string {
+    return Buffer.toHex(buf);
+}
+
+function POINT(str: string): string {
+    return `POINT(${str})`;
+}
+
+function LINESTRING(str: string): string {
+    return `LINESTRING(${str})`;
+}
+
+function POLYGON(str: string): string {
+    return `POLYGON((${str}))`;
+}
+
+function JSON(arr: number[] | string[]) {
+    return `'[${arr.map(element => `"${element}"`)}]'`;
+}
+
 export {
     AS,
     DAY,
     UUID,
+    BLOB,
+    JSON,
     UPPER,
     LOWER,
     ASCII,
+    POINT,
+    BINARY,
+    POLYGON,
     DAYNAME,
     COMMENT,
     REVERSE,
     UTC_DATE,
     UTC_TIME,
+    TINYBLOB,
+    LONGBLOB,
+    VARBINARY,
     DAYOFWEEK,
     DAYOFYEAR,
     DAYOFMONTH,
+    LINESTRING,
     UUID_SHORT,
+    MEDIUMBLOB,
     CHAR_LENGTH,
     CURRENT_USER,
     CURRENT_DATE,

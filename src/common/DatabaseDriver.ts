@@ -88,6 +88,10 @@ export default abstract class DatabaseDriver extends DriverController implements
             !databaseName ? this.getName() : databaseName));
     }
 
+    async truncateTable(tableName: string): Promise<any> {
+        return await this.execute(this.queryBuilder.truncateTable(tableName));
+    }
+
 
     async query(sql: string, injection?: any): Promise<any> {
         return await this.execute(sql, injection);
