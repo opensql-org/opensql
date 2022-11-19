@@ -39,6 +39,8 @@ export default interface Database {
 
     dropTable(tableName: string | string[], databaseName?: string): Promise<any>;
 
+    truncateTable(tableName: string): Promise<any>;
+
 
     query(sql: string, injection?: any): Promise<any>;
 
