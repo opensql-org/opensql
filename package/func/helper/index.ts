@@ -1,5 +1,5 @@
-import keyword from '../sql/Keyword';
-import Buffer from '../fs/Buffer';
+import keyword from '../../sql/Keyword';
+import Buffer from '../../fs/Buffer';
 
 function COMMENT(description: string): string {
     return keyword.COMMENT + ` '${description}'`;
@@ -137,8 +137,8 @@ function LONGBLOB(buf: Buffer): string {
     return Buffer.toHex(buf);
 }
 
-function POINT(str: string): string {
-    return `POINT(${str})`;
+function POINT(x: number, y: number): string {
+    return `POINT(${x}, ${y})`;
 }
 
 function LINESTRING(str: string): string {
@@ -151,6 +151,17 @@ function POLYGON(str: string): string {
 
 function JSON(arr: number[] | string[]) {
     return `'[${arr.map(element => `"${element}"`)}]'`;
+}
+
+function QueryPoint(field: string): string {
+    return `X(${field}) AS Lat , Y(${field}) AS Lon`;
+}
+
+function DEFAULT(value: string): string {
+    if (value.indexOf('$') === 0)
+        return `DEFAULT '${value.replace('$', '')}'`;
+
+    return `DEFAULT ${value}`;
 }
 
 export {
@@ -168,6 +179,7 @@ export {
     DAYNAME,
     COMMENT,
     REVERSE,
+    DEFAULT,
     UTC_DATE,
     UTC_TIME,
     TINYBLOB,
@@ -175,6 +187,7 @@ export {
     VARBINARY,
     DAYOFWEEK,
     DAYOFYEAR,
+    QueryPoint,
     DAYOFMONTH,
     LINESTRING,
     UUID_SHORT,
