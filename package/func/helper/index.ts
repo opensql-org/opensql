@@ -1,5 +1,18 @@
 import keyword from '../../sql/Keyword';
 import Buffer from '../../fs/Buffer';
+import {Operator, Cnj} from '../../enum/helper';
+import {FnResult, JSONObject, Conjunction} from '../../typing';
+
+
+let arrayOfOperator: string[] = [
+    '=',
+    '<',
+    '>',
+    '<>',
+    '<=',
+    '>='
+];
+
 
 function COMMENT(description: string): string {
     return keyword.COMMENT + ` '${description}'`;
@@ -164,8 +177,35 @@ function DEFAULT(value: string): string {
     return `DEFAULT ${value}`;
 }
 
+
+function qCheck(operator: Operator, value: string, conjunction?: Cnj): FnResult {
+    let query: FnResult = {
+        value: `${operator} ${value}`,
+        type: 'qCheck'
+    };
+    if (conjunction)
+        query.value = `${conjunction} ${query.value}`;
+    return query;
+}
+
+function conjunctionHandler(json: JSONObject, defaultConjunction: string, conjunction?: Conjunction): FnResult {
+    //TODO
+}
+
+function OR(json: JSONObject, conjunction?: Conjunction): FnResult {
+    return conjunctionHandler(json, 'OR', conjunction);
+}
+
+
+function AND(json: JSONObject, conjunction?: Conjunction): FnResult {
+    return conjunctionHandler(json, 'AND', conjunction);
+}
+
+
 export {
     AS,
+    OR,
+    AND,
     DAY,
     UUID,
     BLOB,
@@ -174,6 +214,7 @@ export {
     LOWER,
     ASCII,
     POINT,
+    qCheck,
     BINARY,
     POLYGON,
     DAYNAME,
