@@ -19,7 +19,7 @@ type Query = {
      * The @string type is used when you want to select single table.
      * The @string-array type is used when you want to select multi tables.
      */
-    from?: string | string[]
+    from: string | string[]
 
     /**
      * @type Where
@@ -94,7 +94,7 @@ type Where = {
      * @type string[]
      * Used to filter records with single or multi (and, or) conditions
      */
-    op?: string[]
+    $let?: string[]
 
 }
 

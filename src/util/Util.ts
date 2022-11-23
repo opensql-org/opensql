@@ -1,5 +1,4 @@
 import keyword from '../../package/sql/keyword';
-import symbol from '../../package/sql/Symbol';
 import types from '../../package/sql/Types';
 
 function isDefinedDefaultWordInFirstOfString(str: string) {
@@ -25,7 +24,7 @@ function getStringOfValueForEnumOrSetDataTypesWithComma(arr: Array<string>) {
         let lastIndex = arr.lastIndexOf(item);
 
         if (lastIndex)
-            stringTypesWithComma += `${symbol.COMMA} '${item}'`;
+            stringTypesWithComma += `, '${item}'`;
 
 
         if (!lastIndex)
