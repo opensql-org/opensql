@@ -10,8 +10,19 @@ type JSONString = {
     [key: string]: string
 }
 
+type FnResult = {
+    value: string | string[] | number[],
+    type: string
+}
+
+
+type Conjunction = FnResult;
+
+
 export {
+    FnResult,
     JSONObject,
     JSONString,
+    Conjunction,
     JSONFunction
 }
