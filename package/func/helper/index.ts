@@ -1,17 +1,22 @@
 import keyword from '../../sql/Keyword';
 import Buffer from '../../fs/Buffer';
-import {Operator, Cnj} from '../../enum/helper';
+import {COP, Cnj} from '../../enum/helper';
 import {FnResult, JSONObject, Conjunction} from '../../typing';
+import {Query} from '../../type/db/Query';
 
 
-let arrayOfOperator: string[] = [
-    '=',
-    '<',
-    '>',
-    '<>',
-    '<=',
-    '>='
-];
+let
+    /**
+     * Saving state of multi conjunction : AND , OR with object
+     * In array we have JSOONObject[] some thing like this
+     *
+     * @example
+     * {
+     *     username: "root",
+     *     name: LIKE('Admin%')
+     * }
+     */
+    stateOfMultiConjunction: JSONObject[] = [];
 
 
 function COMMENT(description: string): string {
@@ -178,9 +183,9 @@ function DEFAULT(value: string): string {
 }
 
 
-function qCheck(operator: Operator, value: string, conjunction?: Cnj): FnResult {
+function qCheck(comparisonOperator: COP, value: string, conjunction?: Cnj): FnResult {
     let query: FnResult = {
-        value: `${operator} ${value}`,
+        value: `${comparisonOperator} ${value}`,
         type: 'qCheck'
     };
     if (conjunction)
@@ -189,7 +194,16 @@ function qCheck(operator: Operator, value: string, conjunction?: Cnj): FnResult 
 }
 
 function conjunctionHandler(json: JSONObject, defaultConjunction: string, conjunction?: Conjunction): FnResult {
-    //TODO
+    let finalJson = stateOfMultiConjunction;
+    if (!conjunction) {
+        stateOfMultiConjunction = [];
+        return {
+            value: finalJson,
+            type: 'conjunctionHandler',
+            conjunctionType: defaultConjunction
+        };
+    }
+    stateOfMultiConjunction.push({data: json, defaultConjunction: defaultConjunction});
 }
 
 function OR(json: JSONObject, conjunction?: Conjunction): FnResult {
@@ -201,30 +215,165 @@ function AND(json: JSONObject, conjunction?: Conjunction): FnResult {
     return conjunctionHandler(json, 'AND', conjunction);
 }
 
+function IN(arr: string[] | number[], conjunction?: Cnj): FnResult {
+    let newArr: any[] = arr.map(element => {
+        if (typeof element === 'string')
+            return `"${element}"`;
+        return element;
+    });
+    let query: FnResult = {
+        value: {
+            arr: newArr
+        },
+        type: 'IN'
+    };
+    if (conjunction)
+        query.conjunctionType = conjunction;
+    return query;
+}
+
+function BETWEEN(first: string | number, second: string | number, conjunction?: Cnj): FnResult {
+    let query: FnResult = {
+        value: {
+            first: typeof first === 'string' ? `"${first}"` : first,
+            second: typeof second === 'string' ? `"${second}"` : second
+        },
+        type: 'BETWEEN'
+    };
+    if (conjunction)
+        query.conjunctionType = conjunction;
+    return query;
+}
+
+function LIKE(str: string, conjunction?: Cnj): FnResult {
+    let query: FnResult = {
+        value: `"${str}"`,
+        type: 'LIKE'
+    };
+    if (conjunction)
+        query.conjunctionType = conjunction;
+    return query;
+}
+
+
+function CAST(data: number | string, type: string): string {
+    let isString = typeof data === 'string';
+
+    if (isString)
+        return `CAST("${data}" AS ${type})`;
+
+    return `CAST(${data} AS ${type})`;
+}
+
+function COUNT(column?: string | string[]): string {
+    if (Array.isArray(column))
+        return `COUNT(DISTINCT ${column})`;
+
+    return !column ? 'COUNT(*) AS size'
+        : `COUNT(${column})`;
+}
+
+function SOURCE(name: string, typeName?: string): string {
+    return !typeName ? `\`${name}\` AS Source` : `\`${name}\` AS ${typeName}`;
+}
+
+function ATTACH(arr: string[], conjunction?: Cnj): FnResult {
+    let query: FnResult = {
+        value: arr,
+        type: 'ATTACH'
+    };
+    if (conjunction)
+        query.conjunctionType = conjunction;
+    return query;
+}
+
+function fnUnionHelper(json: Query, type: string): FnResult {
+    return {
+        value: json,
+        type: type
+    };
+}
+
+function UNION(json: Query): FnResult {
+    return fnUnionHelper(json, 'UNION');
+}
+
+function UNION_ALL(json: Query): FnResult {
+    return fnUnionHelper(json, 'UNION_ALL');
+}
+
+function fnColumnHelper(column: string, fnType: string): string {
+    return `${fnType}(${column})`;
+}
+
+function MIN(column: string): string {
+    return fnColumnHelper(column, 'MIN');
+}
+
+function MAX(column: string): string {
+    return fnColumnHelper(column, 'MAX');
+}
+
+function SUM(column: string): string {
+    return fnColumnHelper(column, 'SUM');
+}
+
+function AVG(column: string): string {
+    return fnColumnHelper(column, 'AVG');
+}
+
+function CONCAT_WS(str: string, arr: string[], column: string): string {
+    return `CONCAT_WS("${str}", ${arr.toString()}) AS ${column}`;
+}
+
+function GROUP(data: string | string[]): FnResult {
+    let query: FnResult = {
+        value: data,
+        type: 'GROUP'
+    };
+    if (Array.isArray(data))
+        return query;
+    return query;
+}
 
 export {
     AS,
     OR,
+    IN,
     AND,
     DAY,
+    MAX,
+    MIN,
+    SUM,
+    AVG,
     UUID,
     BLOB,
     JSON,
+    LIKE,
+    CAST,
+    COUNT,
     UPPER,
     LOWER,
     ASCII,
     POINT,
+    UNION,
+    GROUP,
     qCheck,
     BINARY,
+    ATTACH,
+    SOURCE,
     POLYGON,
     DAYNAME,
     COMMENT,
     REVERSE,
     DEFAULT,
+    BETWEEN,
     UTC_DATE,
     UTC_TIME,
     TINYBLOB,
     LONGBLOB,
+    CONCAT_WS,
+    UNION_ALL,
     VARBINARY,
     DAYOFWEEK,
     DAYOFYEAR,

@@ -11,8 +11,9 @@ type JSONString = {
 }
 
 type FnResult = {
-    value: string | string[] | number[],
-    type: string
+    value: string | string[] | number[] | JSONObject[] | JSONObject,
+    type: string,
+    conjunctionType?: string
 }
 
 
