@@ -19,6 +19,18 @@ enum Operator {
     IS_NOT_NULL = 'IS NOT NULL'
 }
 
+/**
+ * Comparison operator
+ */
+enum COP {
+    LESS = '<',
+    EQUAL = '=',
+    GREATER = '>',
+    NOT_EQUAL = '<>',
+    LESS_OR_EQUAL = '<=',
+    GREATER_OR_EQUAL = '>='
+}
+
 enum Cnj {
     OR = 'OR',
     AND = 'AND'
@@ -26,6 +38,7 @@ enum Cnj {
 
 export {
     Cnj,
+    COP,
     RefState,
     Operator
 }
