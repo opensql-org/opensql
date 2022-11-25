@@ -13,7 +13,8 @@ type JSONString = {
 type FnResult = {
     value: string | string[] | number[] | JSONObject[] | JSONObject,
     type: string,
-    conjunctionType?: string
+    conjunctionType?: string,
+    comparisonOperator?: string
 }
 
 
