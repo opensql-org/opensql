@@ -24,7 +24,7 @@ type Query = {
     /**
      * @type Where
      * Used to filter record.
-     * In where object we have list of conditions with columns.
+     * In where object we have list of hasLetObject with columns.
      */
     where?: Where
 
@@ -92,7 +92,7 @@ type Where = {
 
     /**
      * @type string[]
-     * Used to filter records with single or multi (and, or) conditions
+     * Used to filter records with single or multi (and, or) hasLetObject
      */
     $let?: string[]
 

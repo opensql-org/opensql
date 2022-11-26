@@ -11,12 +11,16 @@ type JSONString = {
 }
 
 type FnResult = {
-    value: string | string[] | number[] | JSONObject[] | JSONObject,
+    value: string | number | string[] | number[] | JSONObject[] | JSONObject | QCheckValueInObject,
     type: string,
     conjunctionType?: string,
     comparisonOperator?: string
 }
 
+type QCheckValueInObject = {
+    data: string | number,
+    haveNot?: boolean
+}
 
 type Conjunction = FnResult;
 
@@ -26,5 +30,6 @@ export {
     JSONObject,
     JSONString,
     Conjunction,
-    JSONFunction
+    JSONFunction,
+    QCheckValueInObject
 }
