@@ -1,7 +1,7 @@
 import keyword from '../../sql/Keyword';
 import Buffer from '../../fs/Buffer';
 import {COP, Cnj} from '../../enum/helper';
-import {FnResult, JSONObject, Conjunction} from '../../typing';
+import {FnResult, JSONObject, Conjunction, QCheckValueInObject} from '../../typing';
 import {Query} from '../../type/db/Query';
 
 
@@ -183,7 +183,7 @@ function DEFAULT(value: string): string {
 }
 
 
-function qCheck(value: string, comparisonOperator?: COP, conjunction?: Cnj): FnResult {
+function qCheck(value: QCheckValueInObject | string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult {
     let query: FnResult = {
         value: value,
         conjunctionType: 'AND',
