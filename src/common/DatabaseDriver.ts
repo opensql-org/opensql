@@ -1,4 +1,4 @@
-import {CreateTable, Option, Query} from '../../package/type/db/Query';
+import {CreateTable, Query} from '../../package/type/db/Query';
 import DriverController from './db/DriverController';
 import DriverConnection from './db/DriverConnection';
 import {JSONObject} from '../../package/typing';
@@ -17,41 +17,41 @@ export default abstract class DatabaseDriver extends DriverController implements
     private queryBuilder = new Builder();
 
 
-    async find(query?: Query | Option, option?: Option): Promise<any> {
-        return await this.execute(this.queryBuilder.find(query, option), this.queryBuilder.injection());
+    async find(query?: Query): Promise<any> {
+        return await this.execute(this.queryBuilder.find(query), this.queryBuilder.injection());
     }
 
-    async findOne(query?: Query | Option, option?: Option): Promise<any> {
-        return await this.execute(this.queryBuilder.findOne(query, option), this.queryBuilder.injection());
+    async findOne(query?: Query): Promise<any> {
+        return await this.execute(this.queryBuilder.findOne(query), this.queryBuilder.injection());
     }
 
-    async findMany(query?: Query | Option, option?: Option): Promise<any> {
+    async findMany(query?: Query): Promise<any> {
         return await this.execute(this.queryBuilder.findMany(query), this.queryBuilder.injection());
     }
 
 
-    async update(query?: Query | Option, option?: Option): Promise<any> {
+    async update(query?: Query): Promise<any> {
         return await this.execute(this.queryBuilder.update(query), this.queryBuilder.injection());
     }
 
-    async updateOne(query?: Query | Option, option?: Option): Promise<any> {
-        return await this.execute(this.queryBuilder.updateOne(query, option), this.queryBuilder.injection());
+    async updateOne(query?: Query): Promise<any> {
+        return await this.execute(this.queryBuilder.updateOne(query), this.queryBuilder.injection());
     }
 
-    async updateMany(query?: Query | Option, option?: Option): Promise<any> {
+    async updateMany(query?: Query): Promise<any> {
         return await this.execute(this.queryBuilder.updateMany(query), this.queryBuilder.injection());
     }
 
 
-    async remove(query?: Query | Option, option?: Option): Promise<any> {
+    async remove(query?: Query): Promise<any> {
         return await this.execute(this.queryBuilder.remove(query), this.queryBuilder.injection());
     }
 
-    async removeOne(query?: Query | Option, option?: Option): Promise<any> {
-        return await this.execute(this.queryBuilder.removeOne(query, option), this.queryBuilder.injection());
+    async removeOne(query?: Query): Promise<any> {
+        return await this.execute(this.queryBuilder.removeOne(query), this.queryBuilder.injection());
     }
 
-    async removeMany(query?: Query | Option, option?: Option): Promise<any> {
+    async removeMany(query?: Query): Promise<any> {
         return await this.execute(this.queryBuilder.removeMany(query), this.queryBuilder.injection());
     }
 
