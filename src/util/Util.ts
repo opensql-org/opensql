@@ -2,15 +2,21 @@ import keyword from '../../package/sql/keyword';
 import types from '../../package/sql/Types';
 
 function isDefinedDefaultWordInFirstOfString(str: string) {
-    return str.search(keyword.DEFAULT) === 0;
+    if (typeof str === 'string')
+        return str.search(keyword.DEFAULT) === 0;
+    return false;
 }
 
 function isDefinedCommentWordInFirstOfString(str: string) {
-    return str.search(keyword.COMMENT) === 0;
+    if (typeof str === 'string')
+        return str.search(keyword.COMMENT) === 0;
+    return false;
 }
 
 function isDefinedStorageWordInFirstOfString(str: string) {
-    return str.search(keyword.STORAGE) === 0;
+    if (typeof str === 'string')
+        return str.search(keyword.STORAGE) === 0;
+    return false;
 }
 
 function arrayToString(arr: Array<string>) {

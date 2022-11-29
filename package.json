@@ -10,11 +10,6 @@
     "test": "jest",
     "sql-parser-run": "nodemon ./lib/sql-parser/index.js"
   },
-  "jest": {
-    "testMatch": [
-      "**/test/**/*.test.js"
-    ]
-  },
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -32,11 +27,14 @@
     "sql"
   ],
   "devDependencies": {
-    "jest": "^28.1.1",
+    "@types/jest": "^29.2.3",
+    "jest": "^29.3.1",
     "mssql": "^9.0.1",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.20",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1"
   },
   "author": "Ali Azmoodeh <treeroot.ir@gmail.com>",
   "license": "MIT",

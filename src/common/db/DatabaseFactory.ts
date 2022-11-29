@@ -1,4 +1,4 @@
-import {CreateTable, Query, Option} from '../../../package/type/db/Query';
+import {CreateTable, Query} from '../../../package/type/db/Query';
 import DismissConnection from './DismissConnection';
 import DriverConnection from './DriverConnection';
 import Postgresql from '../../driver/postgresql';
@@ -27,42 +27,42 @@ export default class DatabaseFactory implements DismissConnection, Database {
         this.connect(url, option);
     }
 
-    async find(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.find(query, option);
+    async find(query?: Query): Promise<any> {
+        return this.driver.find(query);
     }
 
-    async findOne(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.findOne(query, option);
+    async findOne(query?: Query): Promise<any> {
+        return this.driver.findOne(query);
     }
 
-    async findMany(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.findMany(query, option);
-    }
-
-
-    async update(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.update(query, option);
-    }
-
-    async updateOne(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.updateOne(query, option);
-    }
-
-    async updateMany(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.updateMany(query, option);
+    async findMany(query?: Query): Promise<any> {
+        return this.driver.findMany(query);
     }
 
 
-    async remove(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.remove(query, option);
+    async update(query?: Query): Promise<any> {
+        return this.driver.update(query);
     }
 
-    async removeOne(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.removeOne(query, option);
+    async updateOne(query?: Query): Promise<any> {
+        return this.driver.updateOne(query);
     }
 
-    async removeMany(query?: Query | Option, option?: Option): Promise<any> {
-        return this.driver.removeMany(query, option);
+    async updateMany(query?: Query): Promise<any> {
+        return this.driver.updateMany(query);
+    }
+
+
+    async remove(query?: Query ): Promise<any> {
+        return this.driver.remove(query);
+    }
+
+    async removeOne(query?: Query): Promise<any> {
+        return this.driver.removeOne(query);
+    }
+
+    async removeMany(query?: Query): Promise<any> {
+        return this.driver.removeMany(query);
     }
 
 

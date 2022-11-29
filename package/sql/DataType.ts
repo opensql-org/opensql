@@ -77,11 +77,11 @@ export default {
         return Utils.dataTypeHandler(types.serial, data);
     },
 
-    TIMESTAMP(data?: any[]): string {
+    TIMESTAMP(data?: number | any[]): string {
         return Utils.dataTypeHandler(types.timestamp, data);
     },
 
-    TIME(data?: any[]): string {
+    TIME(data?: number | any[]): string {
         return Utils.dataTypeHandler(types.time, data);
     },
 

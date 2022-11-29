@@ -4,7 +4,9 @@
     "declaration": true,
     "esModuleInterop": true,
     "types": [
-      "node"
+      "node",
+      "reflect-metadata",
+      "jest"
     ],
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -24,10 +26,12 @@
     "noImplicitUseStrict": false,
     "baseUrl": "src/",
     "listFiles": false,
-    "noEmitHelpers": true,
+    "importHelpers": true,
+    "noEmitHelpers": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules"

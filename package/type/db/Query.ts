@@ -7,7 +7,7 @@ type Query = {
     /**
      * @type string | string[]
      * It is used to manage the display of columns.
-     * The @string type is used when you want to manipulate a single column or3
+     * The @string type is used when you want to manipulate a single column or
      * select all columns using the asterisk word.
      * The @string-array type is used when you want to select and manipulate a multi columns.
      */
@@ -45,6 +45,12 @@ type Query = {
      * Used to combine the result-set of two or more SELECT statements.
      */
     union?: object[]
+
+    /**
+     * @type Option
+     * Manage option query like: limit, order, group or sort data with asc and desc.
+     */
+    option?: Option
 
 }
 
@@ -89,12 +95,6 @@ type Where = {
      * Used to filter records.
      */
     [key: string]: any
-
-    /**
-     * @type string[]
-     * Used to filter records with single or multi (and, or) hasLetObject
-     */
-    $let?: string[]
 
 }
 
@@ -224,7 +224,6 @@ type ForeignKeyObject = {
 
 export {
     CreateTable,
-    Option,
     Query,
     Ref
 }
