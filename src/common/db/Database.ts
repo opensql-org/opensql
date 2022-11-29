@@ -1,26 +1,26 @@
-import {CreateTable, Query, Option} from '../../../package/type/db/Query';
+import {CreateTable, Query} from '../../../package/type/db/Query';
 
 export default interface Database {
 
-    find(query?: Query | Option, option?: Option): Promise<any>;
+    find(query?: Query): Promise<any>;
 
-    findOne(query?: Query | Option, option?: Option): Promise<any>;
+    findOne(query?: Query): Promise<any>;
 
-    findMany(query?: Query | Option, option?: Option): Promise<any>;
-
-
-    update(query?: Query | Option, option?: Option): Promise<any>;
-
-    updateOne(query?: Query | Option, option?: Option): Promise<any>;
-
-    updateMany(query?: Query | Option, option?: Option): Promise<any>;
+    findMany(query?: Query): Promise<any>;
 
 
-    remove(query?: Query | Option, option?: Option): Promise<any>;
+    update(query?: Query): Promise<any>;
 
-    removeOne(query?: Query | Option, option?: Option): Promise<any>;
+    updateOne(query?: Query): Promise<any>;
 
-    removeMany(query?: Query | Option, option?: Option): Promise<any>;
+    updateMany(query?: Query): Promise<any>;
+
+
+    remove(query?: Query): Promise<any>;
+
+    removeOne(query?: Query): Promise<any>;
+
+    removeMany(query?: Query): Promise<any>;
 
 
     add(query?: Query): Promise<any>;

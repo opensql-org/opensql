@@ -1,26 +1,12 @@
 import keyword from '../../sql/Keyword';
 import Buffer from '../../fs/Buffer';
 import {COP, Cnj} from '../../enum/helper';
-import {FnResult, JSONObject, Conjunction, QCheckValueInObject} from '../../typing';
+import {FnResult, QCheckValueInObject} from '../../typing';
 import {Query} from '../../type/db/Query';
 
 
-let
-    /**
-     * Saving state of multi conjunction : AND , OR with object
-     * In array we have JSOONObject[] some thing like this
-     *
-     * @example
-     * {
-     *     username: "root",
-     *     name: LIKE('Admin%')
-     * }
-     */
-    stateOfMultiConjunction: JSONObject[] = [];
-
-
 function COMMENT(description: string): string {
-    return keyword.COMMENT + ` '${description}'`;
+    return `${keyword.COMMENT} '${description}'`;
 }
 
 function ASCII(char: string): string {
@@ -28,10 +14,10 @@ function ASCII(char: string): string {
 }
 
 function CHAR_LENGTH(string: string | number): string {
-    let str = `ASCII(${string})`;
+    let str = `CHAR_LENGTH(${string})`;
 
     if (typeof string === 'string')
-        str = `ASCII("${string}")`;
+        str = `CHAR_LENGTH("${string}")`;
 
     return str;
 }
@@ -175,8 +161,8 @@ function QueryPoint(field: string): string {
     return `X(${field}) AS Lat , Y(${field}) AS Lon`;
 }
 
-function DEFAULT(value: string): string {
-    if (value.indexOf('$') === 0)
+function DEFAULT(value: any): string {
+    if (typeof value === 'string' && value?.indexOf('$') === 0)
         return `DEFAULT '${value.replace('$', '')}'`;
 
     return `DEFAULT ${value}`;
@@ -197,28 +183,6 @@ function qCheck(value: QCheckValueInObject | string | number, comparisonOperator
     return query;
 }
 
-function conjunctionHandler(json: JSONObject, defaultConjunction: string, conjunction?: Conjunction): FnResult {
-    let finalJson = stateOfMultiConjunction;
-    if (!conjunction) {
-        stateOfMultiConjunction = [];
-        return {
-            value: finalJson,
-            type: 'conjunctionHandler',
-            conjunctionType: defaultConjunction
-        };
-    }
-    stateOfMultiConjunction.push({data: json, defaultConjunction: defaultConjunction});
-}
-
-function OR(json: JSONObject, conjunction?: Conjunction): FnResult {
-    return conjunctionHandler(json, 'OR', conjunction);
-}
-
-
-function AND(json: JSONObject, conjunction?: Conjunction): FnResult {
-    return conjunctionHandler(json, 'AND', conjunction);
-}
-
 function fnInHelper(arr: string[] | number[], type: string, conjunction?: Cnj): FnResult {
     let newArr: any[] = arr.map(element => {
         if (typeof element === 'string')
@@ -226,9 +190,7 @@ function fnInHelper(arr: string[] | number[], type: string, conjunction?: Cnj): 
         return element;
     });
     let query: FnResult = {
-        value: {
-            arr: newArr
-        },
+        value: newArr,
         type: type,
         conjunctionType: 'AND'
     };
@@ -238,11 +200,11 @@ function fnInHelper(arr: string[] | number[], type: string, conjunction?: Cnj): 
     return query;
 }
 
-function IN(arr: string[] | number[], type: string, conjunction?: Cnj): FnResult {
+function IN(arr: string[] | number[], conjunction?: Cnj): FnResult {
     return fnInHelper(arr, 'IN', conjunction);
 }
 
-function NOT_IN(arr: string[] | number[], type: string, conjunction?: Cnj): FnResult {
+function NOT_IN(arr: string[] | number[], conjunction?: Cnj): FnResult {
     return fnInHelper(arr, 'NOT_IN', conjunction);
 }
 
@@ -370,9 +332,7 @@ function GROUP(data: string | string[]): FnResult {
 
 export {
     AS,
-    OR,
     IN,
-    AND,
     DAY,
     MAX,
     MIN,

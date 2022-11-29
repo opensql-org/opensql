@@ -1,4 +1,4 @@
-import {CreateTable, Query, Option} from '../../../package/type/db/Query';
+import {CreateTable, Query} from '../../../package/type/db/Query';
 import dataTypeHandler from '../../../package/query/helper/dataType';
 import {foreignKey} from '../../../package/query/helper/foreignKey';
 import keyword from '../../../package/sql/Keyword';
@@ -24,41 +24,41 @@ export default class Builder {
     }
 
 
-    find(query?: Query | Option, option?: Option): string {
+    find(query?: Query): string {
         return '';
     }
 
-    findOne(query?: Query | Option, option?: Option): string {
+    findOne(query?: Query): string {
         return '';
     }
 
-    findMany(query?: Query | Option, option?: Option): string {
-        return '';
-    }
-
-
-    update(query?: Query | Option, option?: Option): string {
-        return '';
-    }
-
-    updateOne(query?: Query | Option, option?: Option): string {
-        return '';
-    }
-
-    updateMany(query?: Query | Option, option?: Option): string {
+    findMany(query?: Query): string {
         return '';
     }
 
 
-    remove(query?: Query | Option, option?: Option): string {
+    update(query?: Query): string {
         return '';
     }
 
-    removeOne(query?: Query | Option, option?: Option): string {
+    updateOne(query?: Query): string {
         return '';
     }
 
-    removeMany(query?: Query | Option, option?: Option): string {
+    updateMany(query?: Query): string {
+        return '';
+    }
+
+
+    remove(query?: Query): string {
+        return '';
+    }
+
+    removeOne(query?: Query): string {
+        return '';
+    }
+
+    removeMany(query?: Query): string {
         return '';
     }
 
