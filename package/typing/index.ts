@@ -19,6 +19,13 @@ type FnResult = {
 
 type QCheckValueInObject = {
     data: string | number,
+    /**
+     * Used When you need query something like this
+     *
+     * @example
+     *
+     * SELECT * FROM Customers WHERE NOT Country='Germany' AND NOT Country='USA';
+     */
     haveNot?: boolean
 }
 
