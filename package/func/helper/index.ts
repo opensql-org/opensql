@@ -1,7 +1,7 @@
 import keyword from '../../sql/Keyword';
 import Buffer from '../../fs/Buffer';
 import {COP, Cnj} from '../../enum/helper';
-import {FnResult, QCheckValueInObject} from '../../typing';
+import {FnResult, JSONObject, QCheckValueInObject} from '../../typing';
 import {Query} from '../../type/db/Query';
 
 
@@ -170,6 +170,13 @@ function DEFAULT(value: any): string {
 
 
 function qCheck(value: QCheckValueInObject | string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult {
+    if (typeof value === 'string')
+        value = `"${value}"`;
+
+    if (typeof value === 'object')
+        if (typeof value.data === 'string')
+            value.data = `"${value.data}"`;
+
     let query: FnResult = {
         value: value,
         conjunctionType: 'AND',
@@ -270,7 +277,7 @@ function SOURCE(name: string, typeName?: string): string {
     return !typeName ? `\`${name}\` AS Source` : `\`${name}\` AS ${typeName}`;
 }
 
-function ATTACH(arr: string[], conjunction?: Cnj): FnResult {
+function ATTACH(arr: JSONObject | string[], conjunction?: Cnj): FnResult {
     let query: FnResult = {
         value: arr,
         type: 'ATTACH',
@@ -321,13 +328,10 @@ function CONCAT_WS(str: string, arr: string[], column: string): string {
 }
 
 function GROUP(data: string | string[]): FnResult {
-    let query: FnResult = {
+    return {
         value: data,
         type: 'GROUP'
     };
-    if (Array.isArray(data))
-        return query;
-    return query;
 }
 
 export {
