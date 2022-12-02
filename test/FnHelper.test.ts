@@ -26,7 +26,7 @@ describe('Contains all helper functions', () => {
 
         it('should be return object with data', () => {
             expect(qCheck('Treegex')).toMatchObject({
-                value: '"Treegex"',
+                value: 'Treegex',
                 conjunctionType: 'AND',
                 comparisonOperator: '=',
                 type: 'qCheck'
@@ -83,7 +83,7 @@ describe('Contains all helper functions', () => {
 
         it('should be return object with data', () => {
             expect(LIKE('%simple')).toMatchObject({
-                value: '"%simple"',
+                value: '%simple',
                 conjunctionType: 'AND',
                 type: 'LIKE'
             });
