@@ -170,13 +170,6 @@ function DEFAULT(value: any): string {
 
 
 function qCheck(value: QCheckValueInObject | string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult {
-    if (typeof value === 'string')
-        value = `"${value}"`;
-
-    if (typeof value === 'object')
-        if (typeof value.data === 'string')
-            value.data = `"${value.data}"`;
-
     let query: FnResult = {
         value: value,
         conjunctionType: 'AND',
@@ -191,13 +184,8 @@ function qCheck(value: QCheckValueInObject | string | number, comparisonOperator
 }
 
 function fnInHelper(arr: string[] | number[], type: string, conjunction?: Cnj): FnResult {
-    let newArr: any[] = arr.map(element => {
-        if (typeof element === 'string')
-            return `"${element}"`;
-        return element;
-    });
     let query: FnResult = {
-        value: newArr,
+        value: arr,
         type: type,
         conjunctionType: 'AND'
     };
@@ -218,8 +206,8 @@ function NOT_IN(arr: string[] | number[], conjunction?: Cnj): FnResult {
 function fnBetweenHelper(first: string | number, second: string | number, type: string, conjunction?: Cnj): FnResult {
     let query: FnResult = {
         value: {
-            first: typeof first === 'string' ? `"${first}"` : first,
-            second: typeof second === 'string' ? `"${second}"` : second
+            first: first,
+            second: second
         },
         type: type,
         conjunctionType: 'AND'
@@ -239,7 +227,7 @@ function BETWEEN(first: string | number, second: string | number, conjunction?: 
 
 function fnLikeHelper(str: string, type: string, conjunction?: Cnj): FnResult {
     let query: FnResult = {
-        value: `"${str}"`,
+        value: str,
         type: type,
         conjunctionType: 'AND'
     };
