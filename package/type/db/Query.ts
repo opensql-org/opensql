@@ -1,5 +1,5 @@
 import {RefState} from '../../enum/helper';
-import {JSONObject, JSONString} from '../../typing';
+import {FnResult, JSONObject, JSONString} from '../../typing';
 
 
 type Query = {
@@ -61,6 +61,12 @@ type Option = {
      * Groups rows that have the same values into summary rows.
      */
     $group?: string | string[]
+
+    /**
+     * @type FnResult | FnResult[]
+     * The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+     */
+    $having?: FnResult | FnResult[]
 
     /**
      * @type string | string[]

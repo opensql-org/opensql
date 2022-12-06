@@ -1,8 +1,9 @@
 import {CreateTable, Query} from '../../../package/type/db/Query';
 import dataTypeHandler from '../../../package/query/helper/dataType';
 import {foreignKey} from '../../../package/query/helper/foreignKey';
+import SqlParser = require( '../../../lib/sql-parser');
 import keyword from '../../../package/sql/Keyword';
-import symbol from '../../../package/sql/Symbol';
+import {JSONObject} from '../../../package/typing';
 import Util from '../../util/Util';
 
 
@@ -13,6 +14,25 @@ export default class Builder {
     private queryInjection: any[] = [];
 
     private driverName: string = '';
+
+
+    private sqlParserHandler(config: JSONObject, query?: Query): string {
+        if (!query)
+            return;
+
+        let sp = new SqlParser({type: this.driverName, ...config}, query);
+
+        if (sp.injection())
+            this.queryInjection = sp.injection();
+
+        return sp.toSQL();
+    }
+
+
+    private static sqlParserConfigHandler(type: string, operationType: string): JSONObject {
+        return {operation: {[operationType]: type}, operationType: operationType};
+    }
+
 
     setDriverName(driverName: string) {
         this.driverName = driverName;
@@ -25,54 +45,36 @@ export default class Builder {
 
 
     find(query?: Query): string {
-        return '';
+        return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'select'), query);
     }
 
     findOne(query?: Query): string {
-        return '';
+        query.option.$limit = 1;
+        return this.sqlParserHandler(Builder.sqlParserConfigHandler('one', 'select'), query);
     }
 
-    findMany(query?: Query): string {
-        return '';
+    findMany(query?: Query, limit?: number): string {
+        query.option.$limit = !limit ? 10 : limit;
+        return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'select'), query);
     }
 
 
     update(query?: Query): string {
-        return '';
-    }
-
-    updateOne(query?: Query): string {
-        return '';
-    }
-
-    updateMany(query?: Query): string {
-        return '';
+        return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'update'), query);
     }
 
 
     remove(query?: Query): string {
-        return '';
+        return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'delete'), query);
     }
 
-    removeOne(query?: Query): string {
-        return '';
-    }
-
-    removeMany(query?: Query): string {
-        return '';
-    }
-
-
-    add(query?: Query): string {
-        return '';
-    }
 
     addOne(query?: Query): string {
-        return '';
+        return this.sqlParserHandler(Builder.sqlParserConfigHandler('one', 'insert'), query);
     }
 
     addMany(query?: Query): string {
-        return '';
+        return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'insert'), query);
     }
 
 
@@ -134,9 +136,9 @@ export default class Builder {
             keyword.TABLE,
             keyword.IF_NOT_EXISTS,
             tableName,
-            symbol.OPEN_PARENTHESES,
+            '(',
             jsonToString(ct.column),
-            symbol.CLOSE_PARENTHESES
+            ')'
         ].join(' ');
     }
 

@@ -1,11 +1,9 @@
 import {JSONObject} from '../../../typing';
-import symbol from '../../../sql/Symbol';
 import types from '../../../sql/Types';
 
 let list = {
     0: (str: string, type: string): string => {
-        return str.replace(type, types.geometry + symbol.OPEN_PARENTHESES +
-            types.linestring + symbol.CLOSE_PARENTHESES);
+        return str.replace(type, `${types.geometry}(${types.linestring})`);
     },
     1: (str: string): string => {
         return str;
