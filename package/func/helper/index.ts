@@ -170,29 +170,43 @@ function DEFAULT(value: any): string {
 
 
 function qCheck(value: QCheckValueInObject | string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult {
-    let query: FnResult = {
+    return {
         value: value,
-        conjunctionType: 'AND',
+        conjunctionType: !conjunction ? 'AND' : conjunction,
         comparisonOperator: !comparisonOperator ? '=' : comparisonOperator,
         type: 'qCheck'
+    }
+}
+
+/**
+ * @type string
+ * @param leftStatement
+ * @type string
+ * @param rightStatement
+ * @type COP
+ * @param comparisonOperator
+ * @type Cnj
+ * @param conjunction
+ * Used for $having object
+ */
+function Condition(leftStatement: string, rightStatement: string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult {
+    return {
+        value: {
+            leftStatement: leftStatement,
+            rightStatement: rightStatement
+        },
+        conjunctionType: !conjunction ? 'AND' : conjunction,
+        comparisonOperator: !comparisonOperator ? '=' : comparisonOperator,
+        type: 'Condition'
     };
-
-    if (conjunction)
-        query.conjunctionType = conjunction;
-
-    return query;
 }
 
 function fnInHelper(arr: string[] | number[], type: string, conjunction?: Cnj): FnResult {
-    let query: FnResult = {
+    return {
         value: arr,
         type: type,
-        conjunctionType: 'AND'
+        conjunctionType: !conjunction ? 'AND' : conjunction
     };
-    if (conjunction)
-        query.conjunctionType = conjunction;
-
-    return query;
 }
 
 function IN(arr: string[] | number[], conjunction?: Cnj): FnResult {
@@ -204,17 +218,14 @@ function NOT_IN(arr: string[] | number[], conjunction?: Cnj): FnResult {
 }
 
 function fnBetweenHelper(first: string | number, second: string | number, type: string, conjunction?: Cnj): FnResult {
-    let query: FnResult = {
+    return {
         value: {
             first: first,
             second: second
         },
         type: type,
-        conjunctionType: 'AND'
+        conjunctionType: !conjunction ? 'AND' : conjunction
     };
-    if (conjunction)
-        query.conjunctionType = conjunction;
-    return query;
 }
 
 function NOT_BETWEEN(first: string | number, second: string | number, conjunction?: Cnj): FnResult {
@@ -226,14 +237,11 @@ function BETWEEN(first: string | number, second: string | number, conjunction?: 
 }
 
 function fnLikeHelper(str: string, type: string, conjunction?: Cnj): FnResult {
-    let query: FnResult = {
+    return {
         value: str,
         type: type,
-        conjunctionType: 'AND'
+        conjunctionType: !conjunction ? 'AND' : conjunction
     };
-    if (conjunction)
-        query.conjunctionType = conjunction;
-    return query;
 }
 
 function LIKE(str: string, conjunction?: Cnj): FnResult {
@@ -266,14 +274,11 @@ function SOURCE(name: string, typeName?: string): string {
 }
 
 function ATTACH(arr: JSONObject | string[], conjunction?: Cnj): FnResult {
-    let query: FnResult = {
+    return {
         value: arr,
         type: 'ATTACH',
-        conjunctionType: 'AND'
+        conjunctionType: !conjunction ? 'AND' : conjunction
     };
-    if (conjunction)
-        query.conjunctionType = conjunction;
-    return query;
 }
 
 function fnUnionHelper(json: Query, type: string): FnResult {
@@ -315,13 +320,6 @@ function CONCAT_WS(str: string, arr: string[], column: string): string {
     return `CONCAT_WS("${str}", ${arr.toString()}) AS ${column}`;
 }
 
-function GROUP(data: string | string[]): FnResult {
-    return {
-        value: data,
-        type: 'GROUP'
-    };
-}
-
 export {
     AS,
     IN,
@@ -341,7 +339,6 @@ export {
     ASCII,
     POINT,
     UNION,
-    GROUP,
     qCheck,
     BINARY,
     ATTACH,
@@ -359,6 +356,7 @@ export {
     TINYBLOB,
     LONGBLOB,
     CONCAT_WS,
+    Condition,
     UNION_ALL,
     VARBINARY,
     DAYOFWEEK,

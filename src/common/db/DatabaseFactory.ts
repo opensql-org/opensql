@@ -35,8 +35,8 @@ export default class DatabaseFactory implements DismissConnection, Database {
         return this.driver.findOne(query);
     }
 
-    async findMany(query?: Query): Promise<any> {
-        return this.driver.findMany(query);
+    async findMany(query?: Query, limit?: number): Promise<any> {
+        return this.driver.findMany(query, limit);
     }
 
 
@@ -44,31 +44,11 @@ export default class DatabaseFactory implements DismissConnection, Database {
         return this.driver.update(query);
     }
 
-    async updateOne(query?: Query): Promise<any> {
-        return this.driver.updateOne(query);
-    }
-
-    async updateMany(query?: Query): Promise<any> {
-        return this.driver.updateMany(query);
-    }
-
 
     async remove(query?: Query ): Promise<any> {
         return this.driver.remove(query);
     }
 
-    async removeOne(query?: Query): Promise<any> {
-        return this.driver.removeOne(query);
-    }
-
-    async removeMany(query?: Query): Promise<any> {
-        return this.driver.removeMany(query);
-    }
-
-
-    async add(query?: Query): Promise<any> {
-        return this.driver.add(query);
-    }
 
     async addOne(query?: Query): Promise<any> {
         return this.driver.addOne(query);
