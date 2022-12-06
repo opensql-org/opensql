@@ -25,8 +25,8 @@ export default abstract class DatabaseDriver extends DriverController implements
         return await this.execute(this.queryBuilder.findOne(query), this.queryBuilder.injection());
     }
 
-    async findMany(query?: Query): Promise<any> {
-        return await this.execute(this.queryBuilder.findMany(query), this.queryBuilder.injection());
+    async findMany(query?: Query, limit?: number): Promise<any> {
+        return await this.execute(this.queryBuilder.findMany(query, limit), this.queryBuilder.injection());
     }
 
 
@@ -34,31 +34,11 @@ export default abstract class DatabaseDriver extends DriverController implements
         return await this.execute(this.queryBuilder.update(query), this.queryBuilder.injection());
     }
 
-    async updateOne(query?: Query): Promise<any> {
-        return await this.execute(this.queryBuilder.updateOne(query), this.queryBuilder.injection());
-    }
-
-    async updateMany(query?: Query): Promise<any> {
-        return await this.execute(this.queryBuilder.updateMany(query), this.queryBuilder.injection());
-    }
-
 
     async remove(query?: Query): Promise<any> {
         return await this.execute(this.queryBuilder.remove(query), this.queryBuilder.injection());
     }
 
-    async removeOne(query?: Query): Promise<any> {
-        return await this.execute(this.queryBuilder.removeOne(query), this.queryBuilder.injection());
-    }
-
-    async removeMany(query?: Query): Promise<any> {
-        return await this.execute(this.queryBuilder.removeMany(query), this.queryBuilder.injection());
-    }
-
-
-    async add(query?: Query): Promise<any> {
-        return await this.execute(this.queryBuilder.add(query));
-    }
 
     async addOne(query?: Query): Promise<any> {
         return await this.execute(this.queryBuilder.addOne(query), this.queryBuilder.injection());

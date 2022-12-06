@@ -6,24 +6,14 @@ export default interface Database {
 
     findOne(query?: Query): Promise<any>;
 
-    findMany(query?: Query): Promise<any>;
+    findMany(query?: Query, limit?: number): Promise<any>;
 
 
     update(query?: Query): Promise<any>;
 
-    updateOne(query?: Query): Promise<any>;
-
-    updateMany(query?: Query): Promise<any>;
-
 
     remove(query?: Query): Promise<any>;
 
-    removeOne(query?: Query): Promise<any>;
-
-    removeMany(query?: Query): Promise<any>;
-
-
-    add(query?: Query): Promise<any>;
 
     addOne(query?: Query): Promise<any>;
 
