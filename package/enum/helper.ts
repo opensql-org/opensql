@@ -7,23 +7,9 @@ enum RefState {
 
 
 enum Operator {
-    LESS = '<',
-    EQUAL = '=',
     NULL = 'NULL',
-    GREATER = '>',
-    OrEqual = '|*=',
-    AddEqual = '+=',
-    SubEqual = '-=',
-    MulEqual = '*=',
-    DivEqual = '/=',
-    ModEqual = '%=',
-    AndEqual = '&=',
-    ExcEqual = '^-=',
-    NOT_EQUAL = '<>',
     IS_NULL = 'IS NULL',
-    LESS_OR_EQUAL = '<=',
     NOT_NULL = 'NOT NULL',
-    GREATER_OR_EQUAL = '>=',
     IS_NOT_NULL = 'IS NOT NULL'
 }
 
@@ -34,7 +20,15 @@ enum COP {
     LESS = '<',
     EQUAL = '=',
     GREATER = '>',
+    OrEqual = '|*=',
+    AddEqual = '+=',
+    SubEqual = '-=',
+    MulEqual = '*=',
+    DivEqual = '/=',
+    ModEqual = '%=',
+    AndEqual = '&=',
     NOT_EQUAL = '<>',
+    ExcEqual = '^-=',
     LESS_OR_EQUAL = '<=',
     GREATER_OR_EQUAL = '>='
 }
