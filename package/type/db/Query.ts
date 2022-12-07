@@ -1,5 +1,5 @@
 import {RefState} from '../../enum/helper';
-import {FnResult, JSONObject, JSONString} from '../../typing';
+import {FnResult, JSONObject, JSONString, UnionObject} from '../../typing';
 
 
 type Query = {
@@ -44,13 +44,16 @@ type Query = {
      * @type object[]
      * Used to combine the result-set of two or more SELECT statements.
      */
-    union?: object[]
+    union?: UnionObject[]
 
     /**
      * @type Option
      * Manage option query like: limit, order, group or sort data with asc and desc.
      */
     option?: Option
+
+
+    join?: FnResult | FnResult[]
 
 }
 
@@ -119,12 +122,6 @@ type CreateTable = {
     column: JSONString
 
     /**
-     * @type object[]
-     * List of column reference.
-     */
-    ref?: Ref[]
-
-    /**
      * @type string[]
      * Used to search fast in column.
      */
@@ -134,74 +131,24 @@ type CreateTable = {
 
     primaryKey?: string
 
-    foreignKey?: ForeignKey
-
-    constraint?: CONSTRAINT
-
-}
-
-type CONSTRAINT = {
-
-    symbol?: string
-
-    index?: string[]
-
-    unique?: string[]
-
-    primaryKey?: string
-
-    foreignKey?: ForeignKey
-
-}
-
-type ForeignKey = {
-
-    [key: string]: ForeignKeyObject
-
-}
-
-type Ref = {
-
-    /**
-     * @type string
-     * Column name that you want to reference in other tables.
-     */
-    get: string
-
-    /**
-     * @type string
-     * Table name that you want to reference in other tables.
-     */
-    from: string
-
-    /**
-     * @type string
-     * Target table name.
-     */
-    to: string
-
-    /**
-     * @type string
-     * Column of target table.
-     */
-    column: string
-
-    /**
-     * @type RefState
-     * @default RESTRICT
-     */
-    onDelete?: RefState
-
-    /**
-     * @type RefState
-     * @default RESTRICT
-     */
-    onUpdate?: RefState
+    foreignKey?: ForeignKeyObject
 
 }
 
 type ForeignKeyObject = {
 
+    [key: string]: ForeignKey
+
+}
+
+type ForeignKey = {
+
+    /**
+     * @type string
+     * Column name that you want to reference in other tables.
+     */
+    get: string | string[]
+
     /**
      * @type string
      * Target table name.
@@ -212,7 +159,7 @@ type ForeignKeyObject = {
      * @type string
      * Column of target table.
      */
-    column: string
+    column: string | string[]
 
     /**
      * @type RefState
@@ -231,5 +178,5 @@ type ForeignKeyObject = {
 export {
     CreateTable,
     Query,
-    Ref
+    ForeignKey
 }

@@ -119,11 +119,7 @@ export default class Builder {
                     ct.column[key] = `${value} ${keyword.PRIMARY_KEY}`;
 
                 if (hasMatchForeignKey) {
-                    let fkQuery = foreignKey[dbName]?.query([
-                        key, /** The name of the column in this table that should be linked to the external column **/
-                        hasForeignKey[key].to /** Target table **/,
-                        hasForeignKey[key].column /** Target column in target table **/
-                    ]);
+                    let fkQuery = foreignKey[dbName]?.query(hasForeignKey[key]);
 
                     ct.column[key] = `${value} ${fkQuery}`;
                 }
@@ -138,8 +134,10 @@ export default class Builder {
             tableName,
             '(',
             jsonToString(ct.column),
+            ct?.index ? `INDEX(${ct?.index})` : '',
+            ct?.unique ? `UNIQUE(${ct?.unique})` : '',
             ')'
-        ].join(' ');
+        ].filter((str) => /\S/.test(str)).join(' ');
     }
 
     dropTable(tableName: string | string[], databaseName?: string): string {
