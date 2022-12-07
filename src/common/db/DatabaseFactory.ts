@@ -72,8 +72,8 @@ export default class DatabaseFactory implements DismissConnection, Database {
         return this.driver.createTable(ct);
     }
 
-    async dropTable(tableName: string | string[], databaseName?: string): Promise<any> {
-        return this.driver.dropTable(tableName, databaseName);
+    async dropTable(tableName: string | string[]): Promise<any> {
+        return this.driver.dropTable(tableName);
     }
 
     async truncateTable(tableName: string): Promise<any> {

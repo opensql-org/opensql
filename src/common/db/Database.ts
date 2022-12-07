@@ -27,7 +27,7 @@ export default interface Database {
 
     createTable(ct: CreateTable): Promise<any>;
 
-    dropTable(tableName: string | string[], databaseName?: string): Promise<any>;
+    dropTable(tableName: string | string[]): Promise<any>;
 
     truncateTable(tableName: string): Promise<any>;
 
