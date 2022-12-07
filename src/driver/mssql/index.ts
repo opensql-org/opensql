@@ -1,12 +1,13 @@
 import * as mssql from 'mssql';
 import DatabaseDriver from '../../common/DatabaseDriver';
+import {config} from "mssql";
 
 export default class Mssql extends DatabaseDriver {
 
     protected connection: any;
 
     async connect(url: string, option?: object): Promise<any> {
-        let config = this.connector(url, option);
+        let config = this.connector(url, option) as config;
         return this.connection = await mssql.connect(config);
     }
 

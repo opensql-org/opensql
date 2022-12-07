@@ -4,19 +4,30 @@ import Util from '../../../util/Util';
 import keyword from '../../../sql/Keyword';
 
 let list = {
-    0: (str: string, type: string): string => {
+    0: (str: string, type: string, columnName: string): string => {
         let isDefinedCheckConstraint = Util.searchInString(str, keyword.CHECK);
         str = str.replace(type, types.varchar);
 
         if (isDefinedCheckConstraint)
             return str;
 
-        let columnName = str.split(' ')[0],
-            extractData = str.match(/varchar\((.*?)\)/),
-            removeParenthesesWithData = str.replace('(' + extractData[1] + ')', ' ');
+        let getParenthesesData = str.match(/VARCHAR\((.*?)\)/)[1].split(','),
+            removeParenthesesWithData = str.replace(/VARCHAR\((.*?)\)/, 'VARCHAR'),
+            arrayOfCheckConditions: any[] = [];
 
-        return `${removeParenthesesWithData}${keyword.CHECK}(${columnName} ${extractData[0]
-            .replace(types.varchar, keyword.IN)})`;
+        getParenthesesData.forEach((item, index, array) => {
+
+            let isLastIndex = array.length === index + 1;
+
+            arrayOfCheckConditions.push(`${columnName}=${item}`);
+
+            if (!isLastIndex)
+                arrayOfCheckConditions.push('OR');
+
+        });
+
+
+        return `${removeParenthesesWithData},${keyword.CHECK}(${arrayOfCheckConditions.join(' ')})`;
     },
     1: (str: string): string => {
         return str;
@@ -26,13 +37,13 @@ let list = {
 export let Enum: JSONObject = {
 
     mysql: {
-        query: (str: string, type: string) => list['1'](str)
+        query: (str: string, type: string, columnName: string) => list['1'](str)
     },
     mssql: {
-        query: (str: string, type: string) => list['0'](str, type)
+        query: (str: string, type: string, columnName: string) => list['0'](str, type, columnName)
     },
     postgresql: {
-        query: (str: string, type: string) => list['1'](str)
+        query: (str: string, type: string, columnName: string) => list['1'](str)
     }
 
 }

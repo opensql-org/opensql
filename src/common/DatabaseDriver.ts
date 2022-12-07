@@ -63,9 +63,8 @@ export default abstract class DatabaseDriver extends DriverController implements
         return await this.execute(this.queryBuilder.createTable(ct, this.getName()));
     }
 
-    async dropTable(tableName: string | string[], databaseName?: string): Promise<any> {
-        return await this.execute(this.queryBuilder.dropTable(tableName,
-            !databaseName ? this.getName() : databaseName));
+    async dropTable(tableName: string | string[]): Promise<any> {
+        return await this.execute(this.queryBuilder.dropTable(tableName));
     }
 
     async truncateTable(tableName: string): Promise<any> {
