@@ -104,11 +104,11 @@ function AS(data: string, columnName?: string): string {
     return `${data} AS ${columnName}`;
 }
 
-function BINARY(data: number) {
+function BINARY(data: number): string {
     return `0x${data}`;
 }
 
-function VARBINARY(data: number) {
+function VARBINARY(data: number): string {
     return `0x${data}`;
 }
 

@@ -3,12 +3,12 @@ import {ForeignKey} from '../../type/db/Query';
 import {RefState} from '../../enum/helper';
 
 function stateHandler(onUpdate: RefState, onDelete: RefState) {
-    return `${onUpdate ? `ON UPDATE ${onUpdate}` : ''} ${onDelete ? `ON DELETE ${onDelete}` : ''}`.trim();
+    return `${onUpdate ? `ON UPDATE ${onUpdate}` : ' '} ${onDelete ? `ON DELETE ${onDelete}` : ' '}`.trim();
 }
 
 let list = {
     0: (fk: ForeignKey): string => {
-        return `, FOREIGN KEY (${fk.get}) REFERENCES ${fk.to}(${fk.column}) ${stateHandler(fk.onUpdate, fk.onDelete)}`.trim();
+        return `,FOREIGN KEY (${fk.get}) REFERENCES ${fk.to}(${fk.column}) ${stateHandler(fk.onUpdate, fk.onDelete)}`;
     }
 }
 

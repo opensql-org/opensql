@@ -10,7 +10,7 @@
     "test": "jest",
     "sql-parser-run": "nodemon ./lib/sql-parser/index.js"
   },
-  "types": "dist/index.d.ts",
+  "types": "index.d.ts",
   "files": [
     "dist"
   ],
@@ -28,7 +28,9 @@
   ],
   "devDependencies": {
     "@types/jest": "^29.2.3",
+    "@types/mssql": "^8.1.1",
     "@types/node": "^18.11.9",
+    "@types/pg": "^8.6.5",
     "jest": "^29.3.1",
     "mssql": "^9.0.1",
     "mysql2": "^2.3.3",

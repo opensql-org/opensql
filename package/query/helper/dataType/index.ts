@@ -20,12 +20,13 @@ import {Enum} from './enum';
 import {JSONFunction} from '../../../typing';
 
 
-export default function (dbName: string, str: string): string {
+export default function (dbName: string, str: string, columnName?: string): string {
 
-    let dataType = str.split(' ')[1].split('(')[0].toLowerCase(),
+
+    let dataType = str.split(' ')[0].split('(')[0].toLowerCase(),
         mapOfDataTypeInstance: JSONFunction = {
             xml: (): string => xml[dbName]?.query(str, types.xml),
-            enum: (): string => Enum[dbName]?.query(str, types.enum),
+            enum: (): string => Enum[dbName]?.query(str, types.enum, columnName),
             uuid: (): string => uuid[dbName]?.query(str, types.uuid),
             json: (): string => json[dbName]?.query(str, types.json),
             money: (): string => money[dbName]?.query(str, types.money),
@@ -55,7 +56,7 @@ export default function (dbName: string, str: string): string {
         };
 
 
-    if (typeof mapOfDataTypeInstance[dataType] === 'function')
+    if (typeof mapOfDataTypeInstance?.[dataType] === 'function')
         return mapOfDataTypeInstance[dataType]();
 
 

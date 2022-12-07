@@ -1,11 +1,9 @@
 import {CreateTable, Query} from '../../../package/type/db/Query';
 import dataTypeHandler from '../../../package/query/helper/dataType';
 import {foreignKey} from '../../../package/query/helper/foreignKey';
-import SqlParser = require( '../../../lib/sql-parser');
 import keyword from '../../../package/sql/Keyword';
 import {JSONObject} from '../../../package/typing';
 import Util from '../../util/Util';
-
 
 let {jsonToString} = Util.getInstance();
 
@@ -20,6 +18,7 @@ export default class Builder {
         if (!query)
             return;
 
+        let SqlParser = require('../../../../lib/sql-parser');
         let sp = new SqlParser({type: this.driverName, ...config}, query);
 
         if (sp.injection())
@@ -99,33 +98,23 @@ export default class Builder {
      */
     createTable(ct: CreateTable, dbName: string): string {
 
-        let hasPrimaryKey = ct?.primaryKey,
-            hasForeignKey = ct?.foreignKey,
-            tableName = ct?.table,
-            hasTrueConditions = hasPrimaryKey || hasForeignKey;
+        let hasForeignKey = ct?.foreignKey,
+            tableName = ct?.table;
 
+        for (const key in ct?.column) {
 
-        if (hasTrueConditions)
-            for (const key in ct?.column) {
+            let value = ct.column[key],
+                hasMatchForeignKey = hasForeignKey?.[key];
 
-                let value = ct.column[key],
-                    hasMatchPrimaryKey = key === hasPrimaryKey,
-                    hasMatchForeignKey = hasForeignKey[key];
+            ct.column[key] = dataTypeHandler(dbName, value, key);
 
+            if (hasMatchForeignKey) {
+                let fkQuery = foreignKey[dbName]?.query(hasForeignKey[key]);
 
-                ct.column[key] = dataTypeHandler(dbName, value);
-
-                if (hasMatchPrimaryKey)
-                    ct.column[key] = `${value} ${keyword.PRIMARY_KEY}`;
-
-                if (hasMatchForeignKey) {
-                    let fkQuery = foreignKey[dbName]?.query(hasForeignKey[key]);
-
-                    ct.column[key] = `${value} ${fkQuery}`;
-                }
-
+                ct.column[key] = `${value} ${fkQuery}`;
             }
 
+        }
 
         return [
             keyword.CREATE,
@@ -134,16 +123,17 @@ export default class Builder {
             tableName,
             '(',
             jsonToString(ct.column),
-            ct?.index ? `INDEX(${ct?.index})` : '',
-            ct?.unique ? `UNIQUE(${ct?.unique})` : '',
+            ct?.index ? `, INDEX(${ct?.index})` : '',
+            ct?.unique ? `, UNIQUE(${ct?.unique})` : '',
+            ct?.primaryKey ? `, PRIMARY KEY (${ct?.primaryKey})` : '',
             ')'
         ].filter((str) => /\S/.test(str)).join(' ');
     }
 
-    dropTable(tableName: string | string[], databaseName?: string): string {
+    dropTable(tableName: string | string[]): string {
         return [
-            keyword.USE,
-            databaseName,
+            keyword.DROP,
+            keyword.TABLE,
             keyword.IF_EXISTS,
             tableName
         ].join(' ');

@@ -129,7 +129,7 @@ type CreateTable = {
 
     unique?: string[]
 
-    primaryKey?: string
+    primaryKey?: string | string[]
 
     foreignKey?: ForeignKeyObject
 
