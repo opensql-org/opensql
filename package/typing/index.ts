@@ -10,6 +10,17 @@ type JSONString = {
     [key: string]: string
 }
 
+type JoinObject = {
+    from: string,
+    lsm: string
+    rsm: string | number
+}
+
+type UnionObject = {
+    value: JSONObject,
+    type: string
+}
+
 type FnResult = {
     value: string | number | string[] | number[] | JSONObject | QCheckValueInObject,
     type: string,
@@ -34,6 +45,8 @@ export {
     FnResult,
     JSONObject,
     JSONString,
+    JoinObject,
+    UnionObject,
     JSONFunction,
     QCheckValueInObject
 }

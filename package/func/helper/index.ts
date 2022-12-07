@@ -1,7 +1,7 @@
 import keyword from '../../sql/Keyword';
 import Buffer from '../../fs/Buffer';
 import {COP, Cnj} from '../../enum/helper';
-import {FnResult, JSONObject, QCheckValueInObject} from '../../typing';
+import {FnResult, JoinObject, JSONObject, QCheckValueInObject} from '../../typing';
 import {Query} from '../../type/db/Query';
 
 
@@ -320,6 +320,34 @@ function CONCAT_WS(str: string, arr: string[], column: string): string {
     return `CONCAT_WS("${str}", ${arr.toString()}) AS ${column}`;
 }
 
+function INNER(statements: JoinObject): FnResult {
+    return {
+        value: statements,
+        type: 'INNER JOIN'
+    }
+}
+
+function LEFT(statements: JoinObject): FnResult {
+    return {
+        value: statements,
+        type: 'LEFT JOIN'
+    }
+}
+
+function RIGHT(statements: JoinObject): FnResult {
+    return {
+        value: statements,
+        type: 'RIGHT JOIN'
+    }
+}
+
+function FULL(statements: JoinObject): FnResult {
+    return {
+        value: statements,
+        type: 'FULL OUTER JOIN'
+    }
+}
+
 export {
     AS,
     IN,
@@ -328,14 +356,18 @@ export {
     MIN,
     SUM,
     AVG,
+    LEFT,
     UUID,
     BLOB,
     JSON,
     LIKE,
     CAST,
+    FULL,
+    RIGHT,
     COUNT,
     UPPER,
     LOWER,
+    INNER,
     ASCII,
     POINT,
     UNION,
