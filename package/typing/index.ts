@@ -40,6 +40,12 @@ type QCheckValueInObject = {
     haveNot?: boolean
 }
 
+type JsonChecker = {
+    key: string
+    has?: string
+    type: string
+}
+
 
 export {
     FnResult,
@@ -47,6 +53,7 @@ export {
     JSONString,
     JoinObject,
     UnionObject,
+    JsonChecker,
     JSONFunction,
     QCheckValueInObject
 }

@@ -1,4 +1,17 @@
-import {DEFAULT, POINT, qCheck, QueryPoint, CONCAT_WS, COUNT, IN, BETWEEN, LIKE} from '../package/func/helper';
+import {
+    DEFAULT,
+    POINT,
+    qCheck,
+    QueryPoint,
+    CONCAT_WS,
+    COUNT,
+    IN,
+    BETWEEN,
+    LIKE,
+    JSON,
+    CONTAINS,
+    EXTRACT
+} from '../package/func/helper';
 
 describe('Contains all helper functions', () => {
 
@@ -35,20 +48,44 @@ describe('Contains all helper functions', () => {
 
     });
 
-    it('should be return string equal COUNT(*) AS size', async () => {
+    it('should be return string equal COUNT(*) AS size', () => {
         expect(CONCAT_WS(' ', ['id', 'name'], 'like')).toBe('CONCAT_WS(" ", id,name) AS like');
     });
 
-    it('should be return string equal COUNT(*) AS size', async () => {
+    it('should be return string equal COUNT(*) AS size', () => {
         expect(COUNT()).toBe('COUNT(*) AS size');
     });
 
-    it('should be return string equal COUNT(DISTINCT id)', async () => {
+    it('should be return string equal COUNT(DISTINCT id)', () => {
         expect(COUNT(['id'])).toBe('COUNT(DISTINCT id)');
     });
 
-    it('should be return string equal COUNT(id)', async () => {
+    it('should be return string equal COUNT(id)', () => {
         expect(COUNT('id')).toBe('COUNT(id)');
+    });
+
+    it('should be return string array to equal ["id", "name"]', () => {
+        expect(JSON(['id', 'name'])).toBe('["id", "name"]');
+    });
+
+    it('should be return string array to equal [1, 2]', () => {
+        expect(JSON([1, 2])).toBe('[1, 2]');
+    });
+
+    it('should be return string array to equal JSON_EXTRACT(\'[1,2,3,4,5]\', \'$[last-3 to last-1]\')', () => {
+        expect(EXTRACT([1, 2, 3, 4, 5], '$[last-3 to last-1]')).toBe('JSON_EXTRACT(\'[1,2,3,4,5]\', \'$[last-3 to last-1]\')');
+    });
+
+    it('should be return string that have json object to equal {"username":"root"}', () => {
+        expect(JSON({username: 'root'})).toBe('{"username":"root"}');
+    });
+
+    it('should be return string to equal JSON_CONTAINS(\'{"username":"root"}\', \'{"password":"root"}\')', () => {
+        expect(CONTAINS({username: 'root'}, {password: 'root'})).toBe('JSON_CONTAINS(\'{"username":"root"}\', \'{"password":"root"}\')');
+    });
+
+    it('should be return string that have array of json object to equal [{"username":"root"}, {"username":"root"}]', () => {
+        expect(JSON([{username: 'root'}, {username: 'root'}])).toBe('[{"username":"root"}, {"username":"root"}]');
     });
 
 
