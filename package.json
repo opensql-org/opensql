@@ -1,18 +1,19 @@
 {
   "name": "opensql",
-  "version": "1.2.47",
-  "description": "OpenSql is a promise-based Node.js ORM tool for MySql",
-  "main": "index.js",
+  "version": "2.0.0-alpha",
+  "description": "OpenSql is a promise-based Node.js ORM tool for MySql, Postgres and Microsoft Sql Server",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "nodemon index.js",
-    "test": "jest"
-  },
-  "jest": {
-    "testMatch": [
-      "**/test/**/*.test.js"
-    ]
+    "prestart": "tsc index.ts --outDir .dist",
+    "start": "node .dist/index.js",
+    "build": "tsc --module CommonJS --outDir dist",
+    "test": "jest",
+    "sql-parser-run": "nodemon ./lib/sql-parser/index.js"
   },
   "types": "index.d.ts",
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/treegex/opensql.git"
@@ -22,20 +23,28 @@
     "opensql",
     "mysql-orm",
     "mysql",
-    "javascript",
-    "node.js"
+    "database",
+    "mssql",
+    "postresql",
+    "sql"
   ],
-  "dependencies": {
-    "mysql": "^2.18.1"
-  },
   "devDependencies": {
-    "jest": "^28.1.1",
-    "nodemon": "^2.0.16"
+    "@types/jest": "^29.2.3",
+    "@types/mssql": "^8.1.1",
+    "@types/node": "^18.11.9",
+    "@types/pg": "^8.6.5",
+    "jest": "^29.3.1",
+    "mssql": "^9.0.1",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
+    "pg": "^8.8.0",
+    "ts-jest": "^29.0.3",
+    "ts-node": "^10.9.1"
   },
   "author": "Ali Azmoodeh <treeroot.ir@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/treegex/opensql/issues"
+    "url": "https://github.com/treegex/opensql/milestone/1"
   },
   "homepage": "https://github.com/treegex/opensql#readme"
 }
