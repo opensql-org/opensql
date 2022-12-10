@@ -127,7 +127,7 @@ export default class Builder {
             ct?.unique ? `, UNIQUE(${ct?.unique})` : '',
             ct?.primaryKey ? `, PRIMARY KEY (${ct?.primaryKey})` : '',
             ')'
-        ].filter((str) => /\S/.test(str)).join(' ');
+        ].filter(str => str).join(' ');
     }
 
     dropTable(tableName: string | string[]): string {

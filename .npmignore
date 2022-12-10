@@ -1,1 +1,7 @@
 test
+CHANGELOG
+CHANGELOG.md
+README.md
+docs
+jest.config.ts
+lib/sql-parser/test

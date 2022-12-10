@@ -1,7 +1,7 @@
 {
   "name": "opensql",
   "version": "1.2.47",
-  "description": "OpenSql is a promise-based Node.js ORM tool for MySql",
+  "description": "OpenSql is a promise-based Node.js ORM tool for MySql, Postgres and Microsoft Sql Server",
   "main": "dist/index.js",
   "scripts": {
     "prestart": "tsc index.ts --outDir .dist",
@@ -24,6 +24,8 @@
     "mysql-orm",
     "mysql",
     "database",
+    "mssql",
+    "postresql",
     "sql"
   ],
   "devDependencies": {
@@ -42,7 +44,7 @@
   "author": "Ali Azmoodeh <treeroot.ir@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/treegex/opensql/issues"
+    "url": "https://github.com/treegex/opensql/milestone/1"
   },
   "homepage": "https://github.com/treegex/opensql#readme"
 }

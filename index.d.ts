@@ -2,7 +2,7 @@ import {CreateTable, Query} from './package/type/db/Query';
 import {Cnj, COP, Operator, RefState} from './package/enum/helper';
 import {Storage} from './package/enum/Storage';
 import {NULL, NOT_NULL, AUTO_INCREMENT} from './package/sql/PubStr';
-import {FnResult, JoinObject, JSONObject, QCheckValueInObject} from './package/typing';
+import {FnResult, JoinObject, JsonChecker, JSONObject, QCheckValueInObject} from './package/typing';
 
 
 declare module 'opensql' {
@@ -179,6 +179,8 @@ declare module 'opensql' {
 
     export function IN(arr: string[] | number[], conjunction?: Cnj): FnResult;
 
+    export function NOW(): string;
+
     export function DAY(string: string): string;
 
     export function MAX(column: string): string;
@@ -195,7 +197,7 @@ declare module 'opensql' {
 
     export function BLOB(buf: Buffer): string;
 
-    export function JSON(arr: number[] | string[]): string;
+    export function JSON(data: number[] | string[]): string;
 
     export function LIKE(str: string, conjunction?: Cnj): FnResult;
 
@@ -246,6 +248,16 @@ declare module 'opensql' {
     export function NOT_LIKE(str: string, conjunction?: Cnj): FnResult;
 
     export function UTC_TIME(): string;
+
+    export function XML(data: string): string;
+
+    export function UNQUOTE(extract: string): string;
+
+    export function CONTAINS(target: JSONObject | string, candidate: JSONObject | string, path?: string): string;
+
+    export function EXTRACT(data: JSONObject | number[] | string, ...path: string[]): string;
+
+    export function jsonChecker(key: string, has: string): JsonChecker;
 
     export function TINYBLOB(buf: Buffer): string;
 
