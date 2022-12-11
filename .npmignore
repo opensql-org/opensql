@@ -1,7 +1,9 @@
 test
 CHANGELOG
 CHANGELOG.md
-README.md
 docs
 jest.config.ts
+.dist
+.idea
+CONTRIBUTING.md
 lib/sql-parser/test

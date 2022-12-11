@@ -1,6 +1,6 @@
 {
   "name": "opensql",
-  "version": "2.0.0-alpha",
+  "version": "2.0.0-alpha-3",
   "description": "OpenSql is a promise-based Node.js ORM tool for MySql, Postgres and Microsoft Sql Server",
   "main": "dist/index.js",
   "scripts": {
@@ -11,9 +11,6 @@
     "sql-parser-run": "nodemon ./lib/sql-parser/index.js"
   },
   "types": "index.d.ts",
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/treegex/opensql.git"
