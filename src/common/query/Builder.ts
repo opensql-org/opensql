@@ -14,7 +14,7 @@ export default class Builder {
     private driverName: string = '';
 
 
-    private sqlParserHandler(config: JSONObject, query?: Query): string {
+    private sqlParserHandler(config: JSONObject, query: Query): string {
         if (!query)
             return;
 
@@ -43,36 +43,36 @@ export default class Builder {
     }
 
 
-    find(query?: Query): string {
+    find(query: Query): string {
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'select'), query);
     }
 
-    findOne(query?: Query): string {
+    findOne(query: Query): string {
         query.option.$limit = 1;
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('one', 'select'), query);
     }
 
-    findMany(query?: Query, limit?: number): string {
+    findMany(query: Query, limit?: number): string {
         query.option.$limit = !limit ? 10 : limit;
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'select'), query);
     }
 
 
-    update(query?: Query): string {
+    update(query: Query): string {
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'update'), query);
     }
 
 
-    remove(query?: Query): string {
+    remove(query: Query): string {
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'delete'), query);
     }
 
 
-    addOne(query?: Query): string {
+    addOne(query: Query): string {
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('one', 'insert'), query);
     }
 
-    addMany(query?: Query): string {
+    addMany(query: Query): string {
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'insert'), query);
     }
 

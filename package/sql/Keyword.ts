@@ -18,7 +18,6 @@ export default {
     DEFAULT: 'DEFAULT',
     WITHOUT: 'WITHOUT',
     COMMENT: 'COMMENT',
-    STORAGE: 'STORAGE',
     NOT_NULL: 'NOT NULL',
     TRUNCATE: 'TRUNCATE',
     DATABASE: 'DATABASE',

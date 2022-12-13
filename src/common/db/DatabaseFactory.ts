@@ -27,34 +27,34 @@ export default class DatabaseFactory implements DismissConnection, Database {
         this.connect(url, option);
     }
 
-    async find(query?: Query): Promise<any> {
+    async find(query: Query): Promise<any> {
         return this.driver.find(query);
     }
 
-    async findOne(query?: Query): Promise<any> {
+    async findOne(query: Query): Promise<any> {
         return this.driver.findOne(query);
     }
 
-    async findMany(query?: Query, limit?: number): Promise<any> {
+    async findMany(query: Query, limit?: number): Promise<any> {
         return this.driver.findMany(query, limit);
     }
 
 
-    async update(query?: Query): Promise<any> {
+    async update(query: Query): Promise<any> {
         return this.driver.update(query);
     }
 
 
-    async remove(query?: Query ): Promise<any> {
+    async remove(query: Query ): Promise<any> {
         return this.driver.remove(query);
     }
 
 
-    async addOne(query?: Query): Promise<any> {
+    async addOne(query: Query): Promise<any> {
         return this.driver.addOne(query);
     }
 
-    async addMany(query?: Query): Promise<any> {
+    async addMany(query: Query): Promise<any> {
         return this.driver.addMany(query);
     }
 

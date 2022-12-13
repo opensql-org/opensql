@@ -1,6 +1,5 @@
 import OpenSql from './OpenSql';
 import {Cnj, RefState, COP, Operator} from './package/enum/helper';
-import {Storage} from './package/enum/Storage';
 import {
     AS,
     IN,
@@ -108,7 +107,6 @@ export {
     REVERSE,
     DEFAULT,
     BETWEEN,
-    Storage,
     OpenSql,
     UNQUOTE,
     EXTRACT,

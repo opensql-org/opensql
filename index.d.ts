@@ -1,6 +1,5 @@
 import {CreateTable, Query} from './package/type/db/Query';
 import {Cnj, COP, Operator, RefState} from './package/enum/helper';
-import {Storage} from './package/enum/Storage';
 import {NULL, NOT_NULL, AUTO_INCREMENT} from './package/sql/PubStr';
 import {FnResult, JoinObject, JsonChecker, JSONObject, QCheckValueInObject} from './package/typing';
 
@@ -11,19 +10,19 @@ declare module 'opensql' {
 
         constructor(url: string, option?: object)
 
-        find(query?: Query): Promise<any>;
+        find(query: Query): Promise<any>;
 
-        findOne(query?: Query): Promise<any>;
+        findOne(query: Query): Promise<any>;
 
-        findMany(query?: Query, limit?: number): Promise<any>;
+        findMany(query: Query, limit?: number): Promise<any>;
 
-        update(query?: Query): Promise<any>;
+        update(query: Query): Promise<any>;
 
-        remove(query?: Query): Promise<any>;
+        remove(query: Query): Promise<any>;
 
-        addOne(query?: Query): Promise<any>;
+        addOne(query: Query): Promise<any>;
 
-        addMany(query?: Query): Promise<any>;
+        addMany(query: Query): Promise<any>;
 
         createDatabase(name: string, set?: string, collate?: string): Promise<any>;
 
@@ -44,8 +43,6 @@ declare module 'opensql' {
     const Cnj: Cnj
 
     const COP: COP
-
-    const Storage: Storage
 
     const Operator: Operator
 
@@ -175,7 +172,7 @@ declare module 'opensql' {
 
     }
 
-    export function AS(data: string, columnName?: string): string;
+    export function AS(data: string, columnName: string): string;
 
     export function IN(arr: string[] | number[], conjunction?: Cnj): FnResult;
 

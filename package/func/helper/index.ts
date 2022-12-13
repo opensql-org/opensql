@@ -92,15 +92,12 @@ function CURRENT_USER(): string {
     return keyword.CURRENT_USER;
 }
 
-function AS(data: string, columnName?: string): string {
+function AS(data: string, columnName: string): string {
 
     let haveASKeyword = / AS /g.test(data);
 
     if (haveASKeyword)
         data = `, ${data}`;
-
-    if (!columnName)
-        return data;
 
     return `${data} AS ${columnName}`;
 }

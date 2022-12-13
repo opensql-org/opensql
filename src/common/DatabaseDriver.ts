@@ -17,34 +17,34 @@ export default abstract class DatabaseDriver extends DriverController implements
     private queryBuilder = new Builder();
 
 
-    async find(query?: Query): Promise<any> {
+    async find(query: Query): Promise<any> {
         return await this.execute(this.queryBuilder.find(query), this.queryBuilder.injection());
     }
 
-    async findOne(query?: Query): Promise<any> {
+    async findOne(query: Query): Promise<any> {
         return await this.execute(this.queryBuilder.findOne(query), this.queryBuilder.injection());
     }
 
-    async findMany(query?: Query, limit?: number): Promise<any> {
+    async findMany(query: Query, limit?: number): Promise<any> {
         return await this.execute(this.queryBuilder.findMany(query, limit), this.queryBuilder.injection());
     }
 
 
-    async update(query?: Query): Promise<any> {
+    async update(query: Query): Promise<any> {
         return await this.execute(this.queryBuilder.update(query), this.queryBuilder.injection());
     }
 
 
-    async remove(query?: Query): Promise<any> {
+    async remove(query: Query): Promise<any> {
         return await this.execute(this.queryBuilder.remove(query), this.queryBuilder.injection());
     }
 
 
-    async addOne(query?: Query): Promise<any> {
+    async addOne(query: Query): Promise<any> {
         return await this.execute(this.queryBuilder.addOne(query), this.queryBuilder.injection());
     }
 
-    async addMany(query?: Query): Promise<any> {
+    async addMany(query: Query): Promise<any> {
         return await this.execute(this.queryBuilder.addMany(query));
     }
 

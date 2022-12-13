@@ -13,12 +13,6 @@ function isDefinedCommentWordInFirstOfString(str: string) {
     return false;
 }
 
-function isDefinedStorageWordInFirstOfString(str: string) {
-    if (typeof str === 'string')
-        return str.search(keyword.STORAGE) === 0;
-    return false;
-}
-
 function arrayToString(arr: Array<string>) {
     return arr.toString().replace(',', ' ').trim();
 }
@@ -149,11 +143,10 @@ export default class Util {
                 isItemIsString = typeof item === 'string',
                 isItemIsNumber = Number.isInteger(item),
                 isCommentFunction = isDefinedCommentWordInFirstOfString(item),
-                isStorageEnum = isDefinedStorageWordInFirstOfString(item),
                 isDefaultType = isDefinedDefaultWordInFirstOfString(item);
 
 
-            if (isValidType || isDefaultType || isCommentFunction || isStorageEnum) {
+            if (isValidType || isDefaultType || isCommentFunction) {
                 newArrayForOptionsContains.push(item);
                 return;
             }

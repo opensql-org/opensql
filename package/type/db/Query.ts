@@ -1,5 +1,10 @@
 import {RefState} from '../../enum/helper';
-import {FnResult, JSONObject, JSONString, UnionObject} from '../../typing';
+import {FnResult, JSONObject, JSONString} from '../../typing';
+
+type UnionObject = {
+    value: Query,
+    type: string
+}
 
 
 type Query = {
@@ -24,7 +29,7 @@ type Query = {
     /**
      * @type Where
      * Used to filter record.
-     * In where object we have list of hasLetObject with columns.
+     * In where object we have Map of columns with function helper for filter data.
      */
     where?: Where
 
@@ -93,7 +98,7 @@ type Option = {
 
     /**
      * @type any
-     * Used to manage specific column.
+     * Used to manage order from specific column. For example : DESC Or ASC
      */
     [key: string]: any
 
