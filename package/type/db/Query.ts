@@ -1,11 +1,17 @@
 import {RefState} from '../../enum/helper';
-import {FnResult, JSONObject, JSONString} from '../../typing';
+import {JSONObject, JSONString, QCheckValueInObject} from '../../typing';
 
 type UnionObject = {
     value: Query,
     type: string
 }
 
+type FnResult = {
+    value: string | number | string[] | number[] | JSONObject | QCheckValueInObject | Query,
+    type: string,
+    conjunctionType?: string,
+    comparisonOperator?: string
+}
 
 type Query = {
 
@@ -185,5 +191,6 @@ type ForeignKey = {
 export {
     CreateTable,
     Query,
+    FnResult,
     ForeignKey
 }

@@ -1,8 +1,8 @@
 import keyword from '../../sql/Keyword';
 import Buf from '../../fs/Buffer';
 import {COP, Cnj} from '../../enum/helper';
-import {FnResult, JoinObject, JsonChecker, JSONObject, QCheckValueInObject} from '../../typing';
-import {Query} from '../../type/db/Query';
+import {JsonChecker, JSONObject, QCheckValueInObject} from '../../typing';
+import {FnResult, Query} from '../../type/db/Query';
 import Util from '../../util/Util';
 
 
@@ -10,37 +10,46 @@ function COMMENT(description: string): string {
     return `${keyword.COMMENT} '${description}'`;
 }
 
-function ASCII(char: string): string {
-    return `ASCII(${char})`;
+function ASCII(char: string | number): string {
+    let haveSpace = typeof char === 'string' && /\u0020/.test(char);
+
+    return `ASCII(${haveSpace ? `'${char}'` : char})`;
 }
 
 function CHAR_LENGTH(string: string | number): string {
-    let str = `CHAR_LENGTH(${string})`;
+    let isString = typeof string === 'string';
 
-    if (typeof string === 'string')
-        str = `CHAR_LENGTH("${string}")`;
-
-    return str;
+    return `CHAR_LENGTH(${isString ? string : `"${string}"`})`;
 }
 
-function DAYNAME(string: string): string {
-    return `DAYNAME("${string}")`;
+function DAYNAME(date: string): string {
+    let hasNowWord = date === 'NOW()';
+
+    return `DAYNAME(${hasNowWord ? date : `"${date}"`})`;
 }
 
-function DAYOFMONTH(string: string): string {
-    return `DAYOFMONTH("${string}")`;
+function DAYOFMONTH(date: string): string {
+    let hasNowWord = date === 'NOW()';
+
+    return `DAYOFMONTH(${hasNowWord ? date : `"${date}"`})`;
 }
 
-function DAYOFWEEK(string: string): string {
-    return `DAYOFWEEK("${string}")`;
+function DAYOFWEEK(date: string): string {
+    let hasNowWord = date === 'NOW()';
+
+    return `DAYOFWEEK(${hasNowWord ? date : `"${date}"`})`;
 }
 
-function DAYOFYEAR(string: string): string {
-    return `DAYOFYEAR("${string}")`;
+function DAYOFYEAR(date: string): string {
+    let hasNowWord = date === 'NOW()';
+
+    return `DAYOFYEAR(${hasNowWord ? date : `"${date}"`})`;
 }
 
-function DAY(string: string): string {
-    return `DAY("${string}")`;
+function DAY(date: string): string {
+    let hasNowWord = date === 'NOW()';
+
+    return `DAY(${hasNowWord ? date : `"${date}"`})`;
 }
 
 function REVERSE(string: string): string {
@@ -93,7 +102,6 @@ function CURRENT_USER(): string {
 }
 
 function AS(data: string, columnName: string): string {
-
     let haveASKeyword = / AS /g.test(data);
 
     if (haveASKeyword)
@@ -212,7 +220,7 @@ function Condition(leftStatement: string, rightStatement: string | number, compa
     };
 }
 
-function fnInHelper(arr: string[] | number[], type: string, conjunction?: Cnj): FnResult {
+function fnInHelper(arr: (string | number)[], type: string, conjunction?: Cnj): FnResult {
     return {
         value: arr,
         type: type,
@@ -220,11 +228,11 @@ function fnInHelper(arr: string[] | number[], type: string, conjunction?: Cnj): 
     };
 }
 
-function IN(arr: string[] | number[], conjunction?: Cnj): FnResult {
+function IN(arr: (string | number)[], conjunction?: Cnj): FnResult {
     return fnInHelper(arr, 'IN', conjunction);
 }
 
-function NOT_IN(arr: string[] | number[], conjunction?: Cnj): FnResult {
+function NOT_IN(arr: (string | number)[], conjunction?: Cnj): FnResult {
     return fnInHelper(arr, 'NOT_IN', conjunction);
 }
 
@@ -267,10 +275,7 @@ function NOT_LIKE(str: string, conjunction?: Cnj): FnResult {
 function CAST(data: number | string, type: string): string {
     let isString = typeof data === 'string';
 
-    if (isString)
-        return `CAST("${data}" AS ${type})`;
-
-    return `CAST(${data} AS ${type})`;
+    return `CAST(${isString ? data : `"${data}"`} AS ${type})`;
 }
 
 function COUNT(column?: string | string[]): string {
@@ -292,19 +297,19 @@ function ATTACH(arr: JSONObject | string[], conjunction?: Cnj): FnResult {
     };
 }
 
-function fnUnionHelper(json: Query, type: string): FnResult {
+function fnUnionHelper(query: Query, type: string): FnResult {
     return {
-        value: json,
+        value: query,
         type: type
     };
 }
 
-function UNION(json: Query): FnResult {
-    return fnUnionHelper(json, 'UNION');
+function UNION(query: Query): FnResult {
+    return fnUnionHelper(query, 'UNION');
 }
 
-function UNION_ALL(json: Query): FnResult {
-    return fnUnionHelper(json, 'UNION_ALL');
+function UNION_ALL(query: Query): FnResult {
+    return fnUnionHelper(query, 'UNION_ALL');
 }
 
 function fnColumnHelper(column: string, fnType: string): string {
@@ -331,30 +336,30 @@ function CONCAT_WS(str: string, arr: string[], column: string): string {
     return `CONCAT_WS("${str}", ${arr.toString()}) AS ${column}`;
 }
 
-function INNER(statements: JoinObject): FnResult {
+function INNER(query: Query): FnResult {
     return {
-        value: statements,
+        value: query,
         type: 'INNER JOIN'
     }
 }
 
-function LEFT(statements: JoinObject): FnResult {
+function LEFT(query: Query): FnResult {
     return {
-        value: statements,
+        value: query,
         type: 'LEFT JOIN'
     }
 }
 
-function RIGHT(statements: JoinObject): FnResult {
+function RIGHT(query: Query): FnResult {
     return {
-        value: statements,
+        value: query,
         type: 'RIGHT JOIN'
     }
 }
 
-function FULL(statements: JoinObject): FnResult {
+function FULL(query: Query): FnResult {
     return {
-        value: statements,
+        value: query,
         type: 'FULL OUTER JOIN'
     }
 }
@@ -373,7 +378,6 @@ function CONTAINS(target: JSONObject | string, candidate: JSONObject | string, p
     let jsonHandler = (data: JSONObject | string) => typeof data === 'string' ? data : Util.jsonToString(data),
         str = `'${jsonHandler(target)}', '${jsonHandler(candidate)}'`;
 
-
     return path ? `JSON_CONTAINS(${str}, '${path}')` : `JSON_CONTAINS(${str})`;
 }
 
@@ -382,15 +386,11 @@ function NOW(): string {
 }
 
 function EXTRACT(data: JSONObject | number[] | string, ...path: string[]): string {
-    let pathHandler = () => !Array.isArray(path) ? `'${path}'` : path.map(element => `'${element}'`).join(', ');
+    let pathHandler = () => !Array.isArray(path) ? `'${path}'` : path.map(element => `'${element}'`).join(', '),
+        isObject = typeof data === 'object',
+        isString = typeof data === 'string';
 
-    if (typeof data === 'object')
-        return `JSON_EXTRACT('${Util.jsonToString(data)}', ${pathHandler()})`;
-
-    if (typeof data === 'string')
-        return `JSON_EXTRACT(${data}, ${pathHandler()})`;
-
-    return `JSON_EXTRACT('${data}', ${pathHandler()})`;
+    return `JSON_EXTRACT(${isObject ? `'${Util.jsonToString(data)}'` : isString ? data : `'${data}'`}, ${pathHandler()})`;
 }
 
 function UNQUOTE(extract: string): string {

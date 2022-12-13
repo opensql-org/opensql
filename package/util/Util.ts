@@ -23,8 +23,10 @@ export default {
         return data.map(element => JSON.stringify(element));
     },
 
-    jsonToString(data: JSONObject): string {
-        return JSON.stringify(data);
+    jsonToString(data: JSONObject | number[] | string): string {
+        let isObject = typeof data === 'object';
+
+        return isObject ? JSON.stringify(data) : '';
     },
 
     isArrayOf(data: any[] | any, type: string): boolean {
@@ -46,7 +48,7 @@ export default {
             .map((element: any) =>
                 typeof element === 'string' ?
                     element.indexOf('"', 0) >= 0 ? element :
-                    `"${element}"` : element).join(', ');
+                        `"${element}"` : element).join(', ');
     }
 
 }

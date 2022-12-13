@@ -16,12 +16,6 @@ type JoinObject = {
     rsm: string | number
 }
 
-type FnResult = {
-    value: string | number | string[] | number[] | JSONObject | QCheckValueInObject,
-    type: string,
-    conjunctionType?: string,
-    comparisonOperator?: string
-}
 
 type QCheckValueInObject = {
     data: string | number,
@@ -43,7 +37,6 @@ type JsonChecker = {
 
 
 export {
-    FnResult,
     JSONObject,
     JSONString,
     JoinObject,

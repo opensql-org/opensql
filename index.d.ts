@@ -1,7 +1,7 @@
-import {CreateTable, Query} from './package/type/db/Query';
+import {CreateTable, FnResult, Query} from './package/type/db/Query';
 import {Cnj, COP, Operator, RefState} from './package/enum/helper';
 import {NULL, NOT_NULL, AUTO_INCREMENT} from './package/sql/PubStr';
-import {FnResult, JoinObject, JsonChecker, JSONObject, QCheckValueInObject} from './package/typing';
+import {JoinObject, JsonChecker, JSONObject, QCheckValueInObject} from './package/typing';
 
 
 declare module 'opensql' {
@@ -174,11 +174,11 @@ declare module 'opensql' {
 
     export function AS(data: string, columnName: string): string;
 
-    export function IN(arr: string[] | number[], conjunction?: Cnj): FnResult;
+    export function IN(arr: (string | number)[], conjunction?: Cnj): FnResult;
 
     export function NOW(): string;
 
-    export function DAY(string: string): string;
+    export function DAY(date: string): string;
 
     export function MAX(column: string): string;
 
@@ -188,21 +188,21 @@ declare module 'opensql' {
 
     export function AVG(column: string): string;
 
-    export function LEFT(statements: JoinObject): FnResult;
+    export function LEFT(query: Query): FnResult;
 
     export function UUID(): string;
 
     export function BLOB(buf: Buffer): string;
 
-    export function JSON(data: number[] | string[]): string;
+    export function JSON(data: number[] | string[] | JSONObject | JSONObject[]): string;
 
     export function LIKE(str: string, conjunction?: Cnj): FnResult;
 
     export function CAST(data: number | string, type: string): string;
 
-    export function FULL(statements: JoinObject): FnResult;
+    export function FULL(query: Query): FnResult;
 
-    export function RIGHT(statements: JoinObject): FnResult;
+    export function RIGHT(query: Query): FnResult;
 
     export function COUNT(column?: string | string[]): string;
 
@@ -210,13 +210,13 @@ declare module 'opensql' {
 
     export function LOWER(string: string): string;
 
-    export function INNER(statements: JoinObject): FnResult;
+    export function INNER(query: Query): FnResult;
 
-    export function ASCII(char: string): string;
+    export function ASCII(char: string | number): string;
 
     export function POINT(x: number, y: number): string;
 
-    export function UNION(json: Query): FnResult;
+    export function UNION(query: Query): FnResult;
 
     export function qCheck(value: QCheckValueInObject | string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult;
 
@@ -224,13 +224,13 @@ declare module 'opensql' {
 
     export function ATTACH(arr: JSONObject | string[], conjunction?: Cnj): FnResult;
 
-    export function NOT_IN(arr: string[] | number[], conjunction?: Cnj): FnResult;
+    export function NOT_IN(arr: (string | number)[], conjunction?: Cnj): FnResult;
 
     export function SOURCE(name: string, typeName?: string): string;
 
     export function POLYGON(str: string): string;
 
-    export function DAYNAME(string: string): string;
+    export function DAYNAME(date: string): string;
 
     export function COMMENT(description: string): string;
 
@@ -264,17 +264,17 @@ declare module 'opensql' {
 
     export function Condition(leftStatement: string, rightStatement: string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult;
 
-    export function UNION_ALL(json: Query): FnResult;
+    export function UNION_ALL(query: Query): FnResult;
 
     export function VARBINARY(data: number): string;
 
-    export function DAYOFWEEK(string: string): string;
+    export function DAYOFWEEK(date: string): string;
 
-    export function DAYOFYEAR(string: string): string;
+    export function DAYOFYEAR(date: string): string;
 
     export function QueryPoint(field: string): string;
 
-    export function DAYOFMONTH(string: string): string;
+    export function DAYOFMONTH(date: string): string;
 
     export function LINESTRING(str: string): string;
 
