@@ -49,7 +49,7 @@ describe('Contains all helper functions', () => {
     });
 
     it('should be return string equal COUNT(*) AS size', () => {
-        expect(CONCAT_WS(' ', ['id', 'name'], 'like')).toBe('CONCAT_WS(" ", id,name) AS like');
+        expect(CONCAT_WS(' ', ['id', 'name'], 'like')).toBe('CONCAT_WS(" ", "id", "name") AS like');
     });
 
     it('should be return string equal COUNT(*) AS size', () => {
