@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+## Version 2.0.1
+
+2022-12-14
+
+* Fix some issues
+* Write docs
+
 ## Version 2.0.0-alpha-3
 
 2022-12-11
