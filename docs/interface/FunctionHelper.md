@@ -89,6 +89,104 @@ Example code:
 }
 ```
 
+### LIKE
+
+```ts
+LIKE(
+    str, // string
+    conjunction // Cnj?
+);
+```
+
+```ts
+NOT_LIKE(
+    str, // string
+    conjunction // Cnj?
+);
+```
+
+Example code:
+
+```text
+{
+    where: {
+        title: LIKE('%simple')
+    }
+}
+```
+
+### BETWEEN
+
+```ts
+BETWEEN(
+    first,      // string | number
+    second,     // string | number
+    conjunction // Cnj?
+)
+```
+
+```ts
+NOT_BETWEEN(
+    first,      // string | number
+    second,     // string | number
+    conjunction // Cnj?
+)
+```
+Example code:
+
+```text
+{
+  where: {
+    id: BETWEEN(1, 5)
+  }
+}
+```
+
+### jsonChecker
+
+```ts
+jsonChecker(
+    key,    // string
+    has     // string
+)
+```
+
+Example code:
+
+```text
+{
+  where: {
+    id: jsonChecker('c', 'name')
+  }
+}
+```
+
+### Condition
+
+The Condition function is used along with the $having object
+
+```ts
+Condition(
+    leftStatement,        // string
+    rightStatement,       // string | number
+    comparisonOperator,   // COP?
+    conjunction           // Cnj?
+);
+```
+
+Example code:
+
+```text
+{
+    option: {
+        $having: [
+            Condition('COUNT(password)', 1234)
+        ]
+    }
+}
+```
+
+
 # Others
 
 ### NOW
@@ -108,10 +206,52 @@ DAY(
 DAY('2017-06-15');
 ```
 
+### DAYOFWEEK
+
+```ts
+DAYOFWEEK(
+    date // string
+);
+```
+
+### DAYOFYEAR
+
+```ts
+DAYOFYEAR(
+    date // string
+);
+```
+
+### DAYOFMONTH
+
+```ts
+DAYOFMONTH(
+    date // string
+);
+```
+
+### DAYNAME
+
+```ts
+DAYNAME(
+    date // string
+);
+```
+
+```ts
+DAYNAME('2017-06-15');
+```
+
 ### UUID
 
 ```ts
 UUID();
+```
+
+### UUID_SHORT
+
+```ts
+UUID_SHORT();
 ```
 
 ### JOIN
@@ -209,32 +349,6 @@ Example code:
     data: JSON({
         username: 'root'
     })
-}
-```
-
-### LIKE
-
-```ts
-LIKE(
-    str, // string
-    conjunction // Cnj?
-);
-```
-
-```ts
-NOT_LIKE(
-    str, // string
-    conjunction // Cnj?
-);
-```
-
-Example code:
-
-```text
-{
-    where: {
-        title: LIKE('%simple')
-    }
 }
 ```
 
@@ -398,6 +512,14 @@ BINARY(
 );
 ```
 
+### VARBINARY
+
+```ts
+VARBINARY(
+  data // number  
+);
+```
+
 ### ATTACH
 
 ```ts
@@ -426,7 +548,7 @@ Example code:
 SOURCE(
     name,    // string
     typeName // string?
-)
+);
 ```
 
 Example code:
@@ -436,6 +558,237 @@ Example code:
     get: SOURCE('username')
 }
 ```
+### POLYGON
 
+```ts
+POLYGON(
+    str    // string
+);
+```
 
+Example code:
 
+```text
+{
+    data: {
+       p: POLYGON('0 0,10 0,10 10')
+    }
+}
+```
+### COMMENT
+
+```ts
+COMMENT(
+    description    // string
+);
+```
+
+Example code:
+
+```text
+{
+    column: {
+       id: DataType.INT([COMMENT('This is a simple test')])
+    }
+}
+```
+
+### REVERSE
+
+```ts
+REVERSE(
+    string    // string
+);
+```
+
+### DEFAULT
+
+```ts
+DEFAULT(
+    value    // string | number | boolean
+);
+```
+
+Example code:
+
+```text
+{
+    column: {
+       phoneNumber: DataType.INT([DEFAULT('NULL')])
+    }
+}
+```
+### UTC_DATE
+
+```ts
+UTC_DATE();
+```
+### UTC_TIME
+
+```ts
+UTC_TIME();
+```
+
+### XML
+
+```ts
+XML(
+    data    // string
+);
+```
+
+Example code:
+
+```text
+{
+    data: {
+       id: XML('<h1>Hello World!<h1>')
+    }
+}
+```
+
+### UNQUOTE
+
+```ts
+UNQUOTE(
+    extract    // string
+);
+```
+
+Example code:
+
+```text
+{
+   get: UNQUOTE("c->'$.name'")   
+}
+```
+
+### CONTAINS
+
+```ts
+CONTAINS(
+    target,     // string | JSONObject
+    candidate,  // string | JSONObject
+    path        // string?
+);
+```
+
+Example code:
+
+```text
+{
+   get: CONTAINS('{"d": 4}', '1', '$.a')   
+}
+```
+
+### EXTRACT
+
+```ts
+EXTRACT(
+    data,    // JSONObject | number[] | string
+    ...path  // string[]
+);
+```
+
+Example code:
+
+```text
+{
+   get: EXTRACT([1, 2, 3, 4, 5], '$[last-3 to last-1]')
+}
+```
+### CONCAT_WS
+
+```ts
+CONCAT_WS(
+    str,    // string
+    arr,    // string[]
+    column  // string
+);
+```
+
+Example code:
+
+```text
+{
+   get: CONCAT_WS(' ', ['A', 'B'], 'ConcatenatedString')
+}
+```
+
+### QueryPoint
+
+```ts
+QueryPoint(
+    field    // string
+);
+```
+
+Example code:
+
+```text
+{
+   get: QueryPoint('location')
+}
+```
+
+### LINESTRING
+
+```ts
+LINESTRING(
+    str    // string | string[]
+);
+```
+
+Example code:
+
+```text
+{
+   get: LINESTRING([Point(0,0), Point(1,1)])
+}
+```
+### CHAR_LENGTH
+
+```ts
+CHAR_LENGTH(
+    data    // string | number
+);
+```
+
+Example code:
+
+```text
+{
+   get: CHAR_LENGTH(125)
+}
+```
+
+### CURRENT_USER
+
+```ts
+CURRENT_USER();
+```
+
+### CURRENT_DATE
+
+```ts
+CURRENT_DATE();
+```
+
+### CURRENT_TIME
+
+```ts
+CURRENT_TIME();
+```
+
+### UTC_TIMESTAMP
+
+```ts
+UTC_TIMESTAMP();
+```
+### ST_GeomFromText
+
+```ts
+ST_GeomFromText(
+    string // string
+);
+```

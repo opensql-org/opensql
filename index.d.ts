@@ -236,7 +236,7 @@ declare module 'opensql' {
 
     export function REVERSE(string: string): string;
 
-    export function DEFAULT(value: any): string;
+    export function DEFAULT(value: string | number | boolean): string;
 
     export function BETWEEN(first: string | number, second: string | number, conjunction?: Cnj): FnResult;
 
@@ -260,7 +260,7 @@ declare module 'opensql' {
 
     export function LONGBLOB(buf: Buffer): string;
 
-    export function CONCAT_WS(str: string, arr: string[], column: string): string;
+    export function CONCAT_WS(str: string, arr: string[], column?: string): string;
 
     export function Condition(leftStatement: string, rightStatement: string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult;
 
@@ -276,13 +276,13 @@ declare module 'opensql' {
 
     export function DAYOFMONTH(date: string): string;
 
-    export function LINESTRING(str: string): string;
+    export function LINESTRING(str: string | string[]): string;
 
     export function UUID_SHORT(): string;
 
     export function MEDIUMBLOB(buf: Buffer): string;
 
-    export function CHAR_LENGTH(string: string | number): string;
+    export function CHAR_LENGTH(data: string | number): string;
 
     export function NOT_BETWEEN(first: string | number, second: string | number, conjunction?: Cnj): FnResult;
 

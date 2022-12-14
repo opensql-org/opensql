@@ -16,10 +16,10 @@ function ASCII(char: string | number): string {
     return `ASCII(${haveSpace ? `'${char}'` : char})`;
 }
 
-function CHAR_LENGTH(string: string | number): string {
-    let isString = typeof string === 'string';
+function CHAR_LENGTH(data: string | number): string {
+    let isString = typeof data === 'string';
 
-    return `CHAR_LENGTH(${isString ? string : `"${string}"`})`;
+    return `CHAR_LENGTH(${isString ? data : `"${data}"`})`;
 }
 
 function DAYNAME(date: string): string {
@@ -151,12 +151,14 @@ function POINT(x: number, y: number): string {
     return `POINT(${x}, ${y})`;
 }
 
-function LINESTRING(str: string): string {
+function LINESTRING(str: string | string[]): string {
     return `LINESTRING(${str})`;
 }
 
 function POLYGON(str: string): string {
-    return `POLYGON((${str}))`;
+    let haveParentheses = str.indexOf('(', 0) === 0;
+
+    return `POLYGON(${haveParentheses ? str : `(${str})`})`;
 }
 
 function JSON(data: number[] | string[] | JSONObject | JSONObject[]) {
@@ -172,7 +174,7 @@ function QueryPoint(field: string): string {
     return `X(${field}) AS Lat , Y(${field}) AS Lon`;
 }
 
-function DEFAULT(value: any): string {
+function DEFAULT(value: string | number | boolean): string {
     if (typeof value === 'string' && value?.indexOf('$') === 0)
         return `DEFAULT '${value.replace('$', '')}'`;
 
@@ -206,7 +208,7 @@ function jsonChecker(key: string, has: string): JsonChecker {
  * @param comparisonOperator
  * @type Cnj
  * @param conjunction
- * Used for $having object
+ * Using in $having object
  */
 function Condition(leftStatement: string, rightStatement: string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult {
     return {
@@ -332,8 +334,8 @@ function AVG(column: string): string {
     return fnColumnHelper(column, 'AVG');
 }
 
-function CONCAT_WS(str: string, arr: string[], column: string): string {
-    return `CONCAT_WS("${str}", ${arr.toString()}) AS ${column}`;
+function CONCAT_WS(str: string, arr: string[], column?: string): string {
+    return `CONCAT_WS("${str}", ${arr.map(element => `"${element}"`).join(', ')}) ${column ? `AS ${column}` : ''}`.trim();
 }
 
 function INNER(query: Query): FnResult {
