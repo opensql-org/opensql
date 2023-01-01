@@ -6,6 +6,7 @@ Change Log
 2023-1-1
 
 * Added addWithFind and findById
+* Updated docs
 
 ## Version 2.0.1
 
