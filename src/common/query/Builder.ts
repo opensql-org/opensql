@@ -1,4 +1,4 @@
-import {CreateTable, Query} from '../../../package/type/db/Query';
+import {CreateTable, FilterWithId, Query, TargetTable} from '../../../package/type/db/Query';
 import dataTypeHandler from '../../../package/query/helper/dataType';
 import {foreignKey} from '../../../package/query/helper/foreignKey';
 import keyword from '../../../package/sql/Keyword';
@@ -14,7 +14,7 @@ export default class Builder {
     private driverName: string = '';
 
 
-    private sqlParserHandler(config: JSONObject, query: Query): string {
+    private sqlParserHandler(config: JSONObject, query: unknown): string {
         if (!query)
             return;
 
@@ -28,7 +28,10 @@ export default class Builder {
     }
 
 
-    private static sqlParserConfigHandler(type: string, operationType: string): JSONObject {
+    private static sqlParserConfigHandler(type: string, operationType?: string): JSONObject {
+        if (!operationType)
+            type = 'one';
+
         return {operation: {[operationType]: type}, operationType: operationType};
     }
 
@@ -52,6 +55,15 @@ export default class Builder {
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('one', 'select'), query);
     }
 
+    findById(id: number, filter: FilterWithId): string {
+        return this.sqlParserHandler(Builder.sqlParserConfigHandler('one', 'select'), {
+            ...filter,
+            where: {
+                id: id
+            }
+        });
+    }
+
     findMany(query: Query, limit?: number): string {
         query.option.$limit = !limit ? 10 : limit;
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'select'), query);
@@ -70,6 +82,16 @@ export default class Builder {
 
     addOne(query: Query): string {
         return this.sqlParserHandler(Builder.sqlParserConfigHandler('one', 'insert'), query);
+    }
+
+    addWithFind(targetTableName: string | TargetTable, query: Query): string {
+        let sql = this.sqlParserHandler(Builder.sqlParserConfigHandler('insertWithSelect'), {
+            target: targetTableName
+        });
+
+        sql += this.sqlParserHandler(Builder.sqlParserConfigHandler('multi', 'select'), query);
+
+        return sql;
     }
 
     addMany(query: Query): string {

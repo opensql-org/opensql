@@ -1,10 +1,12 @@
-import {CreateTable, Query} from '../../../package/type/db/Query';
+import {CreateTable, FilterWithId, Query, TargetTable} from '../../../package/type/db/Query';
 
 export default interface Database {
 
     find(query: Query): Promise<any>;
 
     findOne(query: Query): Promise<any>;
+
+    findById(id: number, filter: FilterWithId): Promise<any>;
 
     findMany(query: Query, limit?: number): Promise<any>;
 
@@ -16,6 +18,8 @@ export default interface Database {
 
 
     addOne(query: Query): Promise<any>;
+
+    addWithFind(targetTableName: string | TargetTable, query: Query): Promise<any>;
 
     addMany(query: Query): Promise<any>;
 

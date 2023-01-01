@@ -13,6 +13,22 @@ type FnResult = {
     comparisonOperator?: string
 }
 
+type FilterWithId = {
+
+    from: string | string[],
+
+    get?: string | string[]
+
+}
+
+type TargetTable = {
+
+    get?: string | string[],
+
+    from: string | string[]
+
+}
+
 type Query = {
 
     /**
@@ -192,5 +208,7 @@ export {
     CreateTable,
     Query,
     FnResult,
+    TargetTable,
+    FilterWithId,
     ForeignKey
 }
