@@ -152,6 +152,28 @@ opensql.addOne({
 });
 ```
 
+### addWithFind
+
+The `addWithFind` method is used when you want to add a record with select operation:
+
+```ts
+opensql.addWithFind(
+    targetTableName, // string | TargetTable
+    query   // Query
+);
+```
+
+Example code:
+
+```ts
+opensql.addWithFind('book', {
+    from: 'users',
+    where: {
+        username: 'root'
+    }
+});
+```
+
 ### addMany
 
 The `addMany` method is used when you want to add several records to your table in each column:
@@ -212,6 +234,25 @@ Example code:
 
 ```ts
 opensql.findOne({
+    from: 'users'
+});
+```
+
+### findById
+
+findById uses the column `id` in the table, if the unique column name is different, Opensql cannot find the desired column.
+
+```ts
+opensql.findById(
+    id,     // number
+    query   // Query
+);
+```
+
+Example code:
+
+```ts
+opensql.findById(50, {
     from: 'users'
 });
 ```

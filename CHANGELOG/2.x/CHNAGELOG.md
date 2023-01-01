@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+## Version 2.0.2
+
+2023-1-1
+
+* Added addWithFind and findById
+* Updated docs
+
 ## Version 2.0.1
 
 2022-12-14

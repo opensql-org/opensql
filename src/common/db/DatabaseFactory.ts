@@ -1,4 +1,4 @@
-import {CreateTable, Query} from '../../../package/type/db/Query';
+import {CreateTable, FilterWithId, Query, TargetTable} from '../../../package/type/db/Query';
 import DismissConnection from './DismissConnection';
 import DriverConnection from './DriverConnection';
 import Postgresql from '../../driver/postgresql';
@@ -35,6 +35,10 @@ export default class DatabaseFactory implements DismissConnection, Database {
         return this.driver.findOne(query);
     }
 
+    async findById(id: number, filter: FilterWithId): Promise<any> {
+        return this.driver.findById(id, filter);
+    }
+
     async findMany(query: Query, limit?: number): Promise<any> {
         return this.driver.findMany(query, limit);
     }
@@ -45,13 +49,17 @@ export default class DatabaseFactory implements DismissConnection, Database {
     }
 
 
-    async remove(query: Query ): Promise<any> {
+    async remove(query: Query): Promise<any> {
         return this.driver.remove(query);
     }
 
 
     async addOne(query: Query): Promise<any> {
         return this.driver.addOne(query);
+    }
+
+    async addWithFind(targetTableName: string | TargetTable, query: Query): Promise<any> {
+        return this.driver.addWithFind(targetTableName, query);
     }
 
     async addMany(query: Query): Promise<any> {

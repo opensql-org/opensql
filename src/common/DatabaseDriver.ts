@@ -1,4 +1,4 @@
-import {CreateTable, Query} from '../../package/type/db/Query';
+import {CreateTable, FilterWithId, Query, TargetTable} from '../../package/type/db/Query';
 import DriverController from './db/DriverController';
 import DriverConnection from './db/DriverConnection';
 import {JSONObject} from '../../package/typing';
@@ -25,6 +25,10 @@ export default abstract class DatabaseDriver extends DriverController implements
         return await this.execute(this.queryBuilder.findOne(query), this.queryBuilder.injection());
     }
 
+    async findById(id: number, filter: FilterWithId): Promise<any> {
+        return await this.execute(this.queryBuilder.findById(id, filter), this.queryBuilder.injection());
+    }
+
     async findMany(query: Query, limit?: number): Promise<any> {
         return await this.execute(this.queryBuilder.findMany(query, limit), this.queryBuilder.injection());
     }
@@ -42,6 +46,10 @@ export default abstract class DatabaseDriver extends DriverController implements
 
     async addOne(query: Query): Promise<any> {
         return await this.execute(this.queryBuilder.addOne(query), this.queryBuilder.injection());
+    }
+
+    async addWithFind(targetTableName: string | TargetTable, query: Query): Promise<any> {
+        return await this.execute(this.queryBuilder.addWithFind(targetTableName, query), this.queryBuilder.injection());
     }
 
     async addMany(query: Query): Promise<any> {
