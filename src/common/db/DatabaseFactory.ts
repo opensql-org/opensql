@@ -1,29 +1,27 @@
 import {CreateTable, FilterWithId, Query, TargetTable} from '../../../package/type/db/Query';
 import DismissConnection from './DismissConnection';
-import DriverConnection from './DriverConnection';
-import Postgresql from '../../driver/postgresql';
-import Mysql from '../../driver/mysql';
 import Util from '../../util/Util';
 import Database from './Database';
 
-const Utilities = Util.getInstance(),
-    instanceClass = {
-        mysql: Mysql,
-        postgresql: Postgresql
-    };
+// @ts-ignore
+declare function require(name: string);
+
+const Utilities = Util.getInstance();
 
 
 export default class DatabaseFactory implements DismissConnection, Database {
 
-    private driver: DriverConnection;
+    private driver: any;
+
 
     protected factory(str: string) {
-        // @ts-ignore
-        this.driver = new instanceClass[Utilities.getDriverNameFromString(str)]();
+        let instanceClass = require(`../../driver/${Utilities.getDriverNameFromString(str)}`);
+
+        this.driver = new instanceClass.default;
     }
 
     constructor(url: string, option?: object) {
-        this.factory(url);
+        this.factory(url)
         this.connect(url, option);
     }
 
