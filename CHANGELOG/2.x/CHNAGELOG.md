@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+## Version 2.0.6
+
+2023-1-6
+
+* Fixed some issue in import package
+* Replaced import to require function in driver factory
+
 ## Version 2.0.2
 
 2023-1-1
