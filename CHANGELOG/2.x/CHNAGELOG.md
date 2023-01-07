@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+## Version 2.0.7
+
+2023-1-7
+
+* Fixed issue in multi query in mysql driver 
+* Updated contribute link
+
 ## Version 2.0.6
 
 2023-1-6

@@ -20,9 +20,10 @@ export default class Builder {
 
         let SqlParser = require('../../../../lib/sql-parser');
         let sp = new SqlParser({type: this.driverName, ...config}, query);
+        let injection = sp.injection();
 
-        if (sp.injection())
-            this.queryInjection = sp.injection();
+        if (injection)
+            this.queryInjection = injection;
 
         return sp.toSQL();
     }
