@@ -46,8 +46,8 @@ As you filter data in your sql queries, you can do this in Opensql.
 |--------------------|---------------------------------------------------------------------|----------|--------------------------|
 | value              | string, number, string[], number[], JSONObject, QCheckValueInObject | true     | Value of Function Helper |
 | type               | string                                                              | true     | Type of Function Helper  |
-| conjunctionType    | string                                                              | true     | AND , OR                 |
-| comparisonOperator | string                                                              | true     | = , >= , <= , ...        |
+| conjunctionType    | string                                                              | false    | AND , OR                 |
+| comparisonOperator | string                                                              | false    | = , >= , <= , ...        |
 
 `QCheckValueInObject` object
 
