@@ -4,8 +4,8 @@
 We're excited to see that you might be interested in contributing to Opensql! No need to ask permission to participate. For example, anyone can open issues and suggest changes to the source code (via pull requests). Here are some ways people can get involved:
 
 
-* Opening well-written bug reports [(via New Issue)](https://github.com/treegex/opensql/milestone/1)
-* Opening well-written feature requests [(via New Issue)](https://github.com/treegex/opensql/milestone/2)
+* Opening well-written bug reports [(via New Issue)](https://github.com/opensql-org/opensql/milestone/1)
+* Opening well-written feature requests [(via New Issue)](https://github.com/opensql-org/opensql/milestone/2)
 * Opening Pull Requests to fix bugs or make other improvements
 * Reviewing (i.e. commenting on) open Pull Requests, to help their creators improve it if needed and allow maintainers to take less time looking into them
 * Helping to clarify issues opened by others, commenting and asking for clarification
@@ -22,7 +22,7 @@ Most operating systems provide all the needed tools (including Windows, Linux an
 
 ### 1. Clone the repository
 
-Clone the repository (if you haven't already) via git clone https://github.com/treegex/opensql. If you plan on submitting a pull request, you can create a fork by clicking the fork button and clone it instead with git clone https://github.com/your-github-username/opensql, or add your fork as an upstream on the already cloned repo with git remote add upstream https://github.com/your-github-username/opensql.
+Clone the repository (if you haven't already) via git clone https://github.com/opensql-org/opensql. If you plan on submitting a pull request, you can create a fork by clicking the fork button and clone it instead with git clone https://github.com/your-github-username/opensql, or add your fork as an upstream on the already cloned repo with git remote add upstream https://github.com/your-github-username/opensql.
 
 ### 2. Install the Node.js dependencies
 
