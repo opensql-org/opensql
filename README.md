@@ -7,16 +7,16 @@
 Would you like to contribute? Read [our contribution guidelines](https://github.com/opensql-org/opensql/blob/main/CONTRIBUTING.md) to know more. There are many ways to help! 😃
 
 
-# [Documentation](https://github.com/opensql-org/opensql/tree/main/docs/index.md)
+# [Documentation](https://docs-red-rho.vercel.app/)
 
 Ready to start using Opensql?
 
-Check out the [Getting Started](https://github.com/opensql-org/opensql/tree/main/docs/start.md) page for a quick overview.
-Or Read [API Document](https://github.com/opensql-org/opensql/tree/main/docs/api.md)
+Check out the [Getting Started](https://docs-red-rho.vercel.app/docs/configuration) page for a quick overview.
+Or Read [API Docs](https://docs-red-rho.vercel.app/docs/category/advanced)
 
 # ChangeLog
 
-[Change Log](https://github.com/opensql-org/opensql/blob/main/CHNAGELOG.md)
+[Change Log](https://docs-red-rho.vercel.app/docs/category/version)
 
 # License
 
