@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 2.2.1
+
+2023-06-04
+
+* Remove .github folder from npm
+
 ## Version 2.2.0
 
 2023-06-04

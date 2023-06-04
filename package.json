@@ -1,6 +1,6 @@
 {
   "name": "opensql",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "OpenSql is a promise-based Node.js ORM tool for MySql, Postgres and Microsoft Sql Server",
   "main": "dist/index.js",
   "scripts": {

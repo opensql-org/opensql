@@ -7,4 +7,5 @@ jest.config.ts
 dist/test
 .idea
 CONTRIBUTING.md
+.github
 lib/sql-parser/test
