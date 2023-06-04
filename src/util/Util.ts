@@ -1,4 +1,4 @@
-import keyword from '../../package/sql/keyword';
+import keyword from '../../package/sql/Keyword';
 import types from '../../package/sql/Types';
 
 function isDefinedDefaultWordInFirstOfString(str: string) {
@@ -132,7 +132,7 @@ export default class Util {
 
 
         if (!isArray || typeof data === 'number')
-            return (`${type}(${data})`).trim();
+            return `${type}(${data})`.trim();
 
 
         data.forEach((item, index, arr) => {
@@ -169,15 +169,15 @@ export default class Util {
         let validateStringOfOptionContains = !stringOfOptionContains ? ' ' : stringOfOptionContains;
 
         if (isEnum || isSet)
-            return (`${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+            return `${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(newArrayOfValue)}) ${validateStringOfOptionContains}`.trim();
 
         if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet))
-            return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+            return `${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`.trim();
 
         if (isDecimal || isFloat || isReal || isDouble)
-            return (`${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`).trim();
+            return `${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`.trim();
 
-        return (type + ' ' + validateStringOfOptionContains).trim();
+        return `${type} ${validateStringOfOptionContains}`.trim();
     }
 
     jsonToString(object: object, replaceValue: string = ', '): string {

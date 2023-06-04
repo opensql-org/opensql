@@ -1,7 +1,7 @@
 /**
- * @type object
- * List of sql keywords which supported by openSql
- **/
+ * Map of sql keywords which supported by openSql
+ * @param {Object}
+ */
 
 export default {
     IN: 'IN',

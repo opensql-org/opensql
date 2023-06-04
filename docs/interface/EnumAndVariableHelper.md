@@ -68,5 +68,5 @@ const NULL = 'NULL';
 
 const NOT_NULL = 'NOT_NULL';
 
-const AUTO_INCREMENT: 'AUTO_INCREMENT';
+const AUTO_INCREMENT = 'AUTO_INCREMENT';
 ```

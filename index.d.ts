@@ -10,36 +10,121 @@ declare module 'opensql' {
 
         constructor(url: string, option?: object)
 
+        /**
+         * Find all or specifce rows
+         * @param {Query} query
+         * @return {Promise<any>}
+         */
         find(query: Query): Promise<any>;
 
+        /**
+         * Find one row
+         * @param {Query} query
+         * @return {Promise<any>}
+         */
         findOne(query: Query): Promise<any>;
 
+        /**
+         * Find one by id
+         * @param {Number} id
+         * @param {FilterWithId} filter
+         * @return {Promise<any>}
+         */
         findById(id: number, filter: FilterWithId): Promise<any>;
 
+        /**
+         * FindMany method It is the same as the find method, with the difference that you don't need to write limit, you can only enter your desired limitation in the second parameter.
+         * @param {Query} query
+         * @param {Number} limit
+         * @return {Promise<any>}
+         */
         findMany(query: Query, limit?: number): Promise<any>;
 
+        /**
+         * Update all or specifce rows
+         * @param {Query} query
+         * @return {Promise<any>}
+         */
         update(query: Query): Promise<any>;
 
+        /**
+         * Remove all or specifce rows
+         * @param {Query} query
+         * @return {Promise<any>}
+         */
         remove(query: Query): Promise<any>;
 
+        /**
+         * AddOne row
+         * @param {Query} query
+         * @return {Promise<any>}
+         */
         addOne(query: Query): Promise<any>;
 
+        /**
+         * Add row with find row
+         * @param {String|TargetTable} targetTableName
+         * @param {Query} query
+         * @return {Promise<any>}
+         */
         addWithFind(targetTableName: string | TargetTable, query: Query): Promise<any>;
 
+        /**
+         * Add many rows
+         * @param {Query} query
+         * @return {Promise<any>}
+         */
         addMany(query: Query): Promise<any>;
 
+        /**
+         * Create database
+         * @param {String} name
+         * @param {String} set
+         * @param {String} collate
+         * @return {Promise<any>}
+         */
         createDatabase(name: string, set?: string, collate?: string): Promise<any>;
 
+        /**
+         * Drop database
+         * @param {String} name
+         * @return {Promise<any>}
+         */
         dropDatabase(name: string): Promise<any>;
 
+        /**
+         * Create table
+         * @param {CreateTable} ct
+         * @return {Promise<any>}
+         */
         createTable(ct: CreateTable): Promise<any>;
 
+        /**
+         * Drop table
+         * @param {String|String[]} tableName
+         * @return {Promise<any>}
+         */
         dropTable(tableName: string | string[]): Promise<any>;
 
+        /**
+         * Truncate table
+         * @param {String} tableName
+         * @return {Promise<any>}
+         */
         truncateTable(tableName: string): Promise<any>;
 
+        /**
+         * Custom query
+         * @param {String} sql
+         * @param {any} injection
+         * @return {Promise<any>}
+         */
         query(sql: string, injection?: any): Promise<any>;
 
+        /**
+         * Disconnect
+         * @return {void}
+         */
         disconnect(): void;
 
     }

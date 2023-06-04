@@ -46,4 +46,7 @@ We squash all commits into a single one when we merge your PR. That means you do
 
 We will then use the title of your PR as the message of the Squash Commit. It will then be used to automatically generate a changelog and calculate the next [semver](https://semver.org/) version number.
 
-Happy hacking and thank you for contributing.
+#### Important note:
+Please send all your pull requests to the dev branch, otherwise the commit will not be merged with the original source code.
+
+Happy hacking, and thank you for contributing.
