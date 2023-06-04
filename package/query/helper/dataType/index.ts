@@ -1,5 +1,6 @@
 import {characterVarying} from './characterVarying';
 import {networkAddress} from './networkAddress';
+import {JSONFunction} from '../../../typing';
 import {varbinaryMax} from './varbinaryMax';
 import {smallSerial} from './smallSerial';
 import {varcharMax} from './varcharMax';
@@ -16,8 +17,7 @@ import {bytea} from './bytea';
 import {json} from './json';
 import {uuid} from './uuid';
 import {xml} from './xml';
-import {Enum} from './enum';
-import {JSONFunction} from '../../../typing';
+import {Enum} from './Enum';
 
 
 export default function (dbName: string, str: string, columnName?: string): string {
