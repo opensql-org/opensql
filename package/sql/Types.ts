@@ -1,6 +1,6 @@
 /**
- * @type object
  * Sql data types for create table
+ * @param {Object}
  */
 
 

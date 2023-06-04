@@ -28,9 +28,11 @@ import {OpenSql} from 'opensql';
 
 let opensql = new OpenSql('mysql://localhost:3306/a?user=root&password=123');
 
-opensql.findOne({from: 'users'}).then((data: any) => {
-    console.log(data)
-});
+opensql
+    .findOne({from: 'users'})
+    .then((data: any) => {
+        console.log(data)
+    });
 ```
 
 ### Promises and async/await

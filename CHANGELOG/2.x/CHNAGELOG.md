@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+## Version 2.1.0
+
+2023-06-04
+
+* Refactor code
+* Update project documentation
+* Fix bugs
+
 ## Version 2.0.8
 
 2023-1-17

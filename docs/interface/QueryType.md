@@ -55,5 +55,3 @@ As you filter data in your sql queries, you can do this in Opensql.
 |---------|----------------|----------|-------------------------------------------------------------------------------------------------------------------------------|
 | value   | string, number | true     | ...                                                                                                                           |
 | haveNot | boolean        | false    | Used When you need query something like this : ` SELECT * FROM Customers WHERE NOT Country='Germany' AND NOT Country='USA'; ` |
-
-

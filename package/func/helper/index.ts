@@ -200,15 +200,12 @@ function jsonChecker(key: string, has: string): JsonChecker {
 }
 
 /**
- * @type string
- * @param leftStatement
- * @type string
- * @param rightStatement
- * @type COP
- * @param comparisonOperator
- * @type Cnj
- * @param conjunction
  * Using in $having object
+ * @param {String} leftStatement
+ * @param {String} rightStatement
+ * @param {COP} comparisonOperator
+ * @param {Cnj} conjunction
+ * @return {FnResult}
  */
 function Condition(leftStatement: string, rightStatement: string | number, comparisonOperator?: COP, conjunction?: Cnj): FnResult {
     return {
@@ -371,10 +368,10 @@ function FULL(query: Query): FnResult {
  * if for each key in the candidate there is a key with the same name
  * in the target and the value associated with
  * the candidate key is contained in the value associated with the target key.
- * @param target
- * @param candidate
- * @param path
- * @constructor
+ * @param {JSONObject|String} target
+ * @param {JSONObject|String} candidate
+ * @param {String} path
+ * @return {String}
  */
 function CONTAINS(target: JSONObject | string, candidate: JSONObject | string, path?: string): string {
     let jsonHandler = (data: JSONObject | string) => typeof data === 'string' ? data : Util.jsonToString(data),

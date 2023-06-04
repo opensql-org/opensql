@@ -32,55 +32,56 @@ type TargetTable = {
 type Query = {
 
     /**
-     * @type string | string[]
      * It is used to manage the display of columns.
      * The @string type is used when you want to manipulate a single column or
      * select all columns using the asterisk word.
      * The @string-array type is used when you want to select and manipulate a multi columns.
+     * @param {String|String[]}
      */
     get?: string | string[]
 
     /**
-     * @type string | string[]
      * The name of the table or tables you want to work on.
      * The @string type is used when you want to select single table.
      * The @string-array type is used when you want to select multi tables.
+     * @param {String|String[]}
      */
     from: string | string[]
 
     /**
-     * @type Where
      * Used to filter record.
      * In where object we have Map of columns with function helper for filter data.
+     * @param {Where}
      */
     where?: Where
 
     /**
-     * @type Where
      * Opposite of Where object
+     * @param {Where}
      */
     whereNot?: Where
 
     /**
-     * @type object
      * Used to insert or update data.
+     * @param {any[] | JSONObject}
      */
     data?: any[] | JSONObject
 
     /**
-     * @type object[]
      * Used to combine the result-set of two or more SELECT statements.
+     * @param {UnionObject[]}
      */
     union?: UnionObject[]
 
     /**
-     * @type Option
      * Manage option query like: limit, order, group or sort data with asc and desc.
+     * @param {Option}
      */
     option?: Option
 
     /**
      * A JOIN clause is used to combine rows from two or more tables, based on a related column between them.
+     * @param {FnResult|FnResult[]}
      */
     join?: FnResult | FnResult[]
 
@@ -89,38 +90,38 @@ type Query = {
 type Option = {
 
     /**
-     * @type string | string[]
      * Groups rows that have the same values into summary rows.
+     * @param {String|String[]}
      */
     $group?: string | string[]
 
     /**
-     * @type FnResult | FnResult[]
      * The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+     * @param {FnResult|FnResult[]}
      */
     $having?: FnResult | FnResult[]
 
     /**
-     * @type string | string[]
      * Used to sort the result-set in ascending or descending order.
+     * @param {String|String[]}
      */
     $order?: string | string[]
 
     /**
-     * @type number | number[]
      * Limited number of records.
+     * @param {Number|Number[]}
      */
     $limit?: number | number[]
 
     /**
-     *  @type number
-     *  Used with the ORDER BY clause with a value greater than or equal to zero.
+     * Used with the ORDER BY clause with a value greater than or equal to zero.
+     * @param {Number}
      */
     $offset?: number
 
     /**
-     * @type any
      * Used to manage order from specific column. For example : DESC Or ASC
+     * @param {any}
      */
     [key: string]: any
 
@@ -129,8 +130,8 @@ type Option = {
 type Where = {
 
     /**
-     * @type any
      * Used to filter records.
+     * @param {any}
      */
     [key: string]: any
 
@@ -139,20 +140,20 @@ type Where = {
 type CreateTable = {
 
     /**
-     * @type string
      * Table name.
+     * @param {String}
      */
     table: string
 
     /**
-     * @type object
      * Used to generate column for table.
+     * @param {JSONObject}
      */
     column: JSONString
 
     /**
-     * @type string[]
      * Used to search fast in column.
+     * @param{String[]}
      */
     index?: string[]
 
@@ -173,31 +174,31 @@ type ForeignKeyObject = {
 type ForeignKey = {
 
     /**
-     * @type string
      * Column name that you want to reference in other tables.
+     * @param {String|String[]}
      */
     get: string | string[]
 
     /**
-     * @type string
      * Target table name.
+     * @param {String}
      */
     to: string
 
     /**
-     * @type string
      * Column of target table.
+     * @param {String|String[]}
      */
     column: string | string[]
 
     /**
-     * @type RefState
+     * @param {RefState}
      * @default RESTRICT
      */
     onDelete?: RefState
 
     /**
-     * @type RefState
+     * @param {RefState}
      * @default RESTRICT
      */
     onUpdate?: RefState
