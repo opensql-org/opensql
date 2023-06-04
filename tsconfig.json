@@ -5,7 +5,6 @@
     "esModuleInterop": true,
     "types": [
       "node",
-      "reflect-metadata",
       "jest"
     ],
     "moduleResolution": "node",
