@@ -2,8 +2,8 @@ name: Production-Stage
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+    types: [ closed ]
 
 jobs:
   publish:
