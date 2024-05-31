@@ -1,28 +1,31 @@
-import {Client} from 'pg';
 import DatabaseDriver from '../../common/DatabaseDriver';
+import { JSONObject } from '../../../package/typing';
+import { Client } from 'pg';
 
 export default class Postgresql extends DatabaseDriver {
+  protected connection: Client;
 
-    protected connection: any;
+  async connect(url: string, option?: object): Promise<any> {
+    const config: JSONObject = this.connector(url, option);
+    return (this.connection = new Client(config));
+  }
 
-    async connect(url: string, option?: object): Promise<any> {
-        let config = this.connector(url, option);
-        return this.connection = new Client(config);
+  async execute(sql: string, queryOption?: any): Promise<any> {
+    const objBuilder: { text: string } = {
+      text: sql,
+    };
+
+    if (!queryOption) {
+      return this.connection.query(objBuilder);
     }
 
-    async execute(sql: string, queryOption?: any): Promise<any> {
-        let objBuilder = {
-            text: sql
-        };
+    return this.connection.query({
+      values: queryOption,
+      ...objBuilder,
+    });
+  }
 
-        if (!queryOption)
-            return await this.connection.query(objBuilder);
-
-        return await this.connection.query({values: queryOption, ...objBuilder});
-    }
-
-    async disconnect() {
-        await this.connection.end();
-    }
-
+  async disconnect(): Promise<void> {
+    await this.connection.end();
+  }
 }

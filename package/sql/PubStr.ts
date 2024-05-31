@@ -1,9 +1,5 @@
-let NOT_NULL = 'NOT NULL',
-    NULL = 'NULL',
-    AUTO_INCREMENT = 'AUTO_INCREMENT';
+const NULL = 'NULL';
+const NOT_NULL = 'NOT NULL';
+const AUTO_INCREMENT = 'AUTO_INCREMENT';
 
-export {
-    NULL,
-    NOT_NULL,
-    AUTO_INCREMENT
-}
+export { NULL, NOT_NULL, AUTO_INCREMENT };

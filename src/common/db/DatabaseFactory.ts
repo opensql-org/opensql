@@ -1,4 +1,9 @@
-import {CreateTable, FilterWithId, Query, TargetTable} from '../../../package/type/db/Query';
+import {
+  CreateTable,
+  FilterWithId,
+  Query,
+  TargetTable,
+} from '../../../package/type/db/Query';
 import DismissConnection from './DismissConnection';
 import Util from '../../util/Util';
 import Database from './Database';
@@ -6,97 +11,96 @@ import Database from './Database';
 // @ts-ignore
 declare function require(name: string);
 
-const Utilities = Util.getInstance();
-
+const Utilities: Util = Util.getInstance();
 
 export default class DatabaseFactory implements DismissConnection, Database {
+  private driver: any;
 
-    private driver: any;
+  protected factory(str: string): void {
+    let instanceClass = require(
+      `../../driver/${Utilities.getDriverNameFromString(str)}`,
+    );
 
+    this.driver = new instanceClass.default();
+  }
 
-    protected factory(str: string) {
-        let instanceClass = require(`../../driver/${Utilities.getDriverNameFromString(str)}`);
+  constructor(url: string, option?: object) {
+    this.factory(url);
+    this.connect(url, option);
+  }
 
-        this.driver = new instanceClass.default;
-    }
+  async find(query: Query): Promise<any> {
+    return this.driver.find(query);
+  }
 
-    constructor(url: string, option?: object) {
-        this.factory(url)
-        this.connect(url, option);
-    }
+  async findOne(query: Query): Promise<any> {
+    return this.driver.findOne(query);
+  }
 
-    async find(query: Query): Promise<any> {
-        return this.driver.find(query);
-    }
+  async findById(id: number, filter: FilterWithId): Promise<any> {
+    return this.driver.findById(id, filter);
+  }
 
-    async findOne(query: Query): Promise<any> {
-        return this.driver.findOne(query);
-    }
+  async findMany(query: Query, limit?: number): Promise<any> {
+    return this.driver.findMany(query, limit);
+  }
 
-    async findById(id: number, filter: FilterWithId): Promise<any> {
-        return this.driver.findById(id, filter);
-    }
+  async update(query: Query): Promise<any> {
+    return this.driver.update(query);
+  }
 
-    async findMany(query: Query, limit?: number): Promise<any> {
-        return this.driver.findMany(query, limit);
-    }
+  async remove(query: Query): Promise<any> {
+    return this.driver.remove(query);
+  }
 
+  async addOne(query: Query): Promise<any> {
+    return this.driver.addOne(query);
+  }
 
-    async update(query: Query): Promise<any> {
-        return this.driver.update(query);
-    }
+  async addWithFind(
+    targetTableName: string | TargetTable,
+    query: Query,
+  ): Promise<any> {
+    return this.driver.addWithFind(targetTableName, query);
+  }
 
+  async addMany(query: Query): Promise<any> {
+    return this.driver.addMany(query);
+  }
 
-    async remove(query: Query): Promise<any> {
-        return this.driver.remove(query);
-    }
+  async createDatabase(
+    name: string,
+    set?: string,
+    collate?: string,
+  ): Promise<any> {
+    return this.driver.createDatabase(name, set, collate);
+  }
 
+  async dropDatabase(name: string): Promise<any> {
+    return this.driver.dropDatabase(name);
+  }
 
-    async addOne(query: Query): Promise<any> {
-        return this.driver.addOne(query);
-    }
+  async createTable(ct: CreateTable): Promise<any> {
+    return this.driver.createTable(ct);
+  }
 
-    async addWithFind(targetTableName: string | TargetTable, query: Query): Promise<any> {
-        return this.driver.addWithFind(targetTableName, query);
-    }
+  async dropTable(tableName: string | string[]): Promise<any> {
+    return this.driver.dropTable(tableName);
+  }
 
-    async addMany(query: Query): Promise<any> {
-        return this.driver.addMany(query);
-    }
+  async truncateTable(tableName: string): Promise<any> {
+    return this.driver.truncateTable(tableName);
+  }
 
+  async query(sql: string, injection?: any): Promise<any> {
+    return this.driver.query(sql, injection);
+  }
 
-    async createDatabase(name: string, set?: string, collate?: string): Promise<any> {
-        return this.driver.createDatabase(name, set, collate);
-    }
+  protected async connect(url: string, option?: object) {
+    this.driver.connect(url, option);
+  }
 
-    async dropDatabase(name: string): Promise<any> {
-        return this.driver.dropDatabase(name);
-    }
-
-
-    async createTable(ct: CreateTable): Promise<any> {
-        return this.driver.createTable(ct);
-    }
-
-    async dropTable(tableName: string | string[]): Promise<any> {
-        return this.driver.dropTable(tableName);
-    }
-
-    async truncateTable(tableName: string): Promise<any> {
-        return this.driver.truncateTable(tableName);
-    }
-
-    async query(sql: string, injection?: any): Promise<any> {
-        return this.driver.query(sql, injection);
-    }
-
-
-    protected async connect(url: string, option?: object) {
-        this.driver.connect(url, option);
-    }
-
-    async disconnect() {
-        this.driver.disconnect();
-    }
-
+  async disconnect() {
+    this.driver.disconnect();
+  }
 }

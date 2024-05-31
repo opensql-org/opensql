@@ -1,4 +1,4 @@
-# Opensql Methods
+# OpenSql Methods
 
 After connecting to the database, you have access to the methods, each method performs its own tasks and returns
 different outputs using promises.
@@ -29,9 +29,9 @@ different outputs using promises.
 
 ```ts
 opensql.createDatabase(
-    name,   // string
-    set,    // string?
-    collate // string?
+  name,   // string
+  set,    // string?
+  collate // string?
 );
 ```
 
@@ -47,7 +47,7 @@ opensql.createDatabase(
 
 ```ts
 opensql.createTable(
-    ct   // CreateTable
+  ct   // CreateTable
 );
 ```
 
@@ -85,7 +85,7 @@ about later
 
 ```ts
 opensql.dropDatabase(
-    name   // string
+  name   // string
 );
 ```
 
@@ -93,7 +93,7 @@ opensql.dropDatabase(
 
 ```ts
 opensql.dropTable(
-    tableName   // string | string[]
+  tableName   // string | string[]
 );
 ```
 
@@ -101,7 +101,7 @@ If you want to delete only the contents of the table, use the truncateTable meth
 
 ```ts
 opensql.truncateTable(
-    tableName   // string
+  tableName   // string
 );
 ```
 
@@ -109,13 +109,13 @@ Example code:
 
 ```ts
 opensql.createTable({
-    table: 'users',
-    column: {
-        id: DataType.INT([NOT_NULL, AUTO_INCREMENT]),
-        email: DataType.VARCHAR([NOT_NULL, 255]),
-        phone: DataType.VARCHAR(20)
-    },
-    primaryKey: 'id'
+  table: 'users',
+  column: {
+    id: DataType.INT([NOT_NULL, AUTO_INCREMENT]),
+    email: DataType.VARCHAR([NOT_NULL, 255]),
+    phone: DataType.VARCHAR(20)
+  },
+  primaryKey: 'id'
 });
 ```
 
@@ -137,7 +137,7 @@ The `addOne` method is used when you want to add a record to your table in each 
 
 ```ts
 opensql.addOne(
-    query   // Query
+  query   // Query
 );
 ```
 
@@ -145,10 +145,10 @@ Example code:
 
 ```ts
 opensql.addOne({
-    from: 'users',
-    data: {
-        username: 'root'
-    }
+  from: 'users',
+  data: {
+    username: 'root'
+  }
 });
 ```
 
@@ -158,8 +158,8 @@ The `addWithFind` method is used when you want to add a record with select opera
 
 ```ts
 opensql.addWithFind(
-    targetTableName, // string | TargetTable
-    query   // Query
+  targetTableName, // string | TargetTable
+  query   // Query
 );
 ```
 
@@ -167,10 +167,10 @@ Example code:
 
 ```ts
 opensql.addWithFind('book', {
-    from: 'users',
-    where: {
-        username: 'root'
-    }
+  from: 'users',
+  where: {
+    username: 'root'
+  }
 });
 ```
 
@@ -180,7 +180,7 @@ The `addMany` method is used when you want to add several records to your table 
 
 ```ts
 opensql.addMany(
-    query   // Query
+  query   // Query
 );
 ```
 
@@ -188,12 +188,12 @@ Example code:
 
 ```ts
 opensql.addMany({
-    from: 'users',
-    get: ['username', 'password'],
-    data: [
-        'root', '123',
-        'treegex', 'Password123'
-    ]
+  from: 'users',
+  get: ['username', 'password'],
+  data: [
+    'root', '123',
+    'treegex', 'Password123'
+  ]
 });
 ```
 
@@ -208,7 +208,7 @@ affect the output size.
 
 ```ts
 opensql.find(
-    query   // Query
+  query   // Query
 );
 ```
 
@@ -216,7 +216,7 @@ Example code:
 
 ```ts
 opensql.find({
-    from: 'users'
+  from: 'users'
 });
 ```
 
@@ -226,7 +226,7 @@ The only difference between the `findOne` and `findMany` methods is in limiting 
 
 ```ts
 opensql.findOne(
-    query   // Query
+  query   // Query
 );
 ```
 
@@ -234,18 +234,19 @@ Example code:
 
 ```ts
 opensql.findOne({
-    from: 'users'
+  from: 'users'
 });
 ```
 
 ### findById
 
-findById uses the column `id` in the table, if the unique column name is different, Opensql cannot find the desired column.
+findById uses the column `id` in the table, if the unique column name is different, Opensql cannot find the desired
+column.
 
 ```ts
 opensql.findById(
-    id,     // number
-    query   // Query
+  id,     // number
+  query   // Query
 );
 ```
 
@@ -253,7 +254,7 @@ Example code:
 
 ```ts
 opensql.findById(50, {
-    from: 'users'
+  from: 'users'
 });
 ```
 
@@ -264,8 +265,8 @@ default, the output data is 10 numbers.
 
 ```ts
 opensql.findMany(
-    query,   // Query
-    limit   // number?
+  query,   // Query
+  limit   // number?
 );
 ```
 
@@ -273,7 +274,7 @@ Example code:
 
 ```ts
 opensql.findMany({
-    from: 'users'
+  from: 'users'
 });
 ```
 
@@ -283,7 +284,7 @@ Example code:
 
 ```ts
 opensql.findMany({
-    from: 'users'
+  from: 'users'
 }, 5);
 ```
 
@@ -291,7 +292,7 @@ opensql.findMany({
 
 ```ts
 opensql.update(
-    query   // Query
+  query   // Query
 );
 ```
 
@@ -299,13 +300,13 @@ Example code:
 
 ```ts
 opensql.update({
-    from: 'users',
-    data: {
-        bio: 'Simple test'
-    },
-    where: {
-        username: 'root'
-    }
+  from: 'users',
+  data: {
+    bio: 'Simple test'
+  },
+  where: {
+    username: 'root'
+  }
 });
 ```
 
@@ -315,7 +316,7 @@ opensql.update({
 
 ```ts
 opensql.remove(
-    query   // Query
+  query   // Query
 );
 ```
 
@@ -323,10 +324,10 @@ Example code:
 
 ```ts
 opensql.remove({
-    from: 'users',
-    where: {
-        username: 'root'
-    }
+  from: 'users',
+  where: {
+    username: 'root'
+  }
 });
 ```
 
@@ -337,8 +338,8 @@ noted that in the second parameter, you can use it to prevent injection in SQL.
 
 ```ts
 opensql.query(
-    sql,     // string
-    injection // any?
+  sql,     // string
+  injection // any?
 );
 ```
 

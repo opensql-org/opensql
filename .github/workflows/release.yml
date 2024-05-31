@@ -10,19 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 18
+      - name: Install dependencies
+        run: npm install
 
-    - name: Install dependencies
-      run: npm install
+      - name: Run tests
+        run: npm test
 
-    - name: Run tests
-      run: npm test
+      - name: Build project
+        run: npm run build
 
-    - name: Build project
-      run: npm run build
+      - uses: JS-DevTools/npm-publish@v3
+        with:
+          token: ${{ secrets.NPM }}

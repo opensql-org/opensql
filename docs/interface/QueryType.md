@@ -1,7 +1,7 @@
 # Query Type
 
 In this section, we deal with `Query` object in CRUD parameters,
-As you filter data in your sql queries, you can do this in Opensql.
+As you filter data in your sql queries, you can do this in OpenSql.
 
 `Query` object
 

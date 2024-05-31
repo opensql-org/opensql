@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+## Version 2.2.2
+
+2024-05-31
+
+* Added default port for database
+* Refactored code
+* Added prettier package
+
 ## Version 2.2.1
 
 2023-06-04

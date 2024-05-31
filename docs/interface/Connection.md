@@ -3,7 +3,7 @@
 The connection in Opensql is written in the simplest way,
 
 ```ts
-import {OpenSql} from 'opensql';
+import { OpenSql } from 'opensql';
 
 let opensql = new OpenSql('driver://domain:port/databaseName?user=username&password=password');
 ```
