@@ -1,4 +1,4 @@
-name: CI/CD
+name: Development-Stage
 
 on:
   pull_request:
@@ -20,10 +20,3 @@ jobs:
 
       - name: Run tests
         run: npm test
-
-      - name: Build project
-        run: npm run build
-
-      - uses: JS-DevTools/npm-publish@v3
-        with:
-          token: ${{ secrets.NPM }}
