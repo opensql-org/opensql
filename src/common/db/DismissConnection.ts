@@ -1,5 +1,3 @@
 export default interface DismissConnection {
-
-    disconnect(): void;
-
+  disconnect(): void;
 }

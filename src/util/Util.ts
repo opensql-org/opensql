@@ -1,190 +1,169 @@
+import { ConnectionInfo, Database } from '../../package/type/db/Query';
 import keyword from '../../package/sql/Keyword';
 import types from '../../package/sql/Types';
+import { getPort } from './defaults';
 
-function isDefinedDefaultWordInFirstOfString(str: string) {
-    if (typeof str === 'string')
-        return str.search(keyword.DEFAULT) === 0;
-    return false;
+function isDefinedDefaultWordInFirstOfString(str: string): boolean {
+  if (typeof str === 'string') {
+    return str.search(keyword.DEFAULT) === 0;
+  }
+
+  return false;
 }
 
-function isDefinedCommentWordInFirstOfString(str: string) {
-    if (typeof str === 'string')
-        return str.search(keyword.COMMENT) === 0;
-    return false;
+function isDefinedCommentWordInFirstOfString(str: string): boolean {
+  if (typeof str === 'string') {
+    return str.search(keyword.COMMENT) === 0;
+  }
+
+  return false;
 }
 
-function arrayToString(arr: Array<string>) {
-    return arr.toString().replace(',', ' ').trim();
+function arrayToString(arr: Array<string>): string {
+  return arr.toString().replace(',', ' ').trim();
 }
 
-function getStringOfValueForEnumOrSetDataTypesWithComma(arr: Array<string>) {
-    let stringTypesWithComma = '';
-    arr.forEach((item, index, arr) => {
-
-        let lastIndex = arr.lastIndexOf(item);
-
-        if (lastIndex)
-            stringTypesWithComma += `, '${item}'`;
-
-
-        if (!lastIndex)
-            stringTypesWithComma += `'${item}'`;
-
-
-    });
-    return stringTypesWithComma;
+function addCommaAndQuotation(arr: Array<string>): string {
+  return arr.map((s: string) => `'${s}'`).join(', ');
 }
-
 
 export default class Util {
+  private constructor() {}
 
-    private constructor() {
+  private static instance: Util;
+
+  public static getInstance(): Util {
+    if (!Util.instance) {
+      Util.instance = new Util();
     }
 
-    private static instance: Util;
+    return Util.instance;
+  }
 
-    public static getInstance(): Util {
+  getDriverNameFromString(str: string): string {
+    return str.split(':')[0];
+  }
 
-        if (!Util.instance)
-            Util.instance = new Util();
+  /**
+   * @param {String} url
+   * @param {Object} option
+   */
+  urlHandler(url: string, option: object = {}): ConnectionInfo {
+    const arr: string[] = url.split('/').filter(s => s);
+    const network: string[] = arr[1]?.split(':');
+    const databaseType: Database = arr[0] as Database;
+    const credential: string[] = arr[2]?.split('?');
+    const databaseName = credential[0];
+    const auth: { user?: string; password?: string } = {};
 
-        return Util.instance;
+    for (const str of credential[1]?.split('&') ?? []) {
+      const _auth: string[] = str.split('=');
+      const key = _auth[0] as keyof typeof auth;
+
+      if (key in auth) {
+        auth[key] = _auth[1];
+      }
     }
 
+    let finalObject: ConnectionInfo = {
+      port: network[1] ?? getPort(databaseType).toString(),
+      password: auth?.password,
+      dbName: databaseName,
+      user: auth?.user,
+      host: network[0],
+    };
 
-    getDriverNameFromString(str: string): string {
-        return str.split(':')[0];
+    if (option) {
+      finalObject = { ...finalObject, ...option };
     }
 
-    /**
-     * @param url
-     * @param option
-     */
-    urlHandler(url: string, option?: object): object {
-        let finalObject = {};
+    return finalObject;
+  }
 
-        if (option)
-            finalObject = {...finalObject, ...option};
-
-        let password = '',
-            username = '',
-            database = '',
-            userWithPass = [],
-            hostWithPort: any = url.split('/')[2],
-            dbNameWithUserAndPass: any = url.split('/')[3],
-            isSetPort = hostWithPort.search(':') !== -1;
-
-        if (isSetPort) {
-            hostWithPort = hostWithPort.split(':');
-            finalObject = {
-                host: hostWithPort[0],
-                port: hostWithPort[1]
-            };
-        }
-
-
-        dbNameWithUserAndPass = dbNameWithUserAndPass.split('?');
-        userWithPass = dbNameWithUserAndPass[1].split('=');
-        username = userWithPass[1].split('&')[0];
-        database = dbNameWithUserAndPass[0]
-        password = userWithPass[2];
-
-        dbNameWithUserAndPass = {
-            user: username,
-            password: password
-        }
-
-        finalObject = {
-            ...finalObject,
-            ...dbNameWithUserAndPass
-        }
-
-        if (database)
-            finalObject = {...finalObject, database: database};
-
-        return finalObject;
+  dataTypeHandler(type: string, data?: number | any[]): string {
+    if (!data) {
+      return type;
     }
 
-    dataTypeHandler(type: string, data?: number | any[]): string {
-        if (!data)
-            return type;
+    const newArrayOfValue: string[] = [];
+    let isValueOfIndexIsNumber: boolean = false;
+    const newArrayForOptionsContains: string[] = [];
+    let isDefinedValueInIndexTwoOfArray: boolean = false;
 
-        let isArray = Array.isArray(data),
-            isValueOfIndexIsNumber = false,
-            newArrayForOptionsContains: string[] = [],
-            newArrayOfValue: string[] = [],
-            isDefinedValueInIndexTwoOfArray = false;
+    const arrayOfValidType = [
+      keyword.NULL,
+      keyword.NOT_NULL,
+      keyword.AUTO_INCREMENT,
+    ];
 
-
-        let isDecimal = type === types.decimal,
-            isDouble = type === types.double,
-            isFloat = type === types.float,
-            isReal = type === types.real,
-            isEnum = type === types.enum,
-            isSet = type === types.set;
-
-
-        let arrayOfValidType = [
-            keyword.NULL,
-            keyword.NOT_NULL,
-            keyword.AUTO_INCREMENT
-        ];
-
-
-        if (!isArray || typeof data === 'number')
-            return `${type}(${data})`.trim();
-
-
-        data.forEach((item, index, arr) => {
-
-            let isValidType = arrayOfValidType.includes(item),
-                nextItem = arr[index + 1],
-                isNextItemIsNumber = Number.isInteger(nextItem),
-                isItemIsString = typeof item === 'string',
-                isItemIsNumber = Number.isInteger(item),
-                isCommentFunction = isDefinedCommentWordInFirstOfString(item),
-                isDefaultType = isDefinedDefaultWordInFirstOfString(item);
-
-
-            if (isValidType || isDefaultType || isCommentFunction) {
-                newArrayForOptionsContains.push(item);
-                return;
-            }
-
-            if ((!isNextItemIsNumber && isItemIsNumber) || isItemIsString) {
-                isValueOfIndexIsNumber = true;
-                newArrayOfValue.push(item);
-            }
-
-            if (isNextItemIsNumber && isItemIsNumber) {
-                isDefinedValueInIndexTwoOfArray = true;
-                newArrayOfValue.push(item);
-            }
-
-
-        });
-
-
-        let stringOfOptionContains = arrayToString(newArrayForOptionsContains);
-        let validateStringOfOptionContains = !stringOfOptionContains ? ' ' : stringOfOptionContains;
-
-        if (isEnum || isSet)
-            return `${type}(${getStringOfValueForEnumOrSetDataTypesWithComma(newArrayOfValue)}) ${validateStringOfOptionContains}`.trim();
-
-        if (isValueOfIndexIsNumber && !isDefinedValueInIndexTwoOfArray && (!isEnum || !isSet))
-            return `${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`.trim();
-
-        if (isDecimal || isFloat || isReal || isDouble)
-            return `${type}(${(newArrayOfValue)}) ${validateStringOfOptionContains}`.trim();
-
-        return `${type} ${validateStringOfOptionContains}`.trim();
+    if (!Array.isArray(data) || typeof data === 'number') {
+      return `${type}(${data})`.trim();
     }
 
-    jsonToString(object: object, replaceValue: string = ', '): string {
-        return JSON.stringify(object)
-            .replace(/[{"}]/g, '')
-            .replace(/:/g, ' ')
-            .replace(/,/g, replaceValue);
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      const nextItem = data[i + 1];
+      const isItemIsNumber: boolean = Number.isInteger(item);
+      const isItemIsString: boolean = typeof item === 'string';
+      const isValidType: boolean = arrayOfValidType.includes(item);
+      const isNextItemIsNumber: boolean = Number.isInteger(nextItem);
+      const isDefaultType: boolean = isDefinedDefaultWordInFirstOfString(item);
+      const isCommentFunction: boolean =
+        isDefinedCommentWordInFirstOfString(item);
+
+      if (isValidType || isDefaultType || isCommentFunction) {
+        newArrayForOptionsContains.push(item);
+        continue;
+      }
+
+      if ((!isNextItemIsNumber && isItemIsNumber) || isItemIsString) {
+        isValueOfIndexIsNumber = true;
+        newArrayOfValue.push(item);
+      }
+
+      if (isNextItemIsNumber && isItemIsNumber) {
+        isDefinedValueInIndexTwoOfArray = true;
+        newArrayOfValue.push(item);
+      }
     }
 
+    const stringOfOptionContains: string = arrayToString(
+      newArrayForOptionsContains,
+    );
+    const validateStringOfOptionContains: string = !stringOfOptionContains
+      ? ' '
+      : stringOfOptionContains;
+
+    const isDecimal: boolean = type === types.decimal;
+    const isDouble: boolean = type === types.double;
+    const isFloat: boolean = type === types.float;
+    const isReal: boolean = type === types.real;
+    const isEnum: boolean = type === types.enum;
+    const isSet: boolean = type === types.set;
+
+    if (isEnum || isSet) {
+      return `${type}(${addCommaAndQuotation(newArrayOfValue)}) ${validateStringOfOptionContains}`.trim();
+    }
+
+    if (
+      isValueOfIndexIsNumber &&
+      !isDefinedValueInIndexTwoOfArray &&
+      (!isEnum || !isSet)
+    ) {
+      return `${type}(${newArrayOfValue}) ${validateStringOfOptionContains}`.trim();
+    }
+
+    if (isDecimal || isFloat || isReal || isDouble) {
+      return `${type}(${newArrayOfValue}) ${validateStringOfOptionContains}`.trim();
+    }
+
+    return `${type} ${validateStringOfOptionContains}`.trim();
+  }
+
+  jsonToString(object: object, replaceValue: string = ', '): string {
+    return JSON.stringify(object)
+      .replace(/[{"}]/g, '')
+      .replace(/:/g, ' ')
+      .replace(/,/g, replaceValue);
+  }
 }

@@ -13,8 +13,8 @@ A huge part of Opensql is managed using Function Helpers, so this part is very i
 
 ```ts
 AS(
-    data,      // string
-    columnName // string?
+  data,      // string
+  columnName // string?
 );
 ```
 
@@ -22,17 +22,16 @@ Example code:
 
 ```ts
 AS(
-    'id',
-    'userId'
+  'id',
+  'userId'
 );
 ```
-
 
 ### MAX
 
 ```ts
 MAX(
-    column // string
+  column // string
 );
 ```
 
@@ -40,7 +39,7 @@ MAX(
 
 ```ts
 MIN(
-    column // string
+  column // string
 );
 ```
 
@@ -48,7 +47,7 @@ MIN(
 
 ```ts
 SUM(
-    column // string
+  column // string
 );
 ```
 
@@ -56,10 +55,9 @@ SUM(
 
 ```ts
 AVG(
-    column // string
+  column // string
 );
 ```
-
 
 # Where
 
@@ -67,15 +65,15 @@ AVG(
 
 ```ts
 IN(
-    arr,        // string[] | number[] | string&number[]
-    conjunction // Cnj?
+  arr,        // string[] | number[] | string&number[]
+  conjunction // Cnj?
 );
 ```
 
 ```ts
 NOT_IN(
-    arr,        // string[] | number[] | string&number[]
-    conjunction // Cnj?
+  arr,        // string[] | number[] | string&number[]
+  conjunction // Cnj?
 );
 ```
 
@@ -93,15 +91,15 @@ Example code:
 
 ```ts
 LIKE(
-    str, // string
-    conjunction // Cnj?
+  str, // string
+  conjunction // Cnj?
 );
 ```
 
 ```ts
 NOT_LIKE(
-    str, // string
-    conjunction // Cnj?
+  str, // string
+  conjunction // Cnj?
 );
 ```
 
@@ -119,19 +117,20 @@ Example code:
 
 ```ts
 BETWEEN(
-    first,      // string | number
-    second,     // string | number
-    conjunction // Cnj?
+  first,      // string | number
+  second,     // string | number
+  conjunction // Cnj?
 )
 ```
 
 ```ts
 NOT_BETWEEN(
-    first,      // string | number
-    second,     // string | number
-    conjunction // Cnj?
+  first,      // string | number
+  second,     // string | number
+  conjunction // Cnj?
 )
 ```
+
 Example code:
 
 ```text
@@ -146,8 +145,8 @@ Example code:
 
 ```ts
 jsonChecker(
-    key,    // string
-    has     // string
+  key,    // string
+  has     // string
 )
 ```
 
@@ -167,10 +166,10 @@ The Condition function is used along with the $having object
 
 ```ts
 Condition(
-    leftStatement,        // string
-    rightStatement,       // string | number
-    comparisonOperator,   // COP?
-    conjunction           // Cnj?
+  leftStatement,        // string
+  rightStatement,       // string | number
+  comparisonOperator,   // COP?
+  conjunction           // Cnj?
 );
 ```
 
@@ -186,7 +185,6 @@ Example code:
 }
 ```
 
-
 # Others
 
 ### NOW
@@ -194,11 +192,12 @@ Example code:
 ```ts
 NOW();
 ```
+
 ### DAY
 
 ```ts
 DAY(
-    date // string
+  date // string
 );
 ```
 
@@ -210,7 +209,7 @@ DAY('2017-06-15');
 
 ```ts
 DAYOFWEEK(
-    date // string
+  date // string
 );
 ```
 
@@ -218,7 +217,7 @@ DAYOFWEEK(
 
 ```ts
 DAYOFYEAR(
-    date // string
+  date // string
 );
 ```
 
@@ -226,7 +225,7 @@ DAYOFYEAR(
 
 ```ts
 DAYOFMONTH(
-    date // string
+  date // string
 );
 ```
 
@@ -234,7 +233,7 @@ DAYOFMONTH(
 
 ```ts
 DAYNAME(
-    date // string
+  date // string
 );
 ```
 
@@ -260,7 +259,7 @@ UUID_SHORT();
 
 ```ts
 LEFT(
-    query // Query
+  query // Query
 );
 ```
 
@@ -268,7 +267,7 @@ LEFT(
 
 ```ts
 INNER(
-    query // Query
+  query // Query
 );
 ```
 
@@ -276,7 +275,7 @@ INNER(
 
 ```ts
 INNER(
-    query // Query
+  query // Query
 );
 ```
 
@@ -284,9 +283,10 @@ INNER(
 
 ```ts
 FULL(
-    query // Query
+  query // Query
 );
 ```
+
 Example code:
 
 ```text
@@ -306,7 +306,7 @@ Example code:
 
 ```ts
 BLOB(
-    buf // Buffer
+  buf // Buffer
 );
 ```
 
@@ -314,21 +314,23 @@ BLOB(
 
 ```ts
 TINYBLOB(
-    buf // Buffer
+  buf // Buffer
 );
 ```
+
 #### LONGBLOB
 
 ```ts
 LONGBLOB(
-    buf // Buffer
+  buf // Buffer
 );
 ```
+
 #### MEDIUMBLOB
 
 ```ts
 MEDIUMBLOB(
-    buf // Buffer
+  buf // Buffer
 );
 ```
 
@@ -338,7 +340,7 @@ Use when you want insert data in json data type.
 
 ```ts
 JSON(
-    data //  number[] | string[] | JSONObject | JSONObject[]
+  data //  number[] | string[] | JSONObject | JSONObject[]
 );
 ```
 
@@ -356,8 +358,8 @@ Example code:
 
 ```ts
 CAST(
-    data, // number | string
-    type  // string
+  data, // number | string
+  type  // string
 );
 ```
 
@@ -374,7 +376,7 @@ Example code:
 
 ```ts
 COUNT(
-    column // string? | string[]?
+  column // string? | string[]?
 );
 ```
 
@@ -391,7 +393,7 @@ Example code:
 
 ```ts
 UPPER(
-    string // string
+  string // string
 );
 ```
 
@@ -403,11 +405,12 @@ Example code:
     
 }
 ```
+
 ### LOWER
 
 ```ts
 LOWER(
-    string // string
+  string // string
 );
 ```
 
@@ -424,7 +427,7 @@ Example code:
 
 ```ts
 ASCII(
-    char // string
+  char // string
 );
 ```
 
@@ -441,8 +444,8 @@ Example code:
 
 ```ts
 POINT(
-    x, // number
-    y  // number
+  x, // number
+  y  // number
 );
 ```
 
@@ -459,7 +462,7 @@ Example code:
 
 ```ts
 UNION(
-    query // Query
+  query // Query
 );
 ```
 
@@ -467,7 +470,7 @@ UNION(
 
 ```ts
 UNION_ALL(
-    query // Query
+  query // Query
 );
 ```
 
@@ -488,9 +491,9 @@ Example code:
 
 ```ts
 qCheck(
-    value, // QCheckValueInObject | string | number
-    comparisonOperator, // COP?
-    conjunction // Cnj?
+  value, // QCheckValueInObject | string | number
+  comparisonOperator, // COP?
+  conjunction // Cnj?
 );
 ```
 
@@ -524,8 +527,8 @@ VARBINARY(
 
 ```ts
 ATTACH(
-    arr,        // JSONObject | string[]   
-    conjunction // Cnj? 
+  arr,        // JSONObject | string[]   
+  conjunction // Cnj? 
 );
 ```
 
@@ -546,8 +549,8 @@ Example code:
 
 ```ts
 SOURCE(
-    name,    // string
-    typeName // string?
+  name,    // string
+  typeName // string?
 );
 ```
 
@@ -558,11 +561,12 @@ Example code:
     get: SOURCE('username')
 }
 ```
+
 ### POLYGON
 
 ```ts
 POLYGON(
-    str    // string
+  str    // string
 );
 ```
 
@@ -575,11 +579,12 @@ Example code:
     }
 }
 ```
+
 ### COMMENT
 
 ```ts
 COMMENT(
-    description    // string
+  description    // string
 );
 ```
 
@@ -597,7 +602,7 @@ Example code:
 
 ```ts
 REVERSE(
-    string    // string
+  string    // string
 );
 ```
 
@@ -605,7 +610,7 @@ REVERSE(
 
 ```ts
 DEFAULT(
-    value    // string | number | boolean
+  value    // string | number | boolean
 );
 ```
 
@@ -618,11 +623,13 @@ Example code:
     }
 }
 ```
+
 ### UTC_DATE
 
 ```ts
 UTC_DATE();
 ```
+
 ### UTC_TIME
 
 ```ts
@@ -633,7 +640,7 @@ UTC_TIME();
 
 ```ts
 XML(
-    data    // string
+  data    // string
 );
 ```
 
@@ -651,7 +658,7 @@ Example code:
 
 ```ts
 UNQUOTE(
-    extract    // string
+  extract    // string
 );
 ```
 
@@ -667,9 +674,9 @@ Example code:
 
 ```ts
 CONTAINS(
-    target,     // string | JSONObject
-    candidate,  // string | JSONObject
-    path        // string?
+  target,     // string | JSONObject
+  candidate,  // string | JSONObject
+  path        // string?
 );
 ```
 
@@ -685,8 +692,8 @@ Example code:
 
 ```ts
 EXTRACT(
-    data,    // JSONObject | number[] | string
-    ...path  // string[]
+  data,    // JSONObject | number[] | string
+  ...path  // string[]
 );
 ```
 
@@ -697,13 +704,14 @@ Example code:
    get: EXTRACT([1, 2, 3, 4, 5], '$[last-3 to last-1]')
 }
 ```
+
 ### CONCAT_WS
 
 ```ts
 CONCAT_WS(
-    str,    // string
-    arr,    // string[]
-    column  // string
+  str,    // string
+  arr,    // string[]
+  column  // string
 );
 ```
 
@@ -719,7 +727,7 @@ Example code:
 
 ```ts
 QueryPoint(
-    field    // string
+  field    // string
 );
 ```
 
@@ -735,7 +743,7 @@ Example code:
 
 ```ts
 LINESTRING(
-    str    // string | string[]
+  str    // string | string[]
 );
 ```
 
@@ -746,11 +754,12 @@ Example code:
    get: LINESTRING([Point(0,0), Point(1,1)])
 }
 ```
+
 ### CHAR_LENGTH
 
 ```ts
 CHAR_LENGTH(
-    data    // string | number
+  data    // string | number
 );
 ```
 
@@ -785,10 +794,11 @@ CURRENT_TIME();
 ```ts
 UTC_TIMESTAMP();
 ```
+
 ### ST_GeomFromText
 
 ```ts
 ST_GeomFromText(
-    string // string
+  string // string
 );
 ```
